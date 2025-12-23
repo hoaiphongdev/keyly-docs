@@ -1,0 +1,168 @@
+---
+title: Keyly
+description: macOS menu bar app that displays keyboard shortcuts for the active application
+template: splash
+hero:
+  tagline: Hold ⌘ Command for 1 second to instantly view all keyboard shortcuts for any active app on macOS.
+  image:
+    file: ../../assets/keyly.svg
+  actions:
+    - text: Get Started
+      link: /getting-started/
+      icon: right-arrow
+      variant: primary
+    - text: Quick install
+      link: '#quick-install'
+      icon: down-arrow
+      variant: secondary
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Image } from 'astro:assets';
+import example1 from '../../assets/images/example-1.png';
+import example2 from '../../assets/images/example-2.png';
+
+<div class="card-stack" id="cardStack">
+  <figure class="stack-card" data-index="0">
+    <Image src={example1} alt="Keyly showing Chrome shortcuts" loading="eager" />
+    <figcaption>Google Chrome</figcaption>
+  </figure>
+  <figure class="stack-card" data-index="1">
+    <Image src={example2} alt="Keyly showing Cursor shortcuts" loading="eager" />
+    <figcaption>Cursor</figcaption>
+  </figure>
+</div>
+
+<style>{`
+  .card-stack {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    height: 750px;
+    margin: 0 auto 4rem;
+    perspective: 1500px;
+  }
+  
+  .stack-card {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 90%;
+    max-width: 1000px;
+    margin: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--sl-color-gray-6);
+    border: 2px solid var(--sl-color-gray-5);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center center;
+  }
+  
+  .stack-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  
+  .stack-card figcaption {
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    color: var(--sl-color-gray-2);
+    text-align: center;
+    font-weight: 600;
+    background: var(--sl-color-gray-7);
+    border-top: 1px solid var(--sl-color-gray-5);
+  }
+  
+  /* Default stacked positions */
+  .stack-card[data-index="0"] {
+    transform: translate(-50%, -50%) rotate(-4deg) translateX(-50px) translateY(20px);
+    z-index: 1;
+  }
+  .stack-card[data-index="1"] {
+    transform: translate(-50%, -50%) rotate(3deg) translateX(40px) translateY(-10px);
+    z-index: 2;
+  }
+  
+  /* Active card - brought to front */
+  .stack-card.active {
+    z-index: 10 !important;
+    transform: translate(-50%, -50%) rotate(0deg) scale(1.02) !important;
+    box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.6);
+    border-color: var(--sl-color-accent);
+  }
+  
+  .stack-card:hover:not(.active) {
+    filter: brightness(1.05);
+  }
+  
+  @media (max-width: 768px) {
+    .card-stack {
+      height: 450px;
+    }
+    .stack-card {
+      width: 95%;
+    }
+    .stack-card[data-index="0"] {
+      transform: translate(-50%, -50%) rotate(-3deg) translateX(-15px) translateY(15px);
+    }
+    .stack-card[data-index="1"] {
+      transform: translate(-50%, -50%) rotate(2deg) translateX(15px) translateY(-8px);
+    }
+  }
+`}</style>
+
+<script>{`
+  document.addEventListener('DOMContentLoaded', () => {
+    const cards = document.querySelectorAll('.stack-card');
+    
+    cards.forEach(card => {
+      card.addEventListener('click', () => {
+        cards.forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+      });
+    });
+    
+    // Set last card as active by default
+    if (cards.length > 0) {
+      cards[cards.length - 1].classList.add('active');
+    }
+  });
+`}</script>
+
+## Features
+
+<CardGrid stagger>
+  <Card title="Instant Shortcuts" icon="rocket">
+    Hold ⌘ for 1 second to see all keyboard shortcuts for the currently active app. No memorization needed.
+  </Card>
+  <Card title="Real Menu Shortcuts" icon="document">
+    Extracts actual shortcuts from the app's menu bar via macOS Accessibility API. Always accurate.
+  </Card>
+  <Card title="Custom Configs" icon="setting">
+    Create `.keyly` files to add your own shortcuts for any application.
+  </Card>
+  <Card title="Beautiful UI" icon="star">
+    Multi-column layout with category grouping and blur effect overlay.
+  </Card>
+</CardGrid>
+
+## Quick Install
+
+Open Terminal and run:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install.sh | bash
+```
+
+Then grant Accessibility permission when prompted. That's it!
+
+## Inspired by CheatSheet
+
+Keyly is inspired by [CheatSheet](https://www.mediaatelier.com/CheatSheet) — reimplemented in Swift with additional features like custom shortcut configs and a settings menu.
+
+---
+
+Made with ❤️ by [hoaiphongdev](https://github.com/hoaiphongdev)

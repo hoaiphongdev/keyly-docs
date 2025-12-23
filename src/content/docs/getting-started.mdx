@@ -1,0 +1,70 @@
+---
+title: Getting Started
+description: Install Keyly and start discovering keyboard shortcuts in seconds
+---
+
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+## Requirements
+
+- **macOS 12.0+** (Monterey or later)
+- Accessibility permissions
+
+## Installation
+
+<Steps>
+1. Open any terminal app on your Mac (Terminal, iTerm, Warp, etc.)
+
+2. Paste this command and press Enter:
+
+   ```bash
+   curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install.sh | bash
+   ```
+
+3. Follow the on-screen instructions to grant Accessibility permission
+
+4. Done! Hold `⌘ Command` for 1 second to show shortcuts
+</Steps>
+
+## Setting Up Permissions
+
+Keyly requires Accessibility permissions to:
+
+1. **Monitor global keyboard events** — detect when you hold the ⌘ key
+2. **Read menu bar shortcuts** — extract shortcuts from other applications
+
+<Steps>
+1. Open **System Settings**
+2. Go to **Privacy & Security → Accessibility**
+3. Find **Keyly** in the list and enable it
+4. Restart Keyly if needed
+</Steps>
+
+<Aside type="tip">
+If Keyly doesn't appear in the list, try launching it first, then check again.
+</Aside>
+
+## Basic Usage
+
+<Steps>
+1. Run the app — you'll see a ⌘ icon in the menu bar
+2. Open any application (Safari, VS Code, Finder, etc.)
+3. Hold the **Command (⌘)** key for 1 second
+4. A floating window will appear showing all keyboard shortcuts
+5. Release ⌘ to hide the window
+</Steps>
+
+## Menu Bar Options
+
+Click the ⌘ icon in your menu bar to access:
+
+- **Reload** — Refresh shortcut detection
+- **Open Config** — Open the `.keyly` config folder
+- **Accessibility Settings** — Quick link to grant permissions
+- **Quit** — Exit Keyly
+
+## Next Steps
+
+- Learn about all [Features](/features/)
+- Create [Custom Shortcuts](/configuration/custom-shortcuts/)
+- Check out [Productivity Tips](/resources/productivity-tips/)

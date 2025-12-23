@@ -1,0 +1,70 @@
+---
+title: How Keyly Discovers Shortcuts
+description: Technical details about how Keyly extracts keyboard shortcuts
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Keyly doesn't use a static database of shortcuts. Instead, it dynamically reads shortcuts from the currently active application.
+
+## How It Works
+
+### 1. Accessibility API
+
+Keyly uses the macOS **Accessibility API** to:
+- Monitor when you hold the ⌘ key
+- Read the menu bar structure of the active app
+- Extract keyboard shortcuts from menu items
+
+### 2. Menu Bar Parsing
+
+When you hold ⌘, Keyly:
+1. Identifies the frontmost application
+2. Reads its menu bar hierarchy
+3. Extracts shortcuts from each menu item
+4. Groups them by menu category (File, Edit, View, etc.)
+5. Displays them in a floating overlay
+
+### 3. Real-Time Extraction
+
+Shortcuts are read in real-time, meaning:
+- You always see the current shortcuts
+- Context menus and dynamic menus are included
+- No manual updates needed when apps change
+
+<Aside>
+This is why Keyly requires Accessibility permissions — it needs to read menu data from other applications.
+</Aside>
+
+## Why This Approach?
+
+### Advantages
+
+- **Always accurate** — Shows what's actually in the menu bar
+- **No maintenance** — No database to update
+- **Universal** — Works with any app that has a menu bar
+- **Includes custom shortcuts** — If you've set app-specific shortcuts in System Settings, Keyly sees them
+
+### Limitations
+
+- **Menu bar required** — Apps without standard menus may show limited shortcuts
+- **Permission needed** — Requires Accessibility access
+- **Hidden shortcuts** — Some shortcuts not in menus won't appear
+
+## Custom Shortcuts
+
+For apps that don't expose shortcuts via menus, or to add your own, use [custom .keyly files](/configuration/custom-shortcuts/).
+
+Your custom shortcuts are merged with the app's native ones in the overlay.
+
+## Technical Requirements
+
+- **macOS 12.0+** — For required Accessibility API features
+- **Swift 5.9+** — Keyly is built with modern Swift
+- **Accessibility permissions** — Granted in System Settings
+
+## Related
+
+- [Features](/features/)
+- [Custom Shortcuts](/configuration/custom-shortcuts/)
+- [Troubleshooting](/troubleshooting/)

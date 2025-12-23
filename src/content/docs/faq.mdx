@@ -1,0 +1,74 @@
+---
+title: FAQ
+description: Frequently asked questions about Keyly
+---
+
+## General
+
+### Is Keyly free?
+
+Yes, Keyly is completely free and open source under the Apache 2.0 license.
+
+### Which macOS versions are supported?
+
+macOS 12.0 (Monterey) and later.
+
+### Is Keyly safe? Why does it need Accessibility permissions?
+
+Keyly uses Accessibility permissions for two things:
+1. **Detect when you hold ⌘** — to trigger the shortcut overlay
+2. **Read menu bar shortcuts** — to extract shortcuts from other apps
+
+Keyly does not log keystrokes, send data anywhere, or access anything beyond what's needed to show shortcuts.
+
+## Usage
+
+### How do I show the shortcuts overlay?
+
+Hold the **⌘ Command** key for 1 second. Release to hide.
+
+### Why don't I see shortcuts for some apps?
+
+Some apps don't expose their shortcuts via the menu bar or Accessibility API. In these cases, you can [create custom shortcuts](/configuration/custom-shortcuts/).
+
+### Can I change the trigger key or delay?
+
+Currently, Keyly uses a fixed 1-second hold on the ⌘ key. Customization may be added in future versions.
+
+### Does Keyly work with custom/non-standard apps?
+
+Keyly works with any app that has a standard macOS menu bar. For apps without menu bars, use [custom shortcut configs](/configuration/custom-shortcuts/).
+
+## Custom Shortcuts
+
+### Where do I put custom shortcut files?
+
+In `~/.config/keyly/`. Open this folder quickly via **⌘ icon → Open Config**.
+
+### Can I add shortcuts for multiple apps in one file?
+
+Each `.keyly` file should target one app (specified in the `# App:` header). Create separate files for different apps.
+
+### How do I reload after editing configs?
+
+Click the **⌘ icon** in the menu bar and select **Reload**.
+
+## Comparison
+
+### How is Keyly different from CheatSheet?
+
+Keyly is inspired by [CheatSheet](https://www.mediaatelier.com/CheatSheet) but:
+- Reimplemented in Swift
+- Adds custom shortcut configs via `.keyly` files
+- Includes a settings menu
+- Is open source
+
+## Troubleshooting
+
+### Keyly isn't working at all
+
+See the [Troubleshooting guide](/troubleshooting/) for step-by-step solutions.
+
+### I found a bug / have a feature request
+
+Please [open an issue on GitHub](https://github.com/hoaiphongdev/keyly/issues).

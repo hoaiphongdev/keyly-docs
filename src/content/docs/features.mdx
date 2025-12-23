@@ -1,0 +1,61 @@
+---
+title: Features
+description: Everything Keyly can do for you
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## Core Features
+
+<CardGrid>
+  <Card title="Hold ⌘ to Reveal" icon="rocket">
+    Simply hold the Command key for 1 second and all available shortcuts appear instantly.
+  </Card>
+  <Card title="Real Shortcut Extraction" icon="magnifier">
+    Uses macOS Accessibility API to read actual shortcuts from the app's menu bar — not a static database.
+  </Card>
+  <Card title="Universal Compatibility" icon="approve-check">
+    Works with any macOS application that exposes menu bar shortcuts.
+  </Card>
+  <Card title="Custom Shortcut Configs" icon="document">
+    Create `.keyly` files to define your own shortcuts for any app.
+  </Card>
+</CardGrid>
+
+## UI & Display
+
+### Multi-Column Layout
+
+Shortcuts are organized in a clean multi-column layout for easy scanning.
+
+### Category Grouping
+
+Shortcuts are grouped by menu category (File, Edit, View, etc.) just like in the app's menu bar.
+
+### Blur Effect Overlay
+
+A beautiful floating window with backdrop blur appears over your current app, keeping context visible.
+
+## Menu Bar Integration
+
+Keyly lives in your menu bar with quick access to:
+
+| Option | Description |
+|--------|-------------|
+| **Reload** | Refresh shortcut detection for the current app |
+| **Open Config** | Open `~/.config/keyly/` folder for custom configs |
+| **Accessibility Settings** | Quick link to macOS permissions |
+| **Quit** | Exit Keyly |
+
+## Technical Details
+
+- **Built with Swift 5.9+**
+- **Requires macOS 12.0+**
+- **Uses Accessibility API** for shortcut extraction
+- **Low memory footprint** — runs quietly in the menu bar
+
+## What's Next?
+
+- [Create Custom Shortcuts](/configuration/custom-shortcuts/)
+- [Productivity Tips](/resources/productivity-tips/)
+- [Troubleshooting](/troubleshooting/)

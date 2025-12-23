@@ -1,0 +1,131 @@
+---
+title: Custom Shortcuts
+description: Create your own keyboard shortcuts with .keyly files
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+Create `.keyly` files in `~/.config/keyly/` to add custom shortcuts for any application.
+
+## File Location
+
+```
+~/.config/keyly/
+├── safari.keyly
+├── vscode.keyly
+├── my-shortcuts.keyly
+└── ...
+```
+
+<Aside type="tip">
+Open this folder quickly: click the **⌘ icon** in menu bar → **Open Config**
+</Aside>
+
+## File Format
+
+```
+# Sheet Name: My Shortcuts
+# App: /Applications/Safari.app
+
+[Category Name]
+KEY+COMBO   Description of the shortcut
+KEY+COMBO   Another shortcut
+```
+
+### Header Fields
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `# Sheet Name:` | Optional | Name displayed in the overlay |
+| `# App:` | **Required** | Full path to the application bundle |
+
+### Key Modifiers
+
+| Modifier | Symbol |
+|----------|--------|
+| `CMD` | ⌘ Command |
+| `SHIFT` | ⇧ Shift |
+| `OPT` or `ALT` | ⌥ Option |
+| `CTRL` | ⌃ Control |
+
+Combine modifiers with `+`:
+- `CMD+C` → ⌘C
+- `CMD+SHIFT+T` → ⌘⇧T
+- `CMD+OPT+ESC` → ⌘⌥⎋
+
+## Complete Example
+
+```
+# Sheet Name: My Shortcuts
+# App: /Applications/Safari.app
+
+[Navigation]
+CMD+L       Open Location
+CMD+T       New Tab
+CMD+SHIFT+T Reopen Last Tab
+CMD+[       Go Back
+CMD+]       Go Forward
+
+[Bookmarks]
+CMD+D       Add Bookmark
+CMD+SHIFT+B Show All Bookmarks
+
+[Tabs]
+CTRL+TAB    Next Tab
+CTRL+SHIFT+TAB Previous Tab
+CMD+W       Close Tab
+CMD+SHIFT+W Close Window
+```
+
+## Creating a Config File
+
+<Steps>
+1. Open Terminal
+
+2. Create the config directory (if it doesn't exist):
+   ```bash
+   mkdir -p ~/.config/keyly
+   ```
+
+3. Create a new `.keyly` file:
+   ```bash
+   nano ~/.config/keyly/myapp.keyly
+   ```
+
+4. Add your shortcuts following the format above
+
+5. Save the file and reload Keyly from the menu bar
+</Steps>
+
+## Tips
+
+- **One file per app** keeps things organized, but you can use any naming convention
+- **Categories** help group related shortcuts (use `[Category Name]` syntax)
+- **Comments** start with `#` and are ignored
+- **Whitespace** between key combo and description is flexible (spaces or tabs)
+- **Reload** Keyly after editing configs to see changes
+
+## Troubleshooting
+
+### Shortcuts not appearing?
+
+1. Check the `# App:` path is correct
+2. Make sure the app bundle exists at that path
+3. Reload Keyly from the menu bar
+4. Verify file encoding is UTF-8
+
+### Wrong app bundle path?
+
+Find the correct path:
+```bash
+ls /Applications/*.app
+# or for user-installed apps
+ls ~/Applications/*.app
+```
+
+## Related
+
+- [Configuration Overview](/configuration/)
+- [Features](/features/)
+- [Troubleshooting](/troubleshooting/)
+

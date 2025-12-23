@@ -1,0 +1,103 @@
+---
+title: Troubleshooting
+description: Common issues and how to fix them
+---
+
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+## Keyly Not Showing Shortcuts
+
+### Check Accessibility Permissions
+
+<Steps>
+1. Open **System Settings**
+2. Go to **Privacy & Security → Accessibility**
+3. Make sure **Keyly** is in the list and **enabled**
+4. If not listed, try launching Keyly first
+</Steps>
+
+<Aside type="caution">
+After enabling permissions, you may need to restart Keyly for changes to take effect.
+</Aside>
+
+### Restart Keyly
+
+<Steps>
+1. Click the **⌘ icon** in the menu bar
+2. Select **Quit**
+3. Relaunch Keyly from Applications
+</Steps>
+
+## Shortcuts Window Not Appearing
+
+### Hold ⌘ Long Enough
+
+You need to hold the Command key for **1 full second**. A quick press won't trigger the overlay.
+
+### Check If App Has Menu Bar
+
+Some apps (especially games or full-screen apps) may not expose their shortcuts via the menu bar. Keyly can only read what's accessible through the Accessibility API.
+
+## Custom Shortcuts Not Working
+
+### Verify File Location
+
+Make sure your `.keyly` file is in:
+```
+~/.config/keyly/
+```
+
+### Check App Path
+
+The `# App:` header must point to the correct application bundle:
+
+```
+# App: /Applications/Safari.app
+```
+
+Find the correct path:
+```bash
+ls /Applications/*.app
+```
+
+### Reload Keyly
+
+After editing config files, reload from the menu bar: **⌘ icon → Reload**
+
+### Check File Encoding
+
+Make sure your `.keyly` file is saved as **UTF-8** without BOM.
+
+## Menu Bar Icon Missing
+
+### Check Menu Bar Space
+
+If you have many menu bar items, Keyly's icon might be hidden. Try:
+- Holding ⌘ and dragging icons to rearrange
+- Using an app like Bartender or Hidden Bar to manage menu bar items
+
+### Verify Keyly Is Running
+
+Open Activity Monitor and search for "Keyly". If not running, launch it from Applications.
+
+## App Crashes or Freezes
+
+### Check macOS Version
+
+Keyly requires **macOS 12.0 or later**. Check your version:
+1. Click  → About This Mac
+2. Look for macOS version
+
+### Reset Keyly
+
+Remove config and restart:
+```bash
+rm -rf ~/.config/keyly
+```
+
+Then relaunch Keyly.
+
+## Still Having Issues?
+
+1. Check the [FAQ](/faq/) for common questions
+2. [Open an issue on GitHub](https://github.com/hoaiphongdev/keyly/issues)
