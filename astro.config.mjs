@@ -48,6 +48,7 @@ export default defineConfig({
           items: [
             { label: "Troubleshooting", slug: "troubleshooting" },
             { label: "FAQ", slug: "faq" },
+            { label: "Changelog", slug: "changelog" },
           ],
         },
       ],

@@ -9,7 +9,7 @@ import { Card, CardGrid } from '@astrojs/starlight/components';
 
 <CardGrid>
   <Card title="Hold ⌘ to Reveal" icon="rocket">
-    Simply hold the Command key for 1 second and all available shortcuts appear instantly.
+    Simply hold the Command key for 2 seconds and all available shortcuts appear instantly.
   </Card>
   <Card title="Real Shortcut Extraction" icon="magnifier">
     Uses macOS Accessibility API to read actual shortcuts from the app's menu bar — not a static database.
@@ -18,7 +18,7 @@ import { Card, CardGrid } from '@astrojs/starlight/components';
     Works with any macOS application that exposes menu bar shortcuts.
   </Card>
   <Card title="Custom Shortcut Configs" icon="document">
-    Create `.keyly` files to define your own shortcuts for any app.
+    Create `.keyly` files or install [community templates](/configuration/templates/) for any app.
   </Card>
 </CardGrid>
 
@@ -31,6 +31,10 @@ Shortcuts are organized in a clean multi-column layout for easy scanning.
 ### Category Grouping
 
 Shortcuts are grouped by menu category (File, Edit, View, etc.) just like in the app's menu bar.
+
+### Category Descriptions
+
+Add contextual hints below category titles using `> description` syntax in your [custom shortcuts](/configuration/custom-shortcuts/).
 
 ### Blur Effect Overlay
 
@@ -56,6 +60,8 @@ Keyly lives in your menu bar with quick access to:
 
 ## What's Next?
 
+- [Install Templates](/configuration/templates/) — Pre-made shortcuts for popular apps
 - [Create Custom Shortcuts](/configuration/custom-shortcuts/)
 - [Productivity Tips](/resources/productivity-tips/)
 - [Troubleshooting](/troubleshooting/)
+- [Changelog](/changelog/) — Version history

@@ -28,6 +28,7 @@ Open this folder quickly: click the **⌘ icon** in menu bar → **Open Config**
 # App: /Applications/Safari.app
 
 [Category Name]
+> Optional description for this category
 KEY+COMBO   Description of the shortcut
 KEY+COMBO   Another shortcut
 ```
@@ -53,6 +54,19 @@ Combine modifiers with `+`:
 - `CMD+SHIFT+T` → ⌘⇧T
 - `CMD+OPT+ESC` → ⌘⌥⎋
 
+## Category Descriptions
+
+Add a description line after `[Category]` using `>` prefix:
+
+```
+[Chat]
+> Focus on chat panel first.
+CMD+L       Focus Chat
+CMD+I       Open Composer
+```
+
+The description appears as a sub-title below the category name in the shortcuts window. This is useful for providing contextual hints.
+
 ## Complete Example
 
 ```
@@ -60,6 +74,7 @@ Combine modifiers with `+`:
 # App: /Applications/Safari.app
 
 [Navigation]
+> Essential navigation shortcuts
 CMD+L       Open Location
 CMD+T       New Tab
 CMD+SHIFT+T Reopen Last Tab
@@ -67,10 +82,12 @@ CMD+[       Go Back
 CMD+]       Go Forward
 
 [Bookmarks]
+> Manage your bookmarks
 CMD+D       Add Bookmark
 CMD+SHIFT+B Show All Bookmarks
 
 [Tabs]
+> Tab management shortcuts
 CTRL+TAB    Next Tab
 CTRL+SHIFT+TAB Previous Tab
 CMD+W       Close Tab
@@ -123,8 +140,19 @@ ls /Applications/*.app
 ls ~/Applications/*.app
 ```
 
+## Using Templates
+
+Don't want to write configs from scratch? Use community templates:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install-templates.sh | bash -s -- -t cursor
+```
+
+See [Templates](/configuration/templates/) for available templates and options.
+
 ## Related
 
+- [Templates](/configuration/templates/) — Pre-made shortcut configs
 - [Configuration Overview](/configuration/)
 - [Features](/features/)
 - [Troubleshooting](/troubleshooting/)

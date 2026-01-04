@@ -1,0 +1,141 @@
+---
+title: Templates
+description: Install community-made shortcut templates for popular apps
+---
+
+import { Steps, Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Templates are pre-made `.keyly` files created by the community for popular applications. Install them instantly with a single command.
+
+## Quick Install
+
+Use the template installer script to download templates from GitHub:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install-templates.sh | bash -s -- -t cursor
+```
+
+This installs the Cursor IDE template to `~/.config/keyly/cursor.keyly`.
+
+## Available Templates
+
+| Template | Description | Command |
+|----------|-------------|---------|
+| `cursor` | Cursor IDE shortcuts with contextual hints | `-t cursor` |
+
+<Aside type="tip">
+More templates coming soon! Want to contribute? See [Creating Templates](#creating-templates) below.
+</Aside>
+
+## Template Installer Options
+
+### Required Flags
+
+| Flag | Description | Example |
+|------|-------------|---------|
+| `-t <name>` | Template name (required) | `-t cursor` |
+
+### Optional Flags
+
+| Flag | Description | Example |
+|------|-------------|---------|
+| `-n <filename>` | Custom local filename | `-n my-cursor.keyly` |
+| `-f` | Force replace existing file | `-f` |
+
+## Examples
+
+### Basic Installation
+
+```bash
+# Install Cursor template
+curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install-templates.sh | bash -s -- -t cursor
+```
+
+### Custom Filename
+
+```bash
+# Install with custom name
+curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install-templates.sh | bash -s -- -t cursor -n cursor-custom.keyly
+```
+
+### Force Replace
+
+```bash
+# Replace existing file without prompt
+curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install-templates.sh | bash -s -- -t cursor -f
+```
+
+## What Happens
+
+<Steps>
+1. Script validates the template name
+2. Downloads the template from GitHub
+3. If file exists, prompts to backup or replace (unless `-f` is used)
+4. Saves to `~/.config/keyly/`
+5. Ready to use — hold ⌘ for 2 seconds to see shortcuts
+</Steps>
+
+## Template Format
+
+Templates use the standard `.keyly` format with an additional feature: **category descriptions**.
+
+```keyly
+# Sheet Name: Cursor IDE
+# App: /Applications/Cursor.app
+
+[Chat]
+> Focus on chat panel first.
+CMD+L       Focus Chat
+CMD+I       Open Composer
+CMD+SHIFT+I Inline Composer
+
+[Editor]
+> Essential editing shortcuts.
+CMD+D       Select Next Occurrence
+CMD+SHIFT+L Select All Occurrences
+```
+
+The `> description` line after `[Category]` adds a helpful hint displayed below the category title in the shortcuts window.
+
+## Creating Templates
+
+Want to create a template for your favorite app?
+
+<Steps>
+1. Create a `.keyly` file following the [custom shortcuts syntax](/configuration/custom-shortcuts/)
+2. Add category descriptions using `> hint text` for helpful context
+3. Test it locally in `~/.config/keyly/`
+4. Submit a PR to the [Keyly repository](https://github.com/hoaiphongdev/keyly)
+</Steps>
+
+### Template Guidelines
+
+- Use clear, descriptive category names
+- Add `> description` hints for context
+- Include commonly used shortcuts
+- Test with the actual application
+- Follow the naming convention: `appname.keyly`
+
+## Cursor IDE Template
+
+The Cursor template includes shortcuts organized by workflow:
+
+| Category | Description |
+|----------|-------------|
+| Chat | AI chat interactions |
+| Composer | Code generation |
+| Editor | Text editing |
+| Navigation | File and symbol navigation |
+| Terminal | Integrated terminal |
+| Git | Version control |
+
+<Aside>
+The Cursor template includes contextual hints like "Focus on chat panel first" to help you understand the workflow.
+</Aside>
+
+## Related
+
+- [Custom Shortcuts](/configuration/custom-shortcuts/) — Full syntax guide
+- [Configuration](/configuration/) — Overview of all config options
+- [Getting Started](/getting-started/) — Installation guide
+
