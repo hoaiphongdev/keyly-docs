@@ -1,5 +1,5 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://docs.keyly.app/sitemap.xml
+Sitemap: https://keyly-docs.com/sitemap.xml
 

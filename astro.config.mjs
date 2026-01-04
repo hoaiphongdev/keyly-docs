@@ -5,7 +5,7 @@ import starlightLinksValidator from "starlight-links-validator";
 import sitemapRename from "./src/integrations/sitemap-rename";
 
 export default defineConfig({
-  site: "https://docs.keyly.app",
+  site: "https://keyly-docs.com",
   integrations: [
     starlight({
       title: "Keyly Docs",

@@ -31,7 +31,7 @@ function formatBreadcrumbName(segment: string): string {
 }
 
 function generateBreadcrumbs() {
-	const baseUrl = Astro.site?.href || 'https://docs.keyly.app';
+	const baseUrl = Astro.site?.href || 'https://keyly-docs.com';
 	let path = currentPath;
 	
 	if (currentLocale === 'vi') {
@@ -96,7 +96,7 @@ const webSiteSchema = {
 	"@type": "WebSite",
 	"name": "Keyly",
 	"alternateName": "Keyly Docs",
-	"url": Astro.site?.href || "https://docs.keyly.app",
+	"url": Astro.site?.href || "https://keyly-docs.com",
 	"description": "Hold ⌘ for 2 seconds to reveal every shortcut in any app. Free, open-source menu bar utility for macOS.",
 	"publisher": {
 		"@type": "Person",
