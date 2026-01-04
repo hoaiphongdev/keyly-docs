@@ -2,6 +2,7 @@ import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import starlightThemeObsidian from "starlight-theme-obsidian";
 import starlightLinksValidator from "starlight-links-validator";
+import sitemapRename from "./src/integrations/sitemap-rename";
 
 export default defineConfig({
   site: "https://docs.keyly.app",
@@ -67,6 +68,7 @@ export default defineConfig({
         LanguageSelect: "./src/overrides/LanguageSelect.astro",
       },
     }),
+    sitemapRename(),
   ],
   devToolbar: { enabled: false },
 });
