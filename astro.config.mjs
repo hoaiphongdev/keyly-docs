@@ -9,6 +9,17 @@ export default defineConfig({
     starlight({
       title: "Keyly Docs",
       credits: true,
+      defaultLocale: "root",
+      locales: {
+        root: {
+          label: "English",
+          lang: "en",
+        },
+        vi: {
+          label: "Tiếng Việt",
+          lang: "vi",
+        },
+      },
       social: [
         {
           icon: "github",
@@ -23,7 +34,7 @@ export default defineConfig({
       plugins: [
         starlightLinksValidator({
           errorOnInvalidHashes: false,
-        }),
+      }),
         starlightThemeObsidian({ overrideWarnings: true }),
       ],
       favicon: "./favicon.svg",
@@ -53,6 +64,7 @@ export default defineConfig({
       ],
       components: {
         Head: "./src/overrides/Head.astro",
+        LanguageSelect: "./src/overrides/LanguageSelect.astro",
       },
     }),
   ],

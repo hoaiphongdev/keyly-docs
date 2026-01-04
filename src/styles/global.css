@@ -21,10 +21,9 @@
 [data-has-hero] .page {
   height: 100%;
   background:
-          linear-gradient(215deg, var(--sl-hero-color), transparent 40%),
-          radial-gradient(var(--sl-hero-color), transparent 40%) no-repeat -60vw -40vh / 150vw 200vh,
-          radial-gradient(var(--sl-hero-color), transparent 65%) no-repeat 50% calc(100% + 20rem) /
-    150rem 30rem;
+    linear-gradient(215deg, var(--sl-hero-color), transparent 40%),
+    radial-gradient(var(--sl-hero-color), transparent 40%) no-repeat -60vw -40vh / 150vw 200vh,
+    radial-gradient(var(--sl-hero-color), transparent 65%) no-repeat 50% calc(100% + 20rem) / 150rem 30rem;
 }
 
 [data-has-hero] header {
@@ -37,4 +36,23 @@
 
 [data-has-hero] .hero > img {
   filter: drop-shadow(0 0 3rem var(--sl-hero-color));
+}
+
+starlight-obsidian-theme-select,
+.lang-select {
+  align-self: center !important;
+}
+
+.content-panel .sl-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.content-panel .sl-container > h1 {
+  order: 1;
+}
+
+.content-panel .sl-container > p.sl-flex {
+  order: 0;
+  margin-bottom: 1rem;
 }

@@ -1,33 +1,33 @@
 ---
 title: Keyly
-description: macOS menu bar app that displays keyboard shortcuts for the active application
+description: Ứng dụng menu bar cho macOS hiển thị phím tắt của ứng dụng đang hoạt động
 template: splash
 hero:
-  tagline: Hold ⌘ Command for 2 seconds to instantly view all keyboard shortcuts for any active app on macOS.
+  tagline: Giữ phím ⌘ Command trong 2 giây để xem tất cả phím tắt của ứng dụng đang mở trên macOS.
   image:
-    file: ../../assets/keyly.svg
+    file: ../../../assets/keyly.svg
   actions:
-    - text: Get Started
-      link: /getting-started/
+    - text: Bắt đầu
+      link: /vi/getting-started/
       icon: right-arrow
       variant: primary
-    - text: Quick install
-      link: '#quick-install'
+    - text: Cài đặt nhanh
+      link: '#cai-dat-nhanh'
       icon: down-arrow
       variant: secondary
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
 import { Image } from 'astro:assets';
-import example1 from '../../assets/images/example-1.png';
-import example2 from '../../assets/images/example-2.png';
+import example1 from '../../../assets/images/example-1.png';
+import example2 from '../../../assets/images/example-2.png';
 
 <div class="card-stack" id="cardStack">
   <figure class="stack-card" data-index="0">
-    <Image src={example1} alt="Keyly showing Chrome shortcuts" loading="eager" />
+    <Image src={example1} alt="Keyly hiển thị phím tắt Chrome" loading="eager" />
   </figure>
   <figure class="stack-card" data-index="1">
-    <Image src={example2} alt="Keyly showing Cursor shortcuts" loading="eager" />
+    <Image src={example2} alt="Keyly hiển thị phím tắt Cursor" loading="eager" />
   </figure>
 </div>
 
@@ -113,40 +113,42 @@ import example2 from '../../assets/images/example-2.png';
       });
     });
     
+    // Set last card as active by default
     if (cards.length > 0) {
       cards[cards.length - 1].classList.add('active');
     }
   });
 `}</script>
 
-## Features
+## Tính năng
 
 <CardGrid stagger>
-  <Card title="Instant Shortcuts" icon="rocket">
-    Hold ⌘ for 2 seconds to see all keyboard shortcuts for the currently active app. No memorization needed.
+  <Card title="Phím tắt tức thì" icon="rocket">
+    Giữ ⌘ trong 2 giây để xem tất cả phím tắt của ứng dụng đang hoạt động. Không cần ghi nhớ.
   </Card>
-  <Card title="Real Menu Shortcuts" icon="document">
-    Extracts actual shortcuts from the app's menu bar via macOS Accessibility API. Always accurate.
+  <Card title="Phím tắt thực từ Menu" icon="document">
+    Trích xuất phím tắt thực từ menu bar của ứng dụng qua macOS Accessibility API. Luôn chính xác.
   </Card>
-  <Card title="Custom Configs" icon="setting">
-    Create `.keyly` files to add your own shortcuts for any application. Use [community templates](/configuration/templates/) for popular apps.
+  <Card title="Cấu hình tùy chỉnh" icon="setting">
+    Tạo file `.keyly` để thêm phím tắt riêng cho bất kỳ ứng dụng nào. Sử dụng [template cộng đồng](/configuration/templates/) cho các ứng dụng phổ biến.
   </Card>
-  <Card title="Modern UI" icon="star">
-    Multi-column layout with category grouping, descriptions, and blur effect overlay.
+  <Card title="Giao diện hiện đại" icon="star">
+    Bố cục nhiều cột với nhóm danh mục, mô tả và hiệu ứng blur overlay.
   </Card>
 </CardGrid>
 
-## Quick Install
+## Cài đặt nhanh
 
-Open Terminal and run:
+Mở Terminal và chạy:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install.sh | bash
 ```
 
-Then grant Accessibility permission when prompted. That's it!
+Sau đó cấp quyền Accessibility khi được yêu cầu. Xong!
 
 ---
-Keyly is inspired by [CheatSheet](https://www.mediaatelier.com/CheatSheet) — reimplemented in Swift with additional features like custom shortcut configs and a settings menu.
+Keyly lấy cảm hứng từ [CheatSheet](https://www.mediaatelier.com/CheatSheet) — được xây dựng lại bằng Swift với các tính năng bổ sung như cấu hình phím tắt tùy chỉnh và menu cài đặt.
 
 Made with ❤️ by [hoaiphongdev](https://github.com/hoaiphongdev)
+
