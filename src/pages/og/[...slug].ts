@@ -33,7 +33,7 @@ export const { getStaticPaths, GET } = OGImageRoute({
 			],
 			padding: 90,
 			logo: {
-				path: '../assets/icon.png',
+				path: './assets/icon.png',
 				size: [500]
 			},
 		};

@@ -1,12 +1,10 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
-import starlightSiteGraph from 'starlight-site-graph';
 import starlightThemeObsidian from "starlight-theme-obsidian";
 import starlightLinksValidator from "starlight-links-validator";
 
 export default defineConfig({
-  site: "https://keyly-app.github.io",
-  prefetch: true,
+  site: "https://docs.keyly.app",
   integrations: [
     starlight({
       title: "Keyly Docs",
@@ -19,18 +17,16 @@ export default defineConfig({
         },
       ],
       editLink: {
-        baseUrl:
-          "https://github.com/hoaiphongdev/keyly-docs/edit/main/",
+        baseUrl: "https://github.com/hoaiphongdev/keyly/edit/main/docs/",
       },
       customCss: ["./src/styles/global.css"],
       plugins: [
         starlightLinksValidator({
           errorOnInvalidHashes: false,
         }),
-        starlightSiteGraph(),
         starlightThemeObsidian({ overrideWarnings: true }),
       ],
-      favicon: "/src/assets/keyly.svg",
+      favicon: "./favicon.svg",
       sidebar: [
         {
           label: "Start Here",
