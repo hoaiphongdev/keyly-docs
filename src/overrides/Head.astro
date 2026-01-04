@@ -22,6 +22,58 @@ function getDefaultUrl(): string {
 	if (!path.endsWith('/')) path += '/';
 	return new URL(path, Astro.site).href;
 }
+
+function formatBreadcrumbName(segment: string): string {
+	return segment
+		.split('-')
+		.map(word => word.charAt(0).toUpperCase() + word.slice(1))
+		.join(' ');
+}
+
+function generateBreadcrumbs() {
+	const baseUrl = Astro.site?.href || 'https://docs.keyly.app';
+	let path = currentPath;
+	
+	if (currentLocale === 'vi') {
+		path = path.replace(/^\/vi/, '');
+	}
+	
+	const segments = path.replace(/\/$/, '').split('/').filter(Boolean);
+	
+	const items: Array<{ name: string; url: string }> = [];
+	
+	const homeUrl = currentLocale === 'vi' ? `${baseUrl}vi/` : baseUrl;
+	items.push({ name: 'Home', url: homeUrl });
+	
+	let currentUrl = currentLocale === 'vi' ? '/vi' : '';
+	
+	for (let i = 0; i < segments.length; i++) {
+		const segment = segments[i];
+		currentUrl += `/${segment}`;
+		const fullUrl = new URL(currentUrl + '/', Astro.site).href;
+		
+		const name = i === segments.length - 1 && Astro.locals.starlightRoute?.entry?.data?.title
+			? Astro.locals.starlightRoute.entry.data.title.split(' - ')[0].split(' | ')[0]
+			: formatBreadcrumbName(segment);
+		
+		items.push({ name, url: fullUrl });
+	}
+	
+	return items;
+}
+
+const breadcrumbs = generateBreadcrumbs();
+
+const breadcrumbSchema = {
+	"@context": "https://schema.org",
+	"@type": "BreadcrumbList",
+	"itemListElement": breadcrumbs.map((item, index) => ({
+		"@type": "ListItem",
+		"position": index + 1,
+		"name": item.name,
+		"item": item.url
+	}))
+};
 ---
 <Default><slot /></Default>
 <meta property="og:image" content={ogImageUrl} />
@@ -30,3 +82,4 @@ function getDefaultUrl(): string {
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:image" content={ogImageUrl} />
 <link rel="alternate" hreflang="x-default" href={getDefaultUrl()} />
+<script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
