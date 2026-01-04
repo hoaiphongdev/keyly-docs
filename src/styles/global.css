@@ -1,15 +1,15 @@
 :root {
-  --sl-color-accent-high: hsl(258, 79%, 72%);
-  --sl-color-accent: hsl(258, 61%, 66%);
-  --sl-color-accent-low: hsl(258, 55%, 57%);
-  --sl-hero-color: hsla(258, 61%, 66%, 30%);
+  --sl-color-accent-high: hsl(328, 90%, 72%);
+  --sl-color-accent: hsl(328, 92%, 64%);
+  --sl-color-accent-low: hsl(328, 80%, 54%);
+  --sl-hero-color: hsla(328, 92%, 64%, 30%);
 }
 
 :root[data-theme='light'] {
-  --sl-color-accent-high: hsl(257, 49%, 42%);
-  --sl-color-accent: hsl(257, 54%, 59%);
-  --sl-color-accent-low: hsl(257, 52%, 75%);
-  --sl-hero-color: hsla(257, 70%, 70%, 25%);
+  --sl-color-accent-high: hsl(328, 75%, 40%);
+  --sl-color-accent: hsl(328, 80%, 52%);
+  --sl-color-accent-low: hsl(328, 70%, 78%);
+  --sl-hero-color: hsla(328, 85%, 60%, 25%);
 }
 
 
