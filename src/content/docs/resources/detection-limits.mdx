@@ -1,0 +1,66 @@
+---
+title: Why Some Shortcuts Can't Be Detected
+description: Understanding the limitations of shortcut detection on macOS
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Not every shortcut in an application can be detected. This isn't a bug — it's how macOS works.
+
+## The Simple Explanation
+
+macOS doesn't manage all keyboard shortcuts. Some shortcuts are **internal** — meaning the app handles them directly inside its own code, without going through the operating system.
+
+When that happens, macOS doesn't receive or broadcast any information about those key presses, so Keyly simply can't see or detect them.
+
+## An Easy Analogy
+
+Think of it like this:
+
+- **Menu bar shortcuts** (Open, Save, Copy, etc.) are like public announcements — macOS knows about them and can share them with Keyly.
+- **Internal shortcuts** (command palette, toggle modes, switch views) are like private conversations inside the app — macOS and Keyly have no visibility into them.
+
+Each app has its own "keyboard language" that only it understands.
+
+## Examples
+
+| Type | Examples | Detectable? |
+|------|----------|-------------|
+| Menu bar shortcuts | `⌘S` Save, `⌘C` Copy, `⌘Q` Quit | ✅ Yes |
+| System shortcuts | `⌘Tab` Switch apps, `⌘Space` Spotlight | ✅ Yes |
+| Internal app shortcuts | `⌘P` Command palette (VS Code), `⌘K` Quick actions | ❌ Often not |
+| Custom app modes | Toggle sidebar, switch tabs | ❌ Usually not |
+
+## The Solution: Custom Configurations
+
+<Aside type="tip">
+You can add any shortcut manually using custom `.keyly` configuration files!
+</Aside>
+
+For apps with many internal shortcuts (like VS Code, Cursor, Figma), you can:
+
+1. **Use community templates** — Pre-made configs for popular apps
+   
+   See [Templates](/configuration/templates/) for available configs.
+
+2. **Create your own** — Add shortcuts specific to your workflow
+   
+   See [Custom Shortcuts](/configuration/custom-shortcuts/) to create your own.
+
+Your custom shortcuts will appear alongside the detected ones in the Keyly overlay.
+
+## Why This Matters
+
+Understanding this limitation helps you:
+
+- **Set realistic expectations** — Keyly shows what macOS can access
+- **Know when to create configs** — If shortcuts are missing, add them manually
+- **Contribute to the community** — Share your configs for apps others use
+
+## Related
+
+- [How Keyly Discovers Shortcuts](/resources/shortcuts-database/)
+- [Custom Shortcuts](/configuration/custom-shortcuts/)
+- [Templates](/configuration/templates/)
+- [Troubleshooting](/troubleshooting/)
+

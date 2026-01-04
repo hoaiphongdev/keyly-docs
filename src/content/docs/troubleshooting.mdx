@@ -38,6 +38,25 @@ You need to hold the Command key for **2 full seconds**. A quick press won't tri
 
 Some apps (especially games or full-screen apps) may not expose their shortcuts via the menu bar. Keyly can only read what's accessible through the Accessibility API.
 
+## Some Shortcuts Are Missing
+
+### Not All Shortcuts Can Be Detected
+
+This is a macOS limitation, not a bug. Some shortcuts are **internal** — the app handles them directly without going through macOS.
+
+For example, VS Code's `⌘P` (Quick Open) or `⌘⇧P` (Command Palette) are internal shortcuts that macOS can't see.
+
+<Aside>
+Learn more about this in [Why Some Shortcuts Can't Be Detected](/resources/detection-limits/).
+</Aside>
+
+### Solution: Use Custom Configurations
+
+You can manually add any missing shortcuts:
+
+1. **Use a template** — Check [Templates](/configuration/templates/) for pre-made configs
+2. **Create your own** — See [Custom Shortcuts](/configuration/custom-shortcuts/)
+
 ## Custom Shortcuts Not Working
 
 ### Verify File Location
@@ -107,3 +126,4 @@ Then relaunch Keyly.
 - [Getting Started](/getting-started/) — Installation guide
 - [Configuration](/configuration/) — Customize Keyly
 - [FAQ](/faq/) — Common questions
+- [Why Some Shortcuts Can't Be Detected](/resources/detection-limits/) — Detection limitations

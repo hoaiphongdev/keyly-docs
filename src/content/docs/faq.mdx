@@ -27,9 +27,15 @@ Keyly does not log keystrokes, send data anywhere, or access anything beyond wha
 
 Hold the **⌘ Command** key for 2 seconds. Release to hide.
 
-### Why don't I see shortcuts for some apps?
+### Why don't I see all shortcuts for some apps?
 
-Some apps don't expose their shortcuts via the menu bar or Accessibility API. In these cases, you can [create custom shortcuts](/configuration/custom-shortcuts/).
+Not all shortcuts can be detected — this is a macOS limitation. Some shortcuts are **internal** to the app and invisible to macOS.
+
+For example, VS Code's Command Palette (`⌘⇧P`) is an internal shortcut that macOS can't see.
+
+**Solution:** Use [custom configurations](/configuration/custom-shortcuts/) or install a [community template](/configuration/templates/).
+
+See [Why Some Shortcuts Can't Be Detected](/resources/detection-limits/) for a detailed explanation.
 
 ### Can I change the trigger key or delay?
 
@@ -79,3 +85,4 @@ Please [open an issue on GitHub](https://github.com/hoaiphongdev/keyly/issues).
 
 - [Getting Started](/getting-started/) — Installation guide
 - [Features](/features/) — Full feature list
+- [Why Some Shortcuts Can't Be Detected](/resources/detection-limits/) — Detection limitations
