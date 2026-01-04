@@ -86,3 +86,100 @@ Please [open an issue on GitHub](https://github.com/hoaiphongdev/keyly/issues).
 - [Getting Started](/getting-started/) — Installation guide
 - [Features](/features/) — Full feature list
 - [Why Some Shortcuts Can't Be Detected](/resources/detection-limits/) — Detection limitations
+
+<script type="application/ld+json">{`
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is Keyly free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, Keyly is completely free and open source under the Apache 2.0 license."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which macOS versions are supported?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "macOS 12.0 (Monterey) and later."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is Keyly safe? Why does it need Accessibility permissions?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Keyly uses Accessibility permissions for two things: 1) Detect when you hold ⌘ to trigger the shortcut overlay, 2) Read menu bar shortcuts to extract shortcuts from other apps. Keyly does not log keystrokes, send data anywhere, or access anything beyond what's needed to show shortcuts."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I show the shortcuts overlay?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Hold the ⌘ Command key for 2 seconds. Release to hide."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why don't I see all shortcuts for some apps?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Not all shortcuts can be detected — this is a macOS limitation. Some shortcuts are internal to the app and invisible to macOS. You can use custom configurations or install a community template to add missing shortcuts."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I change the trigger key or delay?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Currently, Keyly uses a fixed 2-second hold on the ⌘ key. This duration was chosen for intentional activation without accidental triggers."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does Keyly work with custom/non-standard apps?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Keyly works with any app that has a standard macOS menu bar. For apps without menu bars, use custom shortcut configs."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where do I put custom shortcut files?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "In ~/.config/keyly/. Open this folder quickly via ⌘ icon → Open Config in the menu bar."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I add shortcuts for multiple apps in one file?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Each .keyly file should target one app (specified in the # App: header). Create separate files for different apps."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I reload after editing configs?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Click the ⌘ icon in the menu bar and select Reload."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How is Keyly different from CheatSheet?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Keyly is inspired by CheatSheet but reimplemented in Swift. It adds custom shortcut configs via .keyly files, community templates for popular apps, category descriptions with contextual hints, includes a settings menu, and is open source."
+      }
+    }
+  ]
+}
+`}</script>
