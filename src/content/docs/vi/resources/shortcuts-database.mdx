@@ -1,0 +1,72 @@
+---
+title: "Cách Keyly đọc phím tắt qua macOS Accessibility API"
+description: "Keyly trích xuất phím tắt từ menu bar theo thời gian thực bằng Accessibility API. Không có database lỗi thời — luôn chính xác."
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Keyly không dùng database phím tắt cố định. Thay vào đó, nó đọc phím tắt động từ ứng dụng đang hoạt động.
+
+## Cách hoạt động
+
+### 1. Accessibility API
+
+Keyly sử dụng **Accessibility API** của macOS để:
+- Theo dõi khi bạn giữ phím ⌘
+- Đọc cấu trúc menu bar của app đang hoạt động
+- Trích xuất phím tắt từ các menu item
+
+### 2. Phân tích Menu Bar
+
+Khi bạn giữ ⌘, Keyly:
+1. Xác định ứng dụng đang ở foreground
+2. Đọc cấu trúc phân cấp menu bar
+3. Trích xuất phím tắt từ mỗi menu item
+4. Nhóm theo danh mục menu (File, Edit, View,...)
+5. Hiển thị trong overlay floating
+
+### 3. Trích xuất thời gian thực
+
+Phím tắt được đọc theo thời gian thực, nghĩa là:
+- Bạn luôn thấy phím tắt hiện tại
+- Context menu và menu động được bao gồm
+- Không cần cập nhật thủ công khi app thay đổi
+
+<Aside>
+Đây là lý do Keyly cần quyền Accessibility — nó cần đọc dữ liệu menu từ các ứng dụng khác.
+</Aside>
+
+## Tại sao dùng cách này?
+
+### Ưu điểm
+
+- **Luôn chính xác** — Hiển thị đúng những gì trong menu bar
+- **Không cần bảo trì** — Không có database cần cập nhật
+- **Phổ quát** — Hoạt động với bất kỳ app nào có menu bar
+- **Bao gồm phím tắt tùy chỉnh** — Nếu bạn đã đặt phím tắt riêng trong System Settings, Keyly sẽ thấy
+
+### Hạn chế
+
+- **Cần menu bar** — App không có menu chuẩn có thể hiển thị ít phím tắt
+- **Cần quyền** — Yêu cầu quyền truy cập Accessibility
+- **Phím tắt ẩn** — Một số phím tắt không trong menu sẽ không xuất hiện
+
+## Phím tắt tùy chỉnh
+
+Với app không hiển thị phím tắt qua menu, hoặc để thêm phím tắt riêng, dùng [file .keyly tùy chỉnh](/vi/configuration/custom-shortcuts/).
+
+Phím tắt tùy chỉnh sẽ được gộp với phím tắt gốc của app trong overlay.
+
+## Yêu cầu kỹ thuật
+
+- **macOS 12.0+** — Cho các tính năng Accessibility API cần thiết
+- **Swift 5.9+** — Keyly được xây dựng với Swift hiện đại
+- **Quyền Accessibility** — Cấp trong System Settings
+
+## Liên quan
+
+- [Tính năng](/vi/features/)
+- [Templates](/vi/configuration/templates/) — Phím tắt có sẵn
+- [Phím tắt tùy chỉnh](/vi/configuration/custom-shortcuts/)
+- [Xử lý sự cố](/vi/troubleshooting/)
+

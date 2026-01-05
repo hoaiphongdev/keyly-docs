@@ -1,0 +1,186 @@
+---
+title: "Câu hỏi thường gặp về Keyly"
+description: "Keyly có miễn phí không? Tại sao cần quyền Accessibility? Làm sao để hiện phím tắt? Xem các câu trả lời chi tiết."
+---
+
+## Tổng quan
+
+### Keyly có miễn phí không?
+
+Có, Keyly hoàn toàn miễn phí và mã nguồn mở theo giấy phép Apache 2.0.
+
+### Hỗ trợ macOS nào?
+
+macOS 12.0 (Monterey) trở lên.
+
+### Keyly có an toàn không? Tại sao cần quyền Accessibility?
+
+Keyly cần quyền Accessibility để:
+1. **Phát hiện khi bạn giữ ⌘** — để hiện overlay phím tắt
+2. **Đọc menu bar** — để lấy phím tắt từ các app khác
+
+Keyly không ghi lại phím bấm, không gửi dữ liệu đi đâu, không truy cập gì ngoài những gì cần thiết để hiển thị phím tắt.
+
+## Sử dụng
+
+### Làm sao để hiện overlay phím tắt?
+
+Giữ phím **⌘ Command** trong 2 giây. Thả ra để ẩn.
+
+### Tại sao một số app không hiển thị đầy đủ phím tắt?
+
+Không phải tất cả phím tắt đều có thể phát hiện được — đây là giới hạn của macOS. Một số phím tắt là **nội bộ** của app và macOS không thể thấy.
+
+Ví dụ: Command Palette của VS Code (`⌘⇧P`) là phím tắt nội bộ mà macOS không nhìn thấy.
+
+**Giải pháp:** Dùng [cấu hình tùy chỉnh](/vi/configuration/custom-shortcuts/) hoặc cài [template cộng đồng](/vi/configuration/templates/).
+
+Xem chi tiết tại [Tại sao một số phím tắt không được phát hiện](/vi/resources/detection-limits/).
+
+### Có thể đổi phím kích hoạt hoặc thời gian giữ không?
+
+Hiện tại Keyly dùng cố định 2 giây giữ phím ⌘. Thời gian này được chọn để kích hoạt có chủ đích, tránh bấm nhầm.
+
+### Keyly có hoạt động với app không có menu bar không?
+
+Keyly hoạt động với bất kỳ app nào có menu bar chuẩn của macOS. Với app không có menu bar, dùng [cấu hình phím tắt tùy chỉnh](/vi/configuration/custom-shortcuts/).
+
+## Phím tắt tùy chỉnh
+
+### File phím tắt tùy chỉnh để ở đâu?
+
+Trong `~/.config/keyly/`. Mở nhanh thư mục này qua **biểu tượng ⌘ → Open Config**.
+
+### Có thể thêm phím tắt cho nhiều app trong một file không?
+
+Mỗi file `.keyly` nên dành cho một app (định nghĩa trong header `# App:`). Tạo file riêng cho từng app.
+
+### Làm sao để tải lại sau khi sửa config?
+
+Click **biểu tượng ⌘** ở menu bar và chọn **Reload**.
+
+## So sánh
+
+### Keyly khác CheatSheet chỗ nào?
+
+Keyly lấy cảm hứng từ [CheatSheet](https://www.mediaatelier.com/CheatSheet) nhưng:
+- Viết lại bằng Swift
+- Thêm cấu hình phím tắt qua file `.keyly`
+- [Template cộng đồng](/vi/configuration/templates/) cho các app phổ biến
+- Mô tả danh mục với gợi ý ngữ cảnh
+- Có menu cài đặt
+- Mã nguồn mở
+
+## Xử lý sự cố
+
+### Keyly không hoạt động
+
+Xem [hướng dẫn xử lý sự cố](/vi/troubleshooting/) để giải quyết từng bước.
+
+### Tìm thấy bug / muốn đề xuất tính năng
+
+Vui lòng [mở issue trên GitHub](https://github.com/hoaiphongdev/keyly/issues).
+
+## Liên quan
+
+- [Bắt đầu](/vi/getting-started/) — Hướng dẫn cài đặt
+- [Tính năng](/vi/features/) — Danh sách đầy đủ
+- [Tại sao một số phím tắt không được phát hiện](/vi/resources/detection-limits/) — Giới hạn phát hiện
+
+<script type="application/ld+json">{`
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Keyly có miễn phí không?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Có, Keyly hoàn toàn miễn phí và mã nguồn mở theo giấy phép Apache 2.0."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Hỗ trợ macOS nào?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "macOS 12.0 (Monterey) trở lên."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Keyly có an toàn không? Tại sao cần quyền Accessibility?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Keyly cần quyền Accessibility để: 1) Phát hiện khi bạn giữ ⌘ để hiện overlay phím tắt, 2) Đọc menu bar để lấy phím tắt từ các app khác. Keyly không ghi lại phím bấm, không gửi dữ liệu đi đâu."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Làm sao để hiện overlay phím tắt?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Giữ phím ⌘ Command trong 2 giây. Thả ra để ẩn."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Tại sao một số app không hiển thị đầy đủ phím tắt?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Không phải tất cả phím tắt đều có thể phát hiện được — đây là giới hạn của macOS. Một số phím tắt là nội bộ của app và macOS không thể thấy. Bạn có thể dùng cấu hình tùy chỉnh hoặc cài template cộng đồng."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Có thể đổi phím kích hoạt hoặc thời gian giữ không?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Hiện tại Keyly dùng cố định 2 giây giữ phím ⌘. Thời gian này được chọn để kích hoạt có chủ đích, tránh bấm nhầm."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Keyly có hoạt động với app không có menu bar không?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Keyly hoạt động với bất kỳ app nào có menu bar chuẩn của macOS. Với app không có menu bar, dùng cấu hình phím tắt tùy chỉnh."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "File phím tắt tùy chỉnh để ở đâu?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Trong ~/.config/keyly/. Mở nhanh thư mục này qua biểu tượng ⌘ → Open Config ở menu bar."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Có thể thêm phím tắt cho nhiều app trong một file không?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Mỗi file .keyly nên dành cho một app (định nghĩa trong header # App:). Tạo file riêng cho từng app."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Làm sao để tải lại sau khi sửa config?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Click biểu tượng ⌘ ở menu bar và chọn Reload."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Keyly khác CheatSheet chỗ nào?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Keyly lấy cảm hứng từ CheatSheet nhưng viết lại bằng Swift. Có thêm cấu hình phím tắt qua file .keyly, template cộng đồng cho các app phổ biến, mô tả danh mục với gợi ý ngữ cảnh, có menu cài đặt, và là mã nguồn mở."
+      }
+    }
+  ]
+}
+`}</script>
+

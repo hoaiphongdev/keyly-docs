@@ -1,0 +1,67 @@
+---
+title: "Tính năng Keyly - Hiển thị phím tắt thời gian thực"
+description: "Trích xuất phím tắt từ menu bar theo thời gian thực. Cấu hình tùy chỉnh, giao diện nhiều cột, hiệu ứng blur. Khám phá tất cả tính năng."
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## Tính năng chính
+
+<CardGrid>
+  <Card title="Giữ ⌘ để hiển thị" icon="rocket">
+    Chỉ cần giữ phím Command trong 2 giây, tất cả phím tắt sẽ hiện ra ngay.
+  </Card>
+  <Card title="Trích xuất phím tắt thực" icon="magnifier">
+    Dùng macOS Accessibility API để đọc phím tắt thực từ menu bar — không phải từ database cũ.
+  </Card>
+  <Card title="Tương thích mọi ứng dụng" icon="approve-check">
+    Hoạt động với bất kỳ ứng dụng macOS nào có menu bar.
+  </Card>
+  <Card title="Cấu hình phím tắt riêng" icon="document">
+    Tạo file `.keyly` hoặc cài [template cộng đồng](/vi/configuration/templates/) cho bất kỳ app nào.
+  </Card>
+</CardGrid>
+
+## Giao diện & Hiển thị
+
+### Bố cục nhiều cột
+
+Phím tắt được sắp xếp gọn gàng trong nhiều cột để dễ đọc.
+
+### Nhóm theo danh mục
+
+Phím tắt được nhóm theo menu (File, Edit, View,...) giống như trong menu bar của ứng dụng.
+
+### Mô tả danh mục
+
+Thêm gợi ý ngữ cảnh dưới tiêu đề danh mục bằng cú pháp `> mô tả` trong [phím tắt tùy chỉnh](/vi/configuration/custom-shortcuts/).
+
+### Hiệu ứng Blur Overlay
+
+Cửa sổ floating với hiệu ứng blur xuất hiện trên ứng dụng, giữ nguyên ngữ cảnh làm việc.
+
+## Menu Bar
+
+Keyly nằm ở menu bar với các tùy chọn:
+
+| Tùy chọn | Mô tả |
+|----------|-------|
+| **Reload** | Tải lại phím tắt cho ứng dụng hiện tại |
+| **Open Config** | Mở thư mục `~/.config/keyly/` |
+| **Accessibility Settings** | Đi tới cài đặt quyền macOS |
+| **Quit** | Thoát Keyly |
+
+## Chi tiết kỹ thuật
+
+- **Xây dựng với Swift 5.9+**
+- **Yêu cầu macOS 12.0+**
+- **Sử dụng Accessibility API** để trích xuất phím tắt
+- **Nhẹ nhàng** — chạy im lặng ở menu bar
+
+## Tiếp theo
+
+- [Cài Template](/vi/configuration/templates/) — Phím tắt có sẵn cho các ứng dụng phổ biến
+- [Tạo phím tắt tùy chỉnh](/vi/configuration/custom-shortcuts/)
+- [Mẹo tăng năng suất](/vi/resources/productivity-tips/)
+- [Xử lý sự cố](/vi/troubleshooting/)
+

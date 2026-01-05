@@ -1,0 +1,141 @@
+---
+title: "Template phím tắt - Config có sẵn cho các app phổ biến"
+description: "Cài template .keyly từ cộng đồng chỉ với một lệnh. Phím tắt có sẵn cho các app phổ biến. Dùng ngay, không cần setup."
+---
+
+import { Steps, Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Templates là các file `.keyly` được cộng đồng tạo sẵn cho các ứng dụng phổ biến. Cài đặt ngay với một lệnh duy nhất.
+
+## Cài đặt nhanh
+
+Dùng script cài template để tải về từ GitHub:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install-templates.sh | bash -s -- -t cursor
+```
+
+Lệnh này cài template Cursor IDE vào `~/.config/keyly/cursor.keyly`.
+
+## Templates có sẵn
+
+| Template | Mô tả | Lệnh |
+|----------|-------|------|
+| `cursor` | Phím tắt Cursor IDE với gợi ý ngữ cảnh | `-t cursor` |
+
+<Aside type="tip">
+Thêm nhiều template sắp tới! Muốn đóng góp? Xem [Tạo Template](#tạo-template) bên dưới.
+</Aside>
+
+## Tùy chọn cài đặt
+
+### Flag bắt buộc
+
+| Flag | Mô tả | Ví dụ |
+|------|-------|-------|
+| `-t <tên>` | Tên template (bắt buộc) | `-t cursor` |
+
+### Flag tùy chọn
+
+| Flag | Mô tả | Ví dụ |
+|------|-------|-------|
+| `-n <tên file>` | Tên file tùy chỉnh | `-n my-cursor.keyly` |
+| `-f` | Ghi đè file có sẵn | `-f` |
+
+## Ví dụ
+
+### Cài đặt cơ bản
+
+```bash
+# Cài template Cursor
+curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install-templates.sh | bash -s -- -t cursor
+```
+
+### Đặt tên file tùy chỉnh
+
+```bash
+# Cài với tên tùy chỉnh
+curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install-templates.sh | bash -s -- -t cursor -n cursor-custom.keyly
+```
+
+### Ghi đè file cũ
+
+```bash
+# Ghi đè không hỏi
+curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install-templates.sh | bash -s -- -t cursor -f
+```
+
+## Quy trình cài đặt
+
+<Steps>
+1. Script kiểm tra tên template
+2. Tải template từ GitHub
+3. Nếu file đã tồn tại, hỏi backup hoặc ghi đè (trừ khi dùng `-f`)
+4. Lưu vào `~/.config/keyly/`
+5. Sẵn sàng dùng — giữ ⌘ 2 giây để xem phím tắt
+</Steps>
+
+## Định dạng Template
+
+Templates dùng định dạng `.keyly` chuẩn với tính năng thêm: **mô tả danh mục**.
+
+```keyly
+# Sheet Name: Cursor IDE
+# App: /Applications/Cursor.app
+
+[Chat]
+> Focus vào panel chat trước.
+CMD+L       Focus Chat
+CMD+I       Mở Composer
+CMD+SHIFT+I Inline Composer
+
+[Editor]
+> Các phím tắt chỉnh sửa cơ bản.
+CMD+D       Chọn lần xuất hiện tiếp theo
+CMD+SHIFT+L Chọn tất cả lần xuất hiện
+```
+
+Dòng `> mô tả` sau `[Danh mục]` thêm gợi ý hiển thị dưới tiêu đề danh mục trong cửa sổ phím tắt.
+
+## Tạo Template
+
+Muốn tạo template cho app yêu thích của bạn?
+
+<Steps>
+1. Tạo file `.keyly` theo [cú pháp phím tắt tùy chỉnh](/vi/configuration/custom-shortcuts/)
+2. Thêm mô tả danh mục bằng `> text gợi ý` cho ngữ cảnh
+3. Test ở local trong `~/.config/keyly/`
+4. Gửi PR tới [Keyly repository](https://github.com/hoaiphongdev/keyly)
+</Steps>
+
+### Hướng dẫn tạo Template
+
+- Dùng tên danh mục rõ ràng, dễ hiểu
+- Thêm gợi ý `> mô tả` cho ngữ cảnh
+- Bao gồm các phím tắt thường dùng
+- Test với app thực tế
+- Đặt tên theo convention: `tên-app.keyly`
+
+## Template Cursor IDE
+
+Template Cursor bao gồm phím tắt theo workflow:
+
+| Danh mục | Mô tả |
+|----------|-------|
+| Chat | Tương tác AI chat |
+| Composer | Tạo code |
+| Editor | Chỉnh sửa text |
+| Navigation | Điều hướng file và symbol |
+| Terminal | Terminal tích hợp |
+| Git | Quản lý version control |
+
+<Aside>
+Template Cursor có gợi ý ngữ cảnh như "Focus vào panel chat trước" để giúp bạn hiểu workflow.
+</Aside>
+
+## Liên quan
+
+- [Phím tắt tùy chỉnh](/vi/configuration/custom-shortcuts/) — Hướng dẫn đầy đủ cú pháp
+- [Cấu hình](/vi/configuration/) — Tổng quan các tùy chọn config
+- [Bắt đầu](/vi/getting-started/) — Hướng dẫn cài đặt
+

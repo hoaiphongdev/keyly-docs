@@ -1,0 +1,130 @@
+---
+title: "Xử lý sự cố Keyly - Giải pháp từng bước"
+description: "Phím tắt không hiện? Không có quyền? Icon menu bar mất? Làm theo hướng dẫn từng bước để khắc phục nhanh."
+---
+
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+## Keyly không hiển thị phím tắt
+
+### Kiểm tra quyền Accessibility
+
+<Steps>
+1. Mở **System Settings**
+2. Vào **Privacy & Security → Accessibility**
+3. Đảm bảo **Keyly** có trong danh sách và đã **bật**
+4. Nếu không thấy, thử mở Keyly trước
+</Steps>
+
+<Aside type="caution">
+Sau khi bật quyền, có thể cần khởi động lại Keyly để thay đổi có hiệu lực.
+</Aside>
+
+### Khởi động lại Keyly
+
+<Steps>
+1. Click **biểu tượng ⌘** ở menu bar
+2. Chọn **Quit**
+3. Mở lại Keyly từ Applications
+</Steps>
+
+## Cửa sổ phím tắt không xuất hiện
+
+### Giữ ⌘ đủ lâu
+
+Bạn cần giữ phím Command **đủ 2 giây**. Bấm nhanh sẽ không kích hoạt overlay.
+
+### Kiểm tra app có menu bar không
+
+Một số app (đặc biệt game hoặc app toàn màn hình) có thể không hiển thị phím tắt qua menu bar. Keyly chỉ đọc được những gì Accessibility API có thể truy cập.
+
+## Thiếu một số phím tắt
+
+### Không phải tất cả đều phát hiện được
+
+Đây là giới hạn của macOS, không phải bug. Một số phím tắt là **nội bộ** — app xử lý trực tiếp mà không thông qua macOS.
+
+Ví dụ: `⌘P` (Quick Open) hay `⌘⇧P` (Command Palette) của VS Code là phím tắt nội bộ mà macOS không thể thấy.
+
+<Aside>
+Đọc thêm tại [Tại sao một số phím tắt không được phát hiện](/vi/resources/detection-limits/).
+</Aside>
+
+### Giải pháp: Dùng cấu hình tùy chỉnh
+
+Bạn có thể thêm phím tắt bị thiếu:
+
+1. **Dùng template** — Xem [Templates](/vi/configuration/templates/) để cài config có sẵn
+2. **Tự tạo** — Xem [Phím tắt tùy chỉnh](/vi/configuration/custom-shortcuts/)
+
+## Phím tắt tùy chỉnh không hoạt động
+
+### Kiểm tra vị trí file
+
+Đảm bảo file `.keyly` nằm trong:
+```
+~/.config/keyly/
+```
+
+### Kiểm tra đường dẫn App
+
+Header `# App:` phải trỏ đúng tới application bundle:
+
+```
+# App: /Applications/Safari.app
+```
+
+Tìm đường dẫn đúng:
+```bash
+ls /Applications/*.app
+```
+
+### Reload Keyly
+
+Sau khi sửa config, reload từ menu bar: **biểu tượng ⌘ → Reload**
+
+### Kiểm tra encoding file
+
+Đảm bảo file `.keyly` được lưu dạng **UTF-8** không có BOM.
+
+## Icon menu bar bị mất
+
+### Kiểm tra không gian menu bar
+
+Nếu có nhiều icon ở menu bar, icon Keyly có thể bị ẩn. Thử:
+- Giữ ⌘ và kéo các icon để sắp xếp lại
+- Dùng app như Bartender hoặc Hidden Bar để quản lý menu bar
+
+### Kiểm tra Keyly có đang chạy không
+
+Mở Activity Monitor và tìm "Keyly". Nếu không chạy, mở lại từ Applications.
+
+## App crash hoặc đơ
+
+### Kiểm tra phiên bản macOS
+
+Keyly yêu cầu **macOS 12.0 trở lên**. Kiểm tra:
+1. Click  → About This Mac
+2. Xem phiên bản macOS
+
+### Reset Keyly
+
+Xóa config và khởi động lại:
+```bash
+rm -rf ~/.config/keyly
+```
+
+Sau đó mở lại Keyly.
+
+## Vẫn còn vấn đề?
+
+1. Xem [Câu hỏi thường gặp](/vi/faq/)
+2. [Mở issue trên GitHub](https://github.com/hoaiphongdev/keyly/issues)
+
+## Liên quan
+
+- [Bắt đầu](/vi/getting-started/) — Hướng dẫn cài đặt
+- [Cấu hình](/vi/configuration/) — Tùy chỉnh Keyly
+- [FAQ](/vi/faq/) — Câu hỏi thường gặp
+- [Tại sao một số phím tắt không được phát hiện](/vi/resources/detection-limits/) — Giới hạn phát hiện
+

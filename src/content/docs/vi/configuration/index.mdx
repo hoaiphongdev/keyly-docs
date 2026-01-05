@@ -1,0 +1,57 @@
+---
+title: "Cấu hình Keyly - Phím tắt & Cài đặt tùy chỉnh"
+description: "Tùy biến Keyly với file .keyly. Thêm phím tắt riêng, cài template cộng đồng, và điều chỉnh app theo workflow của bạn."
+---
+
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
+
+Keyly có thể tùy chỉnh thông qua file cấu hình `.keyly` lưu trong `~/.config/keyly/`.
+
+## Vị trí Config
+
+Tất cả file phím tắt tùy chỉnh được lưu trong:
+
+```
+~/.config/keyly/
+```
+
+Mở nhanh thư mục này từ menu bar: **biểu tượng ⌘ → Open Config**
+
+## Bạn có thể cấu hình gì
+
+<CardGrid>
+  <LinkCard
+    title="Phím tắt tùy chỉnh"
+    description="Tạo file .keyly để thêm phím tắt riêng cho bất kỳ app nào"
+    href="/vi/configuration/custom-shortcuts/"
+  />
+  <LinkCard
+    title="Templates"
+    description="Cài template phím tắt từ cộng đồng cho các app phổ biến"
+    href="/vi/configuration/templates/"
+  />
+</CardGrid>
+
+## Cách hoạt động
+
+1. Tạo file `.keyly` trong `~/.config/keyly/`
+2. Định nghĩa phím tắt với danh mục và tổ hợp phím
+3. Keyly gộp phím tắt tùy chỉnh với phím tắt gốc của app
+4. Giữ ⌘ để xem tất cả cùng nhau
+
+## Ví dụ nhanh
+
+Tạo file `~/.config/keyly/safari.keyly`:
+
+```
+# Sheet Name: Safari Extras
+# App: /Applications/Safari.app
+
+[Navigation]
+CMD+L       Mở thanh địa chỉ
+CMD+T       Tab mới
+CMD+SHIFT+T Mở lại tab vừa đóng
+```
+
+Xem [Phím tắt tùy chỉnh](/vi/configuration/custom-shortcuts/) để biết đầy đủ cú pháp, hoặc cài [Templates](/vi/configuration/templates/) để dùng config có sẵn.
+

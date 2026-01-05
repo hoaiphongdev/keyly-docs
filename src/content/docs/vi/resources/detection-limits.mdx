@@ -1,0 +1,66 @@
+---
+title: "Tại sao một số phím tắt không được phát hiện trên macOS"
+description: "Một số phím tắt là nội bộ của app và macOS không thể thấy. Tìm hiểu tại sao và cách thêm phím tắt bị thiếu bằng file .keyly."
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Không phải mọi phím tắt trong ứng dụng đều có thể phát hiện được. Đây không phải bug — đây là cách macOS hoạt động.
+
+## Giải thích đơn giản
+
+macOS không quản lý tất cả phím tắt. Một số phím tắt là **nội bộ** — nghĩa là app xử lý trực tiếp trong code của nó, không thông qua hệ điều hành.
+
+Khi đó, macOS không nhận được thông tin gì về những phím bấm đó, nên Keyly đơn giản là không thể thấy hoặc phát hiện chúng.
+
+## Một ví dụ dễ hiểu
+
+Hãy tưởng tượng thế này:
+
+- **Phím tắt menu bar** (Open, Save, Copy,...) giống như thông báo công khai — macOS biết và có thể chia sẻ với Keyly.
+- **Phím tắt nội bộ** (command palette, đổi chế độ, chuyển view) giống như cuộc trò chuyện riêng trong app — macOS và Keyly không nhìn thấy được.
+
+Mỗi app có "ngôn ngữ bàn phím" riêng mà chỉ nó mới hiểu.
+
+## Ví dụ cụ thể
+
+| Loại | Ví dụ | Phát hiện được? |
+|------|-------|-----------------|
+| Phím tắt menu bar | `⌘S` Save, `⌘C` Copy, `⌘Q` Quit | ✅ Có |
+| Phím tắt hệ thống | `⌘Tab` Chuyển app, `⌘Space` Spotlight | ✅ Có |
+| Phím tắt nội bộ app | `⌘P` Command palette (VS Code), `⌘K` Quick actions | ❌ Thường không |
+| Chế độ tùy chỉnh app | Toggle sidebar, chuyển tab | ❌ Thường không |
+
+## Giải pháp: Cấu hình tùy chỉnh
+
+<Aside type="tip">
+Bạn có thể thêm bất kỳ phím tắt nào bằng file cấu hình `.keyly`!
+</Aside>
+
+Với những app có nhiều phím tắt nội bộ (như VS Code, Cursor, Figma), bạn có thể:
+
+1. **Dùng template cộng đồng** — Config có sẵn cho các app phổ biến
+   
+   Xem [Templates](/vi/configuration/templates/) để biết các config có sẵn.
+
+2. **Tự tạo** — Thêm phím tắt theo workflow của bạn
+   
+   Xem [Phím tắt tùy chỉnh](/vi/configuration/custom-shortcuts/) để tự tạo.
+
+Phím tắt tùy chỉnh sẽ hiển thị cùng với phím tắt được phát hiện trong overlay Keyly.
+
+## Tại sao điều này quan trọng
+
+Hiểu giới hạn này giúp bạn:
+
+- **Đặt kỳ vọng đúng** — Keyly hiển thị những gì macOS có thể truy cập
+- **Biết khi nào cần tạo config** — Nếu thiếu phím tắt, hãy thêm thủ công
+- **Đóng góp cho cộng đồng** — Chia sẻ config của bạn cho những app người khác dùng
+
+## Liên quan
+
+- [Cách Keyly đọc phím tắt](/vi/resources/shortcuts-database/)
+- [Phím tắt tùy chỉnh](/vi/configuration/custom-shortcuts/)
+- [Templates](/vi/configuration/templates/)
+- [Xử lý sự cố](/vi/troubleshooting/)
+
