@@ -79,6 +79,48 @@ Tìm đường dẫn đúng:
 ls /Applications/*.app
 ```
 
+## Template không hoạt động sau khi cài
+
+<Aside type="caution">
+Templates từ cộng đồng sử dụng đường dẫn app mặc định có thể không khớp với hệ thống của bạn.
+</Aside>
+
+### Đường dẫn App không khớp
+
+Lý do phổ biến nhất khiến template không hoạt động là **đường dẫn app khác** trên máy Mac của bạn. Điều này xảy ra vì:
+
+- **Cách cài đặt khác nhau** — App từ App Store vs tải trực tiếp có thể có tên bundle khác nhau
+- **Phiên bản khác nhau** — Một số app có thông tin version trong tên (ví dụ: `Cursor - Nightly.app`)
+- **Vị trí tùy chỉnh** — App cài trong `~/Applications/` thay vì `/Applications/`
+
+### Cách khắc phục
+
+<Steps>
+1. Mở file template trong `~/.config/keyly/`
+2. Tìm dòng `# App:` ở đầu file
+3. Cập nhật đường dẫn đúng với vị trí thực của app
+</Steps>
+
+Tìm đường dẫn đúng của app:
+```bash
+# Liệt kê app trong /Applications
+ls /Applications/*.app
+
+# Liệt kê app trong ~/Applications
+ls ~/Applications/*.app
+```
+
+Ví dụ:
+```keyly
+# Mặc định của template (có thể không hoạt động)
+# App: /Applications/Cursor.app
+
+# Đường dẫn thực trên máy bạn (cập nhật thành này)
+# App: /Applications/Cursor - Nightly.app
+```
+
+Sau khi cập nhật, reload Keyly: **biểu tượng ⌘ → Reload**
+
 ### Reload Keyly
 
 Sau khi sửa config, reload từ menu bar: **biểu tượng ⌘ → Reload**

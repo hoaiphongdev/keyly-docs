@@ -19,12 +19,42 @@ Lệnh này cài template Cursor IDE vào `~/.config/keyly/cursor.keyly`.
 
 ## Templates có sẵn
 
-| Template | Mô tả | Lệnh |
-|----------|-------|------|
-| `cursor` | Phím tắt Cursor IDE với gợi ý ngữ cảnh | `-t cursor` |
+Xem tất cả templates có sẵn trên GitHub:
+
+👉 **[Xem Tất Cả Templates](https://github.com/hoaiphongdev/keyly/tree/main/templates)**
 
 <Aside type="tip">
-Thêm nhiều template sắp tới! Muốn đóng góp? Xem [Tạo Template](#tạo-template) bên dưới.
+Muốn đóng góp template? Xem [Tạo Template](#tạo-template) bên dưới.
+</Aside>
+
+<Aside type="caution" title="Template Có Thể Không Hoạt Động Ngay">
+Một số template có thể không hoạt động ngay vì **đường dẫn app có thể khác** trên máy Mac của bạn.
+
+Vị trí app có thể khác do:
+- Cách cài đặt khác nhau (App Store vs tải trực tiếp)
+- Phiên bản mới thay đổi tên app bundle
+- Đường dẫn cài đặt tùy chỉnh
+
+**Nếu template không hoạt động sau khi cài:**
+1. Mở file `.keyly` trong `~/.config/keyly/`
+2. Tìm dòng `# App:` ở đầu file
+3. Cập nhật đường dẫn đúng với vị trí thực của app
+
+```bash
+# Tìm đường dẫn đúng của app
+ls /Applications/*.app
+# Hoặc với app cài trong thư mục user
+ls ~/Applications/*.app
+```
+
+Ví dụ sửa:
+```keyly
+# Trước (mặc định của template)
+# App: /Applications/Cursor.app
+
+# Sau (đường dẫn thực trên máy bạn)
+# App: /Applications/Cursor - Nightly.app
+```
 </Aside>
 
 ## Tùy chọn cài đặt
@@ -115,23 +145,6 @@ Muốn tạo template cho app yêu thích của bạn?
 - Bao gồm các phím tắt thường dùng
 - Test với app thực tế
 - Đặt tên theo convention: `tên-app.keyly`
-
-## Template Cursor IDE
-
-Template Cursor bao gồm phím tắt theo workflow:
-
-| Danh mục | Mô tả |
-|----------|-------|
-| Chat | Tương tác AI chat |
-| Composer | Tạo code |
-| Editor | Chỉnh sửa text |
-| Navigation | Điều hướng file và symbol |
-| Terminal | Terminal tích hợp |
-| Git | Quản lý version control |
-
-<Aside>
-Template Cursor có gợi ý ngữ cảnh như "Focus vào panel chat trước" để giúp bạn hiểu workflow.
-</Aside>
 
 ## Liên quan
 

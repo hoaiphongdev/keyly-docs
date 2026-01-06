@@ -59,6 +59,17 @@ Each `.keyly` file should target one app (specified in the `# App:` header). Cre
 
 Click the **⌘ icon** in the menu bar and select **Reload**.
 
+### Why doesn't the template work after installation?
+
+Templates use default app paths that may not match your system. The app path can differ due to:
+- Different installation methods (App Store vs direct download)
+- Version-specific bundle names (e.g., `Cursor - Nightly.app`)
+- Custom installation locations (`~/Applications/`)
+
+**Fix:** Open the `.keyly` file in `~/.config/keyly/`, find the `# App:` line, and update it to your app's actual path.
+
+See [Troubleshooting → Template Not Working](/troubleshooting/#template-not-working-after-installation) for detailed steps.
+
 ## Comparison
 
 ### How is Keyly different from CheatSheet?
@@ -178,6 +189,14 @@ Please [open an issue on GitHub](https://github.com/hoaiphongdev/keyly/issues).
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "Keyly is inspired by CheatSheet but reimplemented in Swift. It adds custom shortcut configs via .keyly files, community templates for popular apps, category descriptions with contextual hints, includes a settings menu, and is open source."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why doesn't the template work after installation?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Templates use default app paths that may not match your system. The app path can differ due to different installation methods, version-specific bundle names, or custom installation locations. Open the .keyly file and update the # App: line to your app's actual path."
       }
     }
   ]

@@ -19,12 +19,42 @@ This installs the Cursor IDE template to `~/.config/keyly/cursor.keyly`.
 
 ## Available Templates
 
-| Template | Description | Command |
-|----------|-------------|---------|
-| `cursor` | Cursor IDE shortcuts with contextual hints | `-t cursor` |
+Browse all available templates on GitHub:
+
+👉 **[View All Templates](https://github.com/hoaiphongdev/keyly/tree/main/templates)**
 
 <Aside type="tip">
-More templates coming soon! Want to contribute? See [Creating Templates](#creating-templates) below.
+Want to contribute a template? See [Creating Templates](#creating-templates) below.
+</Aside>
+
+<Aside type="caution" title="Template May Not Work Out of the Box">
+Some templates may not work immediately because the **app path might be different** on your Mac.
+
+App locations can vary due to:
+- Different installation methods (App Store vs direct download)
+- Version updates that change the app bundle name
+- Custom installation paths
+
+**If a template doesn't work after installation:**
+1. Open the `.keyly` file in `~/.config/keyly/`
+2. Find the `# App:` line at the top
+3. Update it to match your app's actual location
+
+```bash
+# Find your app's correct path
+ls /Applications/*.app
+# Or for user-installed apps
+ls ~/Applications/*.app
+```
+
+Example fix:
+```keyly
+# Before (template default)
+# App: /Applications/Cursor.app
+
+# After (your actual path)
+# App: /Applications/Cursor - Nightly.app
+```
 </Aside>
 
 ## Template Installer Options
@@ -115,23 +145,6 @@ Want to create a template for your favorite app?
 - Include commonly used shortcuts
 - Test with the actual application
 - Follow the naming convention: `appname.keyly`
-
-## Cursor IDE Template
-
-The Cursor template includes shortcuts organized by workflow:
-
-| Category | Description |
-|----------|-------------|
-| Chat | AI chat interactions |
-| Composer | Code generation |
-| Editor | Text editing |
-| Navigation | File and symbol navigation |
-| Terminal | Integrated terminal |
-| Git | Version control |
-
-<Aside>
-The Cursor template includes contextual hints like "Focus on chat panel first" to help you understand the workflow.
-</Aside>
 
 ## Related
 

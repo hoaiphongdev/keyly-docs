@@ -79,6 +79,48 @@ Find the correct path:
 ls /Applications/*.app
 ```
 
+## Template Not Working After Installation
+
+<Aside type="caution">
+Templates from the community use default app paths that may not match your system.
+</Aside>
+
+### App Path Mismatch
+
+The most common reason a template doesn't work is that the **app path is different** on your Mac. This happens because:
+
+- **Different installation methods** — App Store apps vs direct downloads may have different bundle names
+- **Version variations** — Some apps include version info in their name (e.g., `Cursor - Nightly.app`)
+- **Custom locations** — Apps installed in `~/Applications/` instead of `/Applications/`
+
+### How to Fix
+
+<Steps>
+1. Open the template file in `~/.config/keyly/`
+2. Find the `# App:` line at the top of the file
+3. Update it to match your app's actual path
+</Steps>
+
+Find your app's correct path:
+```bash
+# List apps in /Applications
+ls /Applications/*.app
+
+# List apps in ~/Applications
+ls ~/Applications/*.app
+```
+
+Example:
+```keyly
+# Template default (might not work)
+# App: /Applications/Cursor.app
+
+# Your actual path (update to this)
+# App: /Applications/Cursor - Nightly.app
+```
+
+After updating, reload Keyly: **⌘ icon → Reload**
+
 ### Reload Keyly
 
 After editing config files, reload from the menu bar: **⌘ icon → Reload**

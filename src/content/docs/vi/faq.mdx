@@ -59,6 +59,17 @@ Mỗi file `.keyly` nên dành cho một app (định nghĩa trong header `# App
 
 Click **biểu tượng ⌘** ở menu bar và chọn **Reload**.
 
+### Tại sao template không hoạt động sau khi cài?
+
+Templates sử dụng đường dẫn app mặc định có thể không khớp với hệ thống của bạn. Đường dẫn app có thể khác do:
+- Cách cài đặt khác nhau (App Store vs tải trực tiếp)
+- Tên bundle theo phiên bản (ví dụ: `Cursor - Nightly.app`)
+- Vị trí cài đặt tùy chỉnh (`~/Applications/`)
+
+**Cách sửa:** Mở file `.keyly` trong `~/.config/keyly/`, tìm dòng `# App:`, và cập nhật đường dẫn đúng với vị trí thực của app.
+
+Xem chi tiết tại [Xử lý sự cố → Template không hoạt động](/vi/troubleshooting/#template-không-hoạt-động-sau-khi-cài).
+
 ## So sánh
 
 ### Keyly khác CheatSheet chỗ nào?
@@ -178,6 +189,14 @@ Vui lòng [mở issue trên GitHub](https://github.com/hoaiphongdev/keyly/issues
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "Keyly lấy cảm hứng từ CheatSheet nhưng viết lại bằng Swift. Có thêm cấu hình phím tắt qua file .keyly, template cộng đồng cho các app phổ biến, mô tả danh mục với gợi ý ngữ cảnh, có menu cài đặt, và là mã nguồn mở."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Tại sao template không hoạt động sau khi cài?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Templates sử dụng đường dẫn app mặc định có thể không khớp với hệ thống của bạn. Đường dẫn app có thể khác do cách cài đặt, tên bundle theo phiên bản, hoặc vị trí cài đặt tùy chỉnh. Mở file .keyly và cập nhật dòng # App: với đường dẫn thực của app."
       }
     }
   ]
