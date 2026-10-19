@@ -8,6 +8,8 @@ install:
     @rm -rf node_modules && bun install
     @echo "\033[1;32m✓ Done!\033[0m"
 
+alias run := dev
+
 # Run development server
 dev:
     @echo "\033[1;35m🚀 Starting dev server...\033[0m"
