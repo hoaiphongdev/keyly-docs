@@ -16,7 +16,7 @@ macOS 12.0 (Monterey) trở lên.
 ### Keyly có an toàn không? Tại sao cần quyền Accessibility?
 
 Keyly cần quyền Accessibility để:
-1. **Phát hiện khi bạn giữ ⌘** — để hiện overlay phím tắt
+1. **Phát hiện khi bạn nhấn đúp ⇪ Caps Lock** — để hiện overlay phím tắt
 2. **Đọc menu bar** — để lấy phím tắt từ các app khác
 
 Keyly không ghi lại phím bấm, không gửi dữ liệu đi đâu, không truy cập gì ngoài những gì cần thiết để hiển thị phím tắt.
@@ -25,7 +25,7 @@ Keyly không ghi lại phím bấm, không gửi dữ liệu đi đâu, không t
 
 ### Làm sao để hiện overlay phím tắt?
 
-Giữ phím **⌘ Command** trong 2 giây. Thả ra để ẩn.
+Nhấn đúp phím **⇪ Caps Lock**. Bấm **ESC** hoặc click ra ngoài để ẩn.
 
 ### Tại sao một số app không hiển thị đầy đủ phím tắt?
 
@@ -39,7 +39,7 @@ Xem chi tiết tại [Tại sao một số phím tắt không được phát hi�
 
 ### Có thể đổi phím kích hoạt hoặc thời gian giữ không?
 
-Hiện tại Keyly dùng cố định 2 giây giữ phím ⌘. Thời gian này được chọn để kích hoạt có chủ đích, tránh bấm nhầm.
+Có. Sửa file `~/.config/keyly/setting.conf`: đặt `super_key` (vd `cmd`, `alt`, `ctrl+alt`) và `trigger_type` (`hold` hoặc `press`), kèm `hold_duration` hoặc `press_count`. Mặc định là nhấn đúp Caps Lock vì phím này hầu như không đụng phím tắt nào khác.
 
 ### Keyly có hoạt động với app không có menu bar không?
 
@@ -124,7 +124,7 @@ Vui lòng [mở issue trên GitHub](https://github.com/hoaiphongdev/keyly/issues
       "name": "Keyly có an toàn không? Tại sao cần quyền Accessibility?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Keyly cần quyền Accessibility để: 1) Phát hiện khi bạn giữ ⌘ để hiện overlay phím tắt, 2) Đọc menu bar để lấy phím tắt từ các app khác. Keyly không ghi lại phím bấm, không gửi dữ liệu đi đâu."
+        "text": "Keyly cần quyền Accessibility để: 1) Phát hiện khi bạn nhấn đúp Caps Lock để hiện overlay phím tắt, 2) Đọc menu bar để lấy phím tắt từ các app khác. Keyly không ghi lại phím bấm, không gửi dữ liệu đi đâu."
       }
     },
     {
@@ -132,7 +132,7 @@ Vui lòng [mở issue trên GitHub](https://github.com/hoaiphongdev/keyly/issues
       "name": "Làm sao để hiện overlay phím tắt?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Giữ phím ⌘ Command trong 2 giây. Thả ra để ẩn."
+        "text": "Nhấn đúp phím ⇪ Caps Lock. Bấm ESC hoặc click ra ngoài để ẩn."
       }
     },
     {
@@ -148,7 +148,7 @@ Vui lòng [mở issue trên GitHub](https://github.com/hoaiphongdev/keyly/issues
       "name": "Có thể đổi phím kích hoạt hoặc thời gian giữ không?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Hiện tại Keyly dùng cố định 2 giây giữ phím ⌘. Thời gian này được chọn để kích hoạt có chủ đích, tránh bấm nhầm."
+        "text": "Có. Sửa file ~/.config/keyly/setting.conf: đặt super_key (vd cmd, alt, ctrl+alt) và trigger_type (hold hoặc press), kèm hold_duration hoặc press_count. Mặc định là nhấn đúp Caps Lock vì phím này hầu như không đụng phím tắt nào khác."
       }
     },
     {
