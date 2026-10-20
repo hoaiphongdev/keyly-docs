@@ -548,6 +548,10 @@ mobile-starlight-toc .dropdown {
   gap: 0;
   border: 1px solid var(--kc-line);
 }
+/* No prev/next (e.g. the homepage): drop the empty bordered box */
+.pagination-links:not(:has(a)) {
+  display: none;
+}
 .pagination-links > a {
   border: 0;
   border-radius: 0;
