@@ -48,11 +48,11 @@ import example2 from '../../../assets/images/example-2.png';
     width: 90%;
     max-width: 1000px;
     margin: 0;
-    border-radius: 16px;
+    border-radius: 0;
     overflow: hidden;
-    background: var(--sl-color-gray-6);
-    border: 2px solid var(--sl-color-gray-5);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    background: var(--kc-sunken);
+    border: 1px solid var(--kc-line-strong);
+    box-shadow: 0 24px 48px -16px rgb(0 0 0 / 0.45);
     cursor: pointer;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     transform-origin: center center;
@@ -78,7 +78,7 @@ import example2 from '../../../assets/images/example-2.png';
   .stack-card.active {
     z-index: 10 !important;
     transform: translate(-50%, -50%) rotate(0deg) scale(1.02) !important;
-    box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 32px 64px -20px rgb(0 0 0 / 0.55), 0 0 48px -12px var(--kc-glow);
     border-color: var(--sl-color-accent);
   }
   

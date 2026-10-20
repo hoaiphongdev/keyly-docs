@@ -1,0 +1,73 @@
+---
+import { Icon } from '@astrojs/starlight/components';
+
+const label = Astro.locals.t('themeSelect.accessibleLabel');
+---
+
+<kc-theme-toggle>
+	<button type="button" aria-label={label} title={label}>
+		<Icon name="sun" class="sun" size="1rem" />
+		<Icon name="moon" class="moon" size="1rem" />
+	</button>
+</kc-theme-toggle>
+
+<script>
+	// Same storage key and data-theme attribute as Starlight's ThemeProvider,
+	// so its inline FOUC script keeps applying the saved choice on load.
+	const storageKey = 'starlight-theme';
+
+	class KcThemeToggle extends HTMLElement {
+		constructor() {
+			super();
+			this.querySelector('button')?.addEventListener('click', () => {
+				const root = document.documentElement;
+				const next = root.dataset.theme === 'light' ? 'dark' : 'light';
+				root.classList.add('kc-theme-anim');
+				root.dataset.theme = next;
+				try {
+					localStorage.setItem(storageKey, next);
+				} catch {}
+				setTimeout(() => root.classList.remove('kc-theme-anim'), 320);
+			});
+		}
+	}
+	customElements.define('kc-theme-toggle', KcThemeToggle);
+</script>
+
+<style>
+	kc-theme-toggle {
+		display: flex;
+	}
+	button {
+		display: grid;
+		place-items: center;
+		width: 2rem;
+		height: 2rem;
+		padding: 0;
+		border: 1px solid var(--kc-line);
+		background: transparent;
+		color: var(--kc-muted);
+		cursor: pointer;
+		transition:
+			border-color 150ms ease,
+			color 150ms ease,
+			background-color 150ms ease;
+	}
+	button:hover {
+		border-color: var(--kc-line-strong);
+		background: var(--kc-raised);
+		color: var(--kc-ink);
+	}
+	button > :global(svg) {
+		grid-area: 1 / 1;
+		transition:
+			opacity 200ms ease,
+			transform 300ms var(--kc-ease);
+	}
+	/* Show the icon for the theme you would switch to */
+	:global(:root[data-theme='dark']) .moon,
+	:global(:root[data-theme='light']) .sun {
+		opacity: 0;
+		transform: rotate(-90deg) scale(0.6);
+	}
+</style>

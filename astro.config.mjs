@@ -1,6 +1,5 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
-import starlightThemeObsidian from "starlight-theme-obsidian";
 import starlightLinksValidator from "starlight-links-validator";
 import sitemapRename from "./src/integrations/sitemap-rename";
 
@@ -31,12 +30,34 @@ export default defineConfig({
       editLink: {
         baseUrl: "https://github.com/hoaiphongdev/keyly/edit/main/docs/",
       },
-      customCss: ["./src/styles/global.css"],
+      customCss: ["./src/styles/fonts.css", "./src/styles/theme.css", "./src/styles/global.css"],
+      expressiveCode: {
+        styleOverrides: {
+          borderRadius: "0",
+          borderColor: "var(--kc-line)",
+          codeFontFamily: "var(--sl-font-mono)",
+          uiFontFamily: "var(--sl-font-mono)",
+          codeBackground: "var(--kc-sunken)",
+          frames: {
+            frameBoxShadowCssValue: "none",
+            editorTabBarBackground: "var(--kc-raised)",
+            editorActiveTabBackground: "var(--kc-sunken)",
+            editorActiveTabIndicatorTopColor: "var(--sl-color-accent)",
+            editorActiveTabIndicatorBottomColor: "transparent",
+            editorTabBarBorderBottomColor: "var(--kc-line)",
+            terminalTitlebarBackground: "var(--kc-raised)",
+            terminalTitlebarBorderBottomColor: "var(--kc-line)",
+            terminalTitlebarForeground: "var(--kc-muted)",
+            terminalBackground: "var(--kc-sunken)",
+            inlineButtonBorder: "var(--kc-line)",
+            tooltipSuccessBackground: "var(--sl-color-accent)",
+          },
+        },
+      },
       plugins: [
         starlightLinksValidator({
           errorOnInvalidHashes: false,
-      }),
-        starlightThemeObsidian({ overrideWarnings: true }),
+        }),
       ],
       favicon: "./favicon.svg",
       sidebar: [
@@ -71,6 +92,8 @@ export default defineConfig({
         Head: "./src/overrides/Head.astro",
         LanguageSelect: "./src/overrides/LanguageSelect.astro",
         Search: "./src/overrides/Search.astro",
+        ThemeSelect: "./src/overrides/ThemeSelect.astro",
+        Hero: "./src/overrides/Hero.astro",
       },
     }),
     sitemapRename(),

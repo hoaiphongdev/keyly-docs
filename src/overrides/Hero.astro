@@ -1,0 +1,267 @@
+---
+import { Image } from 'astro:assets';
+import { LinkButton } from '@astrojs/starlight/components';
+
+const { data } = Astro.locals.starlightRoute.entry;
+const { title = data.title, tagline, image, actions = [] } = data.hero || {};
+const isVi = Astro.locals.starlightRoute.locale === 'vi';
+
+// Set the closing phrase of the title in the accent face. Instrument Serif has no
+// Vietnamese glyphs, so the VI title uses Archivo italic instead.
+const accent = isVi ? 'Tức Thì' : 'Instantly';
+const escape = (s: string) =>
+	s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const titleHtml = escape(title).replace(
+	escape(accent),
+	`<em class="${isVi ? 'kc-italic' : 'kc-serif'}">${escape(accent)}</em>`
+);
+
+const bar = isVi
+	? ['00 / Keyly', 'macOS 12+ · Miễn phí & mã nguồn mở']
+	: ['00 / Keyly', 'macOS 12+ · Free & open source'];
+
+const ticker = isVi
+	? ['Nhấn đúp Caps Lock', 'Phím tắt tức thì', 'Phím tắt thật từ menu', 'Cấu hình tùy chỉnh', 'Giao diện hiện đại', 'Mã nguồn mở']
+	: ['Double-tap Caps Lock', 'Instant Shortcuts', 'Real Menu Shortcuts', 'Custom Configs', 'Modern UI', 'Open source'];
+
+const logo = image && 'file' in image ? image.file : image && 'dark' in image ? image.dark : undefined;
+---
+
+<div class="kc-hero not-content">
+	<div class="bar kc-label">
+		<span>{bar[0]}</span>
+		<span class="bar-right">{bar[1]}</span>
+	</div>
+
+	<div class="body">
+		<div class="copy">
+			<h1 id="_top" data-page-title set:html={titleHtml} />
+			{tagline && <p class="tagline" set:html={tagline} />}
+			{
+				actions.length > 0 && (
+					<div class="actions">
+						{actions.map(
+							({ attrs: { class: className, ...attrs } = {}, icon, link: href, text, variant }) => (
+								<LinkButton {href} {variant} icon={icon?.name} class:list={[className]} {...attrs}>
+									{text}
+									{icon?.html && <Fragment set:html={icon.html} />}
+								</LinkButton>
+							)
+						)}
+					</div>
+				)
+			}
+		</div>
+
+		{
+			logo && (
+				<figure class="art">
+					<span class="tick tl" />
+					<span class="tick tr" />
+					<span class="tick bl" />
+					<span class="tick br" />
+					<Image src={logo} alt={image?.alt || ''} width={320} height={320} loading="eager" />
+					<figcaption class="kc-label">Fig. 01 — Keyly</figcaption>
+				</figure>
+			)
+		}
+	</div>
+
+	<div class="ticker kc-label" aria-hidden="true">
+		<div class="track">
+			{
+				[0, 1].map(() => (
+					<ul>
+						{ticker.map((item) => (
+							<li>{item}</li>
+						))}
+					</ul>
+				))
+			}
+		</div>
+	</div>
+</div>
+
+<style>
+	.kc-hero {
+		margin-inline: calc(-1 * clamp(1rem, 4vw, 2.5rem));
+		border-bottom: 1px solid var(--kc-line);
+	}
+
+	.bar {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 0.75rem clamp(1rem, 4vw, 2.5rem);
+		border-bottom: 1px solid var(--kc-line);
+		color: var(--kc-muted);
+	}
+
+	.body {
+		display: grid;
+		gap: 2.5rem;
+		align-items: center;
+		padding: clamp(2.5rem, 8vw, 6rem) clamp(1rem, 4vw, 2.5rem);
+	}
+
+	.copy {
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+		min-width: 0;
+	}
+
+	h1 {
+		margin: 0;
+		max-width: 16ch;
+		font-family: var(--kc-font-display);
+		font-size: clamp(2.5rem, 1.6rem + 3.6vw, 4.25rem);
+		font-weight: 620;
+		letter-spacing: -0.035em;
+		line-height: 1.02;
+		color: var(--kc-ink-strong);
+		text-wrap: balance;
+		animation: kc-rise 600ms var(--kc-ease) both;
+	}
+	h1 :global(em) {
+		font-style: italic;
+	}
+	h1 :global(.kc-serif) {
+		font-size: 1.08em;
+		letter-spacing: -0.01em;
+		color: var(--sl-color-accent-high);
+	}
+	h1 :global(.kc-italic) {
+		font-weight: 520;
+		color: var(--sl-color-accent-high);
+	}
+
+	.tagline {
+		margin: 0;
+		max-width: 46ch;
+		font-size: clamp(1rem, 0.9rem + 0.4vw, 1.1875rem);
+		line-height: 1.6;
+		color: var(--sl-color-gray-2);
+		animation: kc-rise 600ms 80ms var(--kc-ease) both;
+	}
+
+	.actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+		margin-top: 0.5rem;
+		animation: kc-rise 600ms 160ms var(--kc-ease) both;
+	}
+
+	.art {
+		position: relative;
+		display: grid;
+		place-items: center;
+		width: min(100%, 22rem);
+		aspect-ratio: 1;
+		margin: 0 auto;
+		border: 1px solid var(--kc-line);
+		background:
+			radial-gradient(closest-side, var(--kc-glow), transparent),
+			repeating-linear-gradient(90deg, var(--kc-line) 0 1px, transparent 1px 2.75rem),
+			repeating-linear-gradient(0deg, var(--kc-line) 0 1px, transparent 1px 2.75rem);
+		background-color: var(--kc-sunken);
+		animation: kc-fade 900ms 120ms ease both;
+	}
+	.art img {
+		width: 62%;
+		height: auto;
+		filter: drop-shadow(0 0 2.5rem var(--kc-glow));
+	}
+	.art figcaption {
+		position: absolute;
+		inset-inline: 0;
+		bottom: 0;
+		padding: 0.5rem 0.75rem;
+		border-top: 1px solid var(--kc-line);
+		background: var(--kc-bg);
+		color: var(--kc-faint);
+	}
+	.tick {
+		position: absolute;
+		width: 0.625rem;
+		height: 0.625rem;
+		border-color: var(--sl-color-accent);
+		border-style: solid;
+		border-width: 0;
+	}
+	.tl { top: -1px; left: -1px; border-top-width: 1px; border-left-width: 1px; }
+	.tr { top: -1px; right: -1px; border-top-width: 1px; border-right-width: 1px; }
+	.bl { bottom: -1px; left: -1px; border-bottom-width: 1px; border-left-width: 1px; }
+	.br { bottom: -1px; right: -1px; border-bottom-width: 1px; border-right-width: 1px; }
+
+	/* Feature strip, scrolling like the reference's marquee */
+	.ticker {
+		overflow: hidden;
+		border-top: 1px solid var(--kc-line);
+		color: var(--kc-muted);
+		mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+	}
+	.track {
+		display: flex;
+		width: max-content;
+		animation: kc-marquee 40s linear infinite;
+	}
+	.ticker ul {
+		display: flex;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.ticker li {
+		display: flex;
+		align-items: center;
+		gap: 2.5rem;
+		padding: 0.75rem 0 0.75rem 2.5rem;
+		white-space: nowrap;
+	}
+	.ticker li::after {
+		content: '';
+		width: 4px;
+		height: 4px;
+		background: var(--sl-color-accent);
+	}
+
+	@media (min-width: 50rem) {
+		.body {
+			grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+			gap: clamp(2rem, 5vw, 4rem);
+		}
+	}
+	@media (max-width: 50rem) {
+		.kc-hero {
+			margin-inline: calc(-1 * var(--sl-content-pad-x));
+		}
+		.bar-right {
+			display: none;
+		}
+	}
+
+	@keyframes kc-rise {
+		from {
+			opacity: 0;
+			transform: translateY(12px);
+		}
+	}
+	@keyframes kc-fade {
+		from {
+			opacity: 0;
+		}
+	}
+	@keyframes kc-marquee {
+		to {
+			transform: translateX(-50%);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.track {
+			animation: none;
+		}
+	}
+</style>
