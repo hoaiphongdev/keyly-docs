@@ -2,6 +2,7 @@ import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import starlightLinksValidator from "starlight-links-validator";
 import sitemapRename from "./src/integrations/sitemap-rename";
+import rehypeKeycaps from "./src/plugins/rehype-keycaps.mjs";
 
 export default defineConfig({
   site: "https://keyly-docs.com",
@@ -102,5 +103,8 @@ export default defineConfig({
     }),
     sitemapRename(),
   ],
+  markdown: {
+    rehypePlugins: [rehypeKeycaps],
+  },
   devToolbar: { enabled: false },
 });

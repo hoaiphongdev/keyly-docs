@@ -305,6 +305,42 @@ h1#_top {
   color: var(--kc-muted);
 }
 
+/* Keycaps for inline shortcuts (src/plugins/rehype-keycaps.mjs) */
+/* Starlight adds margin-top to adjacent block-ish siblings; keycaps are inline */
+.sl-markdown-content kbd.kc-keys,
+.sl-markdown-content kbd.kc-keys kbd {
+  margin: 0;
+}
+.sl-markdown-content kbd.kc-keys {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  gap: 0.2em;
+  vertical-align: 0.05em;
+  font: inherit;
+}
+.sl-markdown-content kbd.kc-keys kbd {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.6em;
+  height: 1.6em;
+  padding: 0 0.4em;
+  border: 1px solid var(--kc-line-strong);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  background: var(--kc-raised);
+  font-family: var(--kc-font-display);
+  font-size: 0.8em;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--kc-ink-strong);
+  white-space: nowrap;
+}
+th kbd.kc-keys kbd {
+  letter-spacing: 0;
+  text-transform: none;
+}
+
 /* ---------- Components ---------- */
 
 /* Asides: hairline box, thin coloured rule, mono title */
