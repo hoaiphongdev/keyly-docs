@@ -110,5 +110,14 @@ export default defineConfig({
   markdown: {
     rehypePlugins: [rehypeKeycaps],
   },
+  // Inline CSS into each page: removes the render-blocking stylesheet round trip on first load
+  build: { inlineStylesheets: "always" },
+  vite: {
+    build: {
+      // Never base64 fonts into CSS: with inlined stylesheets every page would carry all of them,
+      // while as files the browser only fetches the unicode-range subsets a page actually uses
+      assetsInlineLimit: (file) => (/\.(woff2?|ttf|otf)$/.test(file) ? false : undefined),
+    },
+  },
   devToolbar: { enabled: false },
 });

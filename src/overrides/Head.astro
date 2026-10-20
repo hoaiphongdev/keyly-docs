@@ -1,6 +1,9 @@
 ---
 import Default from '@astrojs/starlight/components/Head.astro';
 import keylyOgImage from '../assets/keyly.png';
+// Same files fonts.css pulls in, so these preloads hit the hashed URLs the CSS uses
+import interLatin from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import archivoLatin from '@fontsource-variable/archivo/files/archivo-latin-wght-normal.woff2?url';
 
 const isHomepage = Astro.locals.starlightRoute.id === 'index.mdx' || Astro.locals.starlightRoute.id === 'vi/index.mdx';
 
@@ -116,6 +119,12 @@ const webSiteSchema = {
 };
 ---
 <Default><slot /></Default>
+{/* Body and heading fonts are on every page's first paint; fetch them alongside the HTML */}
+{
+	[interLatin, archivoLatin].map((href) => (
+		<link rel="preload" href={href} as="font" type="font/woff2" crossorigin />
+	))
+}
 <meta name="robots" content="index, follow" />
 <meta property="og:image" content={ogImageUrl} />
 <meta property="og:image:width" content="1200" />

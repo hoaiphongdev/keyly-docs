@@ -32,7 +32,9 @@ const isVi = Astro.locals.starlightRoute.locale === 'vi';
 	}
 	a {
 		color: var(--kc-muted);
-		text-decoration: none;
+		text-decoration: underline;
+		text-decoration-color: var(--kc-line-strong);
+		text-underline-offset: 0.25em;
 		transition: color 150ms ease;
 	}
 	a:hover {

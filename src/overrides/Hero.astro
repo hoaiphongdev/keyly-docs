@@ -70,7 +70,7 @@ const rawHtml = image && 'html' in image ? image.html : undefined;
 		}
 
 		{/* Opens the KeylyDemo window; double-tapping Caps Lock does the same */}
-		<button type="button" class="eyebrow kc-label" aria-label={tryLabel} onclick="dispatchEvent(new Event('keyly:demo'))">
+		<button type="button" class="eyebrow kc-label" title={tryLabel} onclick="dispatchEvent(new Event('keyly:demo'))">
 			<span>{eyebrow}</span>
 			<kbd>⇪</kbd>
 			<kbd>⇪</kbd>
@@ -102,8 +102,9 @@ const rawHtml = image && 'html' in image ? image.html : undefined;
 	</div>
 
 	<div class="ticker kc-label" aria-hidden="true">
-		<div class="track">
+		<div class="track" data-marquee>
 			{
+				// Two identical halves (the animation shifts by -50%); DocsMotion repeats them to fill wide screens
 				[0, 1].map(() => (
 					<ul>
 						{ticker.map((item) => (

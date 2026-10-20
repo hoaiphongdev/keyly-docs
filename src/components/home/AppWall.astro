@@ -17,15 +17,29 @@ const rows = [0, 1, 2].map((r) => apps.filter((_, i) => i % 3 === r));
 		<span class="kc-label kh-caption">{t.caption}</span>
 	</div>
 
+	{/* Each logo path is emitted once here; tiles (and their marquee clones) reference it with <use> */}
+	<svg class="sprite" aria-hidden="true">
+		{
+			apps.map((app, i) =>
+				app.path ? (
+					<symbol id={`kw-${i}`} viewBox={app.viewBox ?? '0 0 24 24'}>
+						<path d={app.path} />
+					</symbol>
+				) : null
+			)
+		}
+	</svg>
+
 	<div class="rows">
 		{
 			rows.map((row, r) => (
 				<div class:list={['row', { reverse: r === 1 }]}>
-					<div class="track">
+					<div class="track" data-marquee>
+						{/* Two identical halves (shifted by -50%); DocsMotion repeats them to fill wide screens */}
 						{[0, 1].map((copyIndex) =>
 							row.map((app) => {
 								const index = apps.indexOf(app);
-								const hidden = copyIndex === 1;
+								const hidden = copyIndex > 0;
 								const Tag = app.template ? 'a' : 'span';
 								return (
 									<Tag
@@ -41,8 +55,8 @@ const rows = [0, 1, 2].map((r) => apps.filter((_, i) => i % 3 === r));
 										aria-label={`${app.name}: ${app.action} ${app.keys}`}
 									>
 										{app.path ? (
-											<svg viewBox={app.viewBox ?? '0 0 24 24'} aria-hidden="true">
-												<path d={app.path} />
+											<svg aria-hidden="true">
+												<use href={`#kw-${index}`} />
 											</svg>
 										) : (
 											<span class="mono">{app.monogram}</span>
@@ -122,7 +136,8 @@ const rows = [0, 1, 2].map((r) => apps.filter((_, i) => i % 3 === r));
 					})
 				)
 			);
-			tiles.forEach((tile) => tile.classList.toggle('lit', tile.dataset.app === String(i)));
+			// Live query: the marquee helper may have cloned tiles after this script ran
+			root.querySelectorAll<HTMLElement>('.tile').forEach((tile) => tile.classList.toggle('lit', tile.dataset.app === String(i)));
 			root.querySelector('.readout')?.animate([{ opacity: 0.4 }, { opacity: 1 }], { duration: 250 });
 		};
 
@@ -131,7 +146,7 @@ const rows = [0, 1, 2].map((r) => apps.filter((_, i) => i % 3 === r));
 		const LUMIN_HITS = 4;
 		const rowsEl = root.querySelector<HTMLElement>('.rows')!;
 		const lumin = apps.findIndex((app) => app.name === 'Lumin');
-		const luminTiles = tiles.filter((tile) => tile.dataset.app === String(lumin));
+
 		let luminHits = 0;
 		let ticks = 0;
 		let cursor = 0;
@@ -139,7 +154,7 @@ const rows = [0, 1, 2].map((r) => apps.filter((_, i) => i % 3 === r));
 		const luminInView = () => {
 			const box = rowsEl.getBoundingClientRect();
 			const inset = box.width * 0.1;
-			return luminTiles.some((tile) => {
+			return [...root.querySelectorAll<HTMLElement>(`.tile[data-app="${lumin}"]`)].some((tile) => {
 				const r = tile.getBoundingClientRect();
 				return r.left >= box.left + inset && r.right <= box.right - inset;
 			});
@@ -184,16 +199,21 @@ const rows = [0, 1, 2].map((r) => apps.filter((_, i) => i % 3 === r));
 			rowsEl.addEventListener('pointerleave', () => easeRate(1));
 		}
 
-		tiles.forEach((tile) => {
-			const pick = () => {
-				hovering = true;
-				select(Number(tile.dataset.app));
-			};
-			tile.addEventListener('pointerenter', pick);
-			tile.addEventListener('focus', pick);
-			tile.addEventListener('pointerleave', () => (hovering = false));
-			tile.addEventListener('blur', () => (hovering = false));
-		});
+		// Delegated, so cloned tiles respond too
+		const tileFrom = (target: EventTarget | null) => (target as Element | null)?.closest<HTMLElement>('.tile');
+		const pick = (event: Event) => {
+			const tile = tileFrom(event.target);
+			if (!tile) return;
+			hovering = true;
+			select(Number(tile.dataset.app));
+		};
+		const leave = (event: Event) => {
+			if (tileFrom(event.target)) hovering = false;
+		};
+		rowsEl.addEventListener('pointerover', pick);
+		rowsEl.addEventListener('focusin', pick);
+		rowsEl.addEventListener('pointerout', leave);
+		rowsEl.addEventListener('focusout', leave);
 
 		// Count the stats up once, and only run the readout while the section is visible
 		let counted = false;
@@ -224,6 +244,12 @@ const rows = [0, 1, 2].map((r) => apps.filter((_, i) => i % 3 === r));
 </script>
 
 <style>
+	.sprite {
+		position: absolute;
+		width: 0;
+		height: 0;
+		overflow: hidden;
+	}
 	.rows {
 		display: flex;
 		flex-direction: column;
