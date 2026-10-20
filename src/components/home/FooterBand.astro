@@ -28,20 +28,16 @@ const t = copy[Astro.props.lang].footer;
 		</button>
 	</div>
 
-	<div class="credits">
-		<p set:html={t.made} />
-	</div>
 </section>
 
 <style>
 	.kh-band {
-		margin: 6rem calc(-1 * clamp(1rem, 4vw, 2.5rem)) -3rem;
-		padding-bottom: 3rem;
+		margin: clamp(3.5rem, 7vw, 5rem) calc(-1 * clamp(1rem, 4vw, 2.5rem)) 0;
 		border-top: 1px solid var(--kc-line);
 		overflow: hidden;
 	}
 	.words {
-		padding-block: clamp(1.5rem, 4vw, 3rem);
+		padding-block: clamp(1rem, 3vw, 2rem);
 		border-bottom: 1px solid var(--kc-line);
 		mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
 	}
@@ -75,33 +71,12 @@ const t = copy[Astro.props.lang].footer;
 		flex-wrap: wrap;
 		justify-content: center;
 		gap: 0.75rem;
-		margin-top: 2.5rem;
+		margin-top: 2rem;
 	}
 	.cta button {
 		cursor: pointer;
 	}
 
-	.credits {
-		max-width: 48rem;
-		margin: 2rem auto 0;
-		padding-inline: clamp(1rem, 4vw, 2.5rem);
-		text-align: center;
-		font-family: var(--sl-font-mono);
-		font-size: 0.75rem;
-		letter-spacing: 0.02em;
-		line-height: 1.8;
-		color: var(--kc-faint);
-	}
-	.credits p {
-		margin: 0;
-	}
-	.credits :global(a) {
-		color: var(--kc-muted);
-		text-underline-offset: 0.2em;
-	}
-	.credits :global(a:hover) {
-		color: var(--sl-color-text-accent);
-	}
 
 	@keyframes kh-words {
 		to {

@@ -599,7 +599,12 @@ mobile-starlight-toc .dropdown {
   color: var(--kc-ink-strong);
 }
 
+/* Homepage footer has no edit link / last-updated, so don't keep the empty row's margin */
+footer .meta:not(:has(*)) {
+  display: none;
+}
 footer .meta {
+  margin-top: 2rem;
   font-family: var(--sl-font-mono);
   font-size: 0.6875rem;
   letter-spacing: 0.12em;
@@ -634,7 +639,7 @@ html[data-has-hero]:not([data-has-sidebar]) {
   padding: 0;
 }
 [data-has-hero] .content-panel .sl-container {
-  padding: 0 clamp(1rem, 4vw, 2.5rem) 3rem;
+  padding: 0 clamp(1rem, 4vw, 2.5rem) 1.5rem;
 }
 
 /* Homepage sections: big ArtCraft-style headings with a mono index, lead + caption row */

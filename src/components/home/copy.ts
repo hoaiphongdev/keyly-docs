@@ -38,7 +38,6 @@ const en = {
 		output: ['Downloading Keyly…', '✓ Installed Keyly to /Applications', 'Double-tap ⇪ Caps Lock to show shortcuts'],
 	},
 	footer: {
-		made: 'Made with ❤️ by <a href="https://github.com/hoaiphongdev">hoaiphongdev</a>',
 		start: 'Get Started',
 		startHref: '/getting-started/',
 		tryIt: 'Try it',
@@ -80,7 +79,6 @@ const vi: typeof en = {
 		output: ['Đang tải Keyly…', '✓ Đã cài Keyly vào /Applications', 'Nhấn đúp ⇪ Caps Lock để xem phím tắt'],
 	},
 	footer: {
-		made: 'Được làm với ❤️ bởi <a href="https://github.com/hoaiphongdev">hoaiphongdev</a>',
 		start: 'Bắt đầu',
 		startHref: '/vi/getting-started/',
 		tryIt: 'Thử ngay',
