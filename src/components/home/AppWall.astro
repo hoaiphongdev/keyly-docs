@@ -7,8 +7,8 @@ interface Props {
 }
 
 const t = copy[Astro.props.lang].works;
-const half = Math.ceil(apps.length / 2);
-const rows = [apps.slice(0, half), apps.slice(half)];
+// Three marquee rows, apps dealt round-robin so each row mixes kinds; the middle one runs the other way
+const rows = [0, 1, 2].map((r) => apps.filter((_, i) => i % 3 === r));
 ---
 
 <div class="kh-wall not-content" data-reveal>
@@ -41,7 +41,7 @@ const rows = [apps.slice(0, half), apps.slice(half)];
 										aria-label={`${app.name}: ${app.action} ${app.keys}`}
 									>
 										{app.path ? (
-											<svg viewBox="0 0 24 24" aria-hidden="true">
+											<svg viewBox={app.viewBox ?? '0 0 24 24'} aria-hidden="true">
 												<path d={app.path} />
 											</svg>
 										) : (
@@ -197,6 +197,9 @@ const rows = [apps.slice(0, half), apps.slice(half)];
 		animation-direction: reverse;
 		animation-duration: 52s;
 	}
+	.row:nth-child(3) .track {
+		animation-duration: 58s;
+	}
 	.rows:hover .track {
 		animation-play-state: paused;
 	}
@@ -242,12 +245,15 @@ const rows = [apps.slice(0, half), apps.slice(half)];
 		letter-spacing: -0.02em;
 	}
 	.name {
+		max-width: 100%;
+		padding-inline: 0.5rem;
 		font-family: var(--sl-font-mono);
 		font-size: 0.625rem;
 		letter-spacing: 0.08em;
+		line-height: 1.3;
+		text-align: center;
 		text-transform: uppercase;
 		color: var(--kc-faint);
-		white-space: nowrap;
 	}
 	.tile.template::after {
 		content: '';

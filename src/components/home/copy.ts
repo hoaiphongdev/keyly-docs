@@ -21,7 +21,7 @@ const en = {
 		lead: "Works with every app that has a menu bar — plus community templates for the shortcuts menus don't show.",
 		template: 'Community template',
 		stats: [
-			['apps shown', '20'],
+			['apps shown', '40'],
 			['community templates', '31'],
 			['menu-bar apps supported', '∞'],
 		],
@@ -63,7 +63,7 @@ const vi: typeof en = {
 		lead: 'Hoạt động với mọi ứng dụng có thanh menu — kèm mẫu cộng đồng cho những phím tắt mà menu không hiển thị.',
 		template: 'Có mẫu cộng đồng',
 		stats: [
-			['ứng dụng tiêu biểu', '20'],
+			['ứng dụng tiêu biểu', '40'],
 			['mẫu cộng đồng', '31'],
 			['ứng dụng có thanh menu', '∞'],
 		],
