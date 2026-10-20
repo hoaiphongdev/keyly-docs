@@ -94,6 +94,7 @@ export default defineConfig({
         Search: "./src/overrides/Search.astro",
         ThemeSelect: "./src/overrides/ThemeSelect.astro",
         Hero: "./src/overrides/Hero.astro",
+        TableOfContents: "./src/overrides/TableOfContents.astro",
       },
     }),
     sitemapRename(),
