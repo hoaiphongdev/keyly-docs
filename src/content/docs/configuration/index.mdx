@@ -5,17 +5,17 @@ description: "Personalize Keyly with .keyly config files. Add your own shortcuts
 
 import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 
-Keyly can be customized through `.keyly` configuration files stored in `~/.config/keyly/`.
+Keyly can be customized through `.keyly` configuration files stored in `~/.config/keyly/templates/`.
 
 ## Config Location
 
 All custom shortcut files are stored in:
 
 ```
-~/.config/keyly/
+~/.config/keyly/templates/
 ```
 
-You can quickly open this folder from the menu bar: **⌘ icon → Open Config**
+You can quickly open the config folder (`~/.config/keyly/`, which holds `templates/` and `setting.conf`) from the shortcuts window: **⚙︎ → Open Config Folder**
 
 ## What You Can Configure
 
@@ -34,16 +34,16 @@ You can quickly open this folder from the menu bar: **⌘ icon → Open Config**
 
 ## How It Works
 
-1. Create a `.keyly` file in `~/.config/keyly/`
+1. Create a `.keyly` file in `~/.config/keyly/templates/`
 2. Define shortcuts with categories and key combinations
 3. Keyly merges your custom shortcuts with the app's native ones
-4. Hold ⌘ to see everything together
+4. Double-tap Caps Lock to see everything together
 
 ## Quick Example
 
-Create a file `~/.config/keyly/safari.keyly`:
+Create a file `~/.config/keyly/templates/safari.keyly`:
 
-```
+```keyly
 # Sheet Name: Safari Extras
 # App: /Applications/Safari.app
 

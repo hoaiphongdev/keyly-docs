@@ -1,6 +1,6 @@
 ---
 title: "Cài đặt Keyly trong 60 giây"
-description: "Chỉ cần một lệnh Terminal là xong. Cấp quyền Accessibility, giữ ⌘, và bắt đầu khám phá phím tắt ngay."
+description: "Chỉ cần một lệnh Terminal là xong. Cấp quyền Trợ năng, nhấn đúp Caps Lock, và bắt đầu khám phá phím tắt ngay."
 ---
 
 import { Steps, Aside } from '@astrojs/starlight/components';
@@ -8,12 +8,12 @@ import { Steps, Aside } from '@astrojs/starlight/components';
 ## Yêu cầu
 
 - **macOS 12.0+** (Monterey trở lên)
-- Quyền Accessibility
+- Quyền Trợ năng (Accessibility)
 
 ## Cài đặt
 
 <Steps>
-1. Mở Terminal (Terminal, iTerm, Warp, đều được)
+1. Mở ứng dụng dòng lệnh (Terminal, iTerm, Warp đều được)
 
 2. Chạy lệnh này:
 
@@ -21,21 +21,21 @@ import { Steps, Aside } from '@astrojs/starlight/components';
    curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install.sh | bash
    ```
 
-3. Làm theo hướng dẫn để cấp quyền Accessibility
+3. Làm theo hướng dẫn để cấp quyền Trợ năng
 
-4. Xong! Giữ `⌘ Command` trong 2 giây để xem phím tắt
+4. Xong! Nhấn đúp `⇪ Caps Lock` để xem phím tắt
 </Steps>
 
-## Cấp quyền Accessibility
+## Cấp quyền Trợ năng
 
-Keyly cần quyền Accessibility để:
+Keyly cần quyền Trợ năng (Accessibility) để:
 
-1. **Theo dõi phím bấm** — nhận biết khi bạn giữ phím ⌘
-2. **Đọc menu bar** — lấy phím tắt từ các ứng dụng khác
+1. **Theo dõi phím bấm** — nhận biết khi bạn nhấn đúp Caps Lock
+2. **Đọc thanh menu** — lấy phím tắt từ các ứng dụng khác
 
 <Steps>
-1. Mở **System Settings**
-2. Vào **Privacy & Security → Accessibility**
+1. Mở **Cài đặt hệ thống** (System Settings)
+2. Vào **Quyền riêng tư & Bảo mật → Trợ năng** (Privacy & Security → Accessibility)
 3. Tìm **Keyly** trong danh sách và bật lên
 4. Khởi động lại Keyly nếu cần
 </Steps>
@@ -47,26 +47,34 @@ Nếu không thấy Keyly trong danh sách, thử mở Keyly trước rồi ki�
 ## Cách sử dụng
 
 <Steps>
-1. Chạy app — biểu tượng ⌘ sẽ xuất hiện ở menu bar
+1. Mở Keyly — biểu tượng **K** sẽ xuất hiện trên thanh menu
 2. Mở ứng dụng bất kỳ (Safari, VS Code, Finder,...)
-3. Giữ phím **Command (⌘)** trong 2 giây
+3. Nhấn đúp phím **Caps Lock (⇪)**
 4. Một cửa sổ hiển thị tất cả phím tắt sẽ xuất hiện
-5. Thả ⌘ để ẩn cửa sổ
+5. Gõ phím để lọc phím tắt — bấm ESC một lần để xóa nội dung tìm kiếm
+6. Bấm ESC (thêm lần nữa) hoặc click ra ngoài để ẩn cửa sổ
 </Steps>
 
-## Các tùy chọn Menu Bar
+## Các menu
 
-Click vào biểu tượng ⌘ ở menu bar để xem:
+Click **biểu tượng K** trên thanh menu để xem:
 
-- **Reload** — Tải lại phím tắt
-- **Open Config** — Mở thư mục `.keyly`
-- **Accessibility Settings** — Đi tới cài đặt quyền
+- **About Keyly** — Thông tin phiên bản
+- **Check for Updates...** — Kiểm tra bản mới
 - **Quit** — Thoát Keyly
+
+Click **nút ⚙︎** ở góc dưới bên phải cửa sổ phím tắt để xem:
+
+- **Reload Config** — Tải lại các file `.keyly`
+- **Open Config Folder** — Mở thư mục `~/.config/keyly/`
+- **Open Accessibility Settings** — Mở phần cài đặt quyền Trợ năng
+- **Check for Updates...** — Kiểm tra bản mới
+- **Quit Keyly** — Thoát Keyly
 
 ## Bước tiếp theo
 
 - Xem tất cả [Tính năng](/vi/features/)
-- Cài [Template](/vi/configuration/templates/) cho các ứng dụng phổ biến
+- Cài [mẫu có sẵn](/vi/configuration/templates/) cho các ứng dụng phổ biến
 - Tạo [Phím tắt tùy chỉnh](/vi/configuration/custom-shortcuts/)
 - Đọc [Mẹo tăng năng suất](/vi/resources/productivity-tips/)
 

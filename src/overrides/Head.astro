@@ -1,6 +1,9 @@
 ---
 import Default from '@astrojs/starlight/components/Head.astro';
 import keylyOgImage from '../assets/keyly.png';
+// Same files fonts.css pulls in, so these preloads hit the hashed URLs the CSS uses
+import interLatin from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import archivoLatin from '@fontsource-variable/archivo/files/archivo-latin-wght-normal.woff2?url';
 
 const isHomepage = Astro.locals.starlightRoute.id === 'index.mdx' || Astro.locals.starlightRoute.id === 'vi/index.mdx';
 
@@ -16,14 +19,21 @@ const currentPath = Astro.url.pathname;
 
 function getDefaultUrl(): string {
 	let path = currentPath;
+	// English is the root locale, so the default version lives at the unprefixed path
 	if (currentLocale === 'vi') {
-		path = path.replace(/^\/vi/, '/en');
+		path = path.replace(/^\/vi/, '') || '/';
 	}
 	if (!path.endsWith('/')) path += '/';
 	return new URL(path, Astro.site).href;
 }
 
+const viSegmentNames: Record<string, string> = {
+	configuration: 'Cấu hình',
+	resources: 'Tài liệu thêm',
+};
+
 function formatBreadcrumbName(segment: string): string {
+	if (currentLocale === 'vi' && viSegmentNames[segment]) return viSegmentNames[segment];
 	return segment
 		.split('-')
 		.map(word => word.charAt(0).toUpperCase() + word.slice(1))
@@ -43,7 +53,7 @@ function generateBreadcrumbs() {
 	const items: Array<{ name: string; url: string }> = [];
 	
 	const homeUrl = currentLocale === 'vi' ? `${baseUrl}vi/` : baseUrl;
-	items.push({ name: 'Home', url: homeUrl });
+	items.push({ name: currentLocale === 'vi' ? 'Trang chủ' : 'Home', url: homeUrl });
 	
 	let currentUrl = currentLocale === 'vi' ? '/vi' : '';
 	
@@ -96,8 +106,11 @@ const webSiteSchema = {
 	"@type": "WebSite",
 	"name": "Keyly",
 	"alternateName": "Keyly Docs",
+	"inLanguage": currentLocale === 'vi' ? 'vi' : 'en',
 	"url": Astro.site?.href || "https://keyly-docs.com",
-	"description": "Hold ⌘ for 2 seconds to reveal every shortcut in any app. Free, open-source menu bar utility for macOS.",
+	"description": currentLocale === 'vi'
+		? "Nhấn đúp ⇪ Caps Lock để xem mọi phím tắt của bất kỳ ứng dụng nào. Tiện ích miễn phí, mã nguồn mở trên thanh menu macOS."
+		: "Double-tap ⇪ Caps Lock to reveal every shortcut in any app. Free, open-source menu bar utility for macOS.",
 	"publisher": {
 		"@type": "Person",
 		"name": "Nguyễn Hoài Phong",
@@ -106,6 +119,12 @@ const webSiteSchema = {
 };
 ---
 <Default><slot /></Default>
+{/* Body and heading fonts are on every page's first paint; fetch them alongside the HTML */}
+{
+	[interLatin, archivoLatin].map((href) => (
+		<link rel="preload" href={href} as="font" type="font/woff2" crossorigin />
+	))
+}
 <meta name="robots" content="index, follow" />
 <meta property="og:image" content={ogImageUrl} />
 <meta property="og:image:width" content="1200" />

@@ -1,0 +1,59 @@
+---
+import Default from '@astrojs/starlight/components/TableOfContents.astro';
+---
+
+<Default {...Astro.props} />
+
+<script>
+	// One indicator bar that glides to whichever link Starlight marks as current,
+	// instead of each link drawing its own highlight.
+	const list = document.querySelector<HTMLElement>('starlight-toc nav > ul');
+
+	if (list) {
+		const bar = document.createElement('span');
+		bar.className = 'kc-toc-indicator';
+		bar.setAttribute('aria-hidden', 'true');
+		list.append(bar);
+
+		const move = () => {
+			const current = list.querySelector<HTMLElement>('a[aria-current="true"]');
+			bar.style.opacity = current ? '1' : '0';
+			if (!current) return;
+			bar.style.transform = `translateY(${current.offsetTop}px)`;
+			bar.style.height = `${current.offsetHeight}px`;
+		};
+
+		move();
+		// Enable the transition only after the first placement, so it doesn't slide in on load
+		requestAnimationFrame(() => list.classList.add('kc-toc-ready'));
+
+		new MutationObserver(move).observe(list, {
+			subtree: true,
+			attributeFilter: ['aria-current'],
+		});
+		// Covers window resizes and line re-wraps once web fonts swap in
+		new ResizeObserver(move).observe(list);
+	}
+</script>
+
+<style is:global>
+	starlight-toc nav > ul {
+		position: relative;
+	}
+	.kc-toc-indicator {
+		position: absolute;
+		top: 0;
+		left: -1px;
+		width: 2px;
+		height: 0;
+		background: var(--sl-color-accent);
+		box-shadow: 0 0 10px var(--kc-glow);
+		pointer-events: none;
+	}
+	.kc-toc-ready .kc-toc-indicator {
+		transition:
+			transform 450ms cubic-bezier(0.22, 1, 0.36, 1),
+			height 450ms cubic-bezier(0.22, 1, 0.36, 1),
+			opacity 200ms ease;
+	}
+</style>

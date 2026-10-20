@@ -1,0 +1,268 @@
+---
+import { copy, INSTALL_COMMAND, type Lang } from './copy';
+
+interface Props {
+	lang: Lang;
+}
+
+const t = copy[Astro.props.lang].install;
+---
+
+<div class="kh-install not-content" data-reveal>
+	<div class="kh-meta">
+		<span class="kc-label kh-caption">{t.caption}</span>
+	</div>
+
+	<div class="term">
+		<div class="bar">
+			<span class="lights" aria-hidden="true"><i></i><i></i><i></i></span>
+			<span class="kc-label title">zsh — keyly</span>
+			<button type="button" class="copy kc-label" data-copied={t.copied}>{t.copy}</button>
+		</div>
+		<div class="screen">
+			<p class="line"><span class="prompt">~ %</span> <code class="cmd">{INSTALL_COMMAND}</code><span class="cursor" aria-hidden="true"></span></p>
+			{t.output.map((line, i) => <p class:list={['out', { ok: i === 1 }]} aria-hidden="true">{line}</p>)}
+		</div>
+	</div>
+
+	<ol class="steps">
+		<li>
+			<span class="num kc-label">01</span>
+			<span>{t.intro} <code>curl … | bash</code></span>
+		</li>
+		<li>
+			<span class="num kc-label">02</span>
+			<span>{t.after}</span>
+		</li>
+		<li>
+			<span class="num kc-label">03</span>
+			<span><strong>{t.done}</strong> <kbd>⇪</kbd><kbd>⇪</kbd></span>
+		</li>
+	</ol>
+</div>
+
+<script>
+	// Type the command once when the terminal scrolls into view; Copy puts the exact command on the clipboard.
+	document.querySelectorAll<HTMLElement>('.kh-install').forEach((root) => {
+		const cmd = root.querySelector<HTMLElement>('.cmd')!;
+		const outs = [...root.querySelectorAll<HTMLElement>('.out')];
+		const button = root.querySelector<HTMLButtonElement>('.copy')!;
+		const full = cmd.textContent ?? '';
+		const label = button.textContent;
+		const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+		button.addEventListener('click', async () => {
+			try {
+				await navigator.clipboard.writeText(full);
+				button.textContent = button.dataset.copied ?? label;
+				button.classList.add('done');
+				setTimeout(() => {
+					button.textContent = label;
+					button.classList.remove('done');
+				}, 1600);
+			} catch {}
+		});
+
+		if (reduceMotion) {
+			root.classList.add('typed');
+			return;
+		}
+
+		root.classList.add('ready');
+		cmd.textContent = '';
+		const observer = new IntersectionObserver(
+			([entry]) => {
+				if (!entry?.isIntersecting) return;
+				observer.disconnect();
+				let i = 0;
+				const type = () => {
+					cmd.textContent = full.slice(0, ++i);
+					if (i < full.length) setTimeout(type, 14 + Math.random() * 22);
+					else {
+						root.classList.add('typed');
+						outs.forEach((out, n) => setTimeout(() => out.classList.add('show'), 450 + n * 550));
+					}
+				};
+				setTimeout(type, 400);
+			},
+			{ threshold: 0.4 }
+		);
+		observer.observe(root);
+	});
+</script>
+
+<style>
+	.term {
+		max-width: 56rem;
+		margin: 2rem auto 0;
+		border: 1px solid var(--kc-line-strong);
+		border-radius: 12px;
+		overflow: hidden;
+		background: #0b0b0d;
+		box-shadow:
+			0 30px 70px -30px rgb(0 0 0 / 0.7),
+			0 0 60px -20px var(--kc-glow);
+	}
+	.bar {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		height: 2.5rem;
+		padding: 0 0.875rem;
+		border-bottom: 1px solid rgb(255 255 255 / 0.08);
+		background: #16171a;
+	}
+	.lights {
+		display: flex;
+		gap: 0.4rem;
+	}
+	.lights i {
+		width: 0.7rem;
+		height: 0.7rem;
+		border-radius: 50%;
+		background: #ff5f57;
+	}
+	.lights i:nth-child(2) {
+		background: #febc2e;
+	}
+	.lights i:nth-child(3) {
+		background: #28c840;
+	}
+	.title {
+		margin: 0 auto;
+		color: rgb(242 241 238 / 0.5);
+	}
+	.copy {
+		padding: 0.3rem 0.7rem;
+		border: 1px solid rgb(255 255 255 / 0.18);
+		background: none;
+		color: rgb(242 241 238 / 0.8);
+		cursor: pointer;
+		transition:
+			border-color 150ms ease,
+			color 150ms ease;
+	}
+	.copy:hover,
+	.copy.done {
+		border-color: var(--sl-color-accent);
+		color: #fff;
+	}
+	.screen {
+		min-height: 9.5rem;
+		padding: 1.25rem 1.25rem 1.5rem;
+		font-family: var(--sl-font-mono);
+		font-size: clamp(0.75rem, 0.7rem + 0.25vw, 0.9375rem);
+		line-height: 1.8;
+		color: #f2f1ee;
+		overflow-x: auto;
+	}
+	.screen p {
+		margin: 0;
+	}
+	.line {
+		white-space: pre-wrap;
+		word-break: break-all;
+	}
+	.prompt {
+		color: hsl(328, 90%, 74%);
+	}
+	.cmd {
+		padding: 0;
+		border: 0;
+		background: none;
+		font: inherit;
+		color: inherit;
+	}
+	.cursor {
+		display: inline-block;
+		width: 0.55em;
+		height: 1.1em;
+		margin-left: 2px;
+		vertical-align: text-bottom;
+		background: hsl(328, 92%, 64%);
+		animation: kh-blink 1s steps(1) infinite;
+	}
+	.out {
+		color: rgb(242 241 238 / 0.55);
+	}
+	.out.ok {
+		color: #6ee7a8;
+	}
+	/* Fake output only appears once JS has typed the command */
+	.ready .out {
+		opacity: 0;
+		transform: translateY(4px);
+		transition:
+			opacity 300ms ease,
+			transform 300ms ease;
+	}
+	.ready .out.show {
+		opacity: 1;
+		transform: none;
+	}
+	.kh-install:not(.ready):not(.typed) .out {
+		display: none;
+	}
+
+	.steps {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 1px;
+		max-width: 56rem;
+		margin: 1.5rem auto 0;
+		padding: 0;
+		list-style: none;
+		border: 1px solid var(--kc-line);
+		background: var(--kc-line);
+	}
+	.steps li {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		margin: 0;
+		padding: 1rem 1.25rem;
+		background: var(--kc-bg);
+		color: var(--kc-muted);
+		font-size: 0.9375rem;
+	}
+	.num {
+		color: var(--sl-color-text-accent);
+	}
+	.steps code {
+		white-space: nowrap;
+		padding: 0.05em 0.35em;
+		border: 1px solid var(--kc-line);
+		background: var(--kc-sunken);
+		font-size: 0.85em;
+	}
+	.steps strong {
+		color: var(--kc-ink-strong);
+	}
+	.steps kbd {
+		display: inline-grid;
+		place-items: center;
+		min-width: 1.4rem;
+		height: 1.4rem;
+		margin-left: 0.2rem;
+		border: 1px solid var(--sl-color-accent);
+		color: var(--sl-color-text-accent);
+		font: 0.8rem var(--sl-font-mono);
+	}
+
+	@media (max-width: 50rem) {
+		.steps {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	@keyframes kh-blink {
+		50% {
+			opacity: 0;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.cursor {
+			animation: none;
+		}
+	}
+</style>

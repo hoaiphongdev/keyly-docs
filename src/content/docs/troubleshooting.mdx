@@ -23,16 +23,20 @@ After enabling permissions, you may need to restart Keyly for changes to take ef
 ### Restart Keyly
 
 <Steps>
-1. Click the **⌘ icon** in the menu bar
+1. Click the **K icon** in the menu bar
 2. Select **Quit**
 3. Relaunch Keyly from Applications
 </Steps>
 
 ## Shortcuts Window Not Appearing
 
-### Hold ⌘ Long Enough
+### Double-Tap Caps Lock Quickly
 
-You need to hold the Command key for **2 full seconds**. A quick press won't trigger the overlay.
+Tap Caps Lock **twice within half a second**. macOS ignores very short Caps Lock taps, so press each tap fully. If you remapped Caps Lock in **System Settings → Keyboard → Modifier Keys**, set a different `super_key` in `~/.config/keyly/setting.conf`. If `super_key` is set to a name Keyly doesn't recognize, it falls back to the default (Caps Lock).
+
+### Caps Lock Switches Input Source
+
+If **Use the Caps Lock key to switch to and from ABC** is turned on (**System Settings → Keyboard → Input Sources → Edit…**), macOS uses Caps Lock to switch input sources instead of toggling it, so a double-tap may not register. Turn that option off, or set a different `super_key` in `~/.config/keyly/setting.conf`.
 
 ### Check If App Has Menu Bar
 
@@ -63,14 +67,14 @@ You can manually add any missing shortcuts:
 
 Make sure your `.keyly` file is in:
 ```
-~/.config/keyly/
+~/.config/keyly/templates/
 ```
 
 ### Check App Path
 
 The `# App:` header must point to the correct application bundle:
 
-```
+```keyly
 # App: /Applications/Safari.app
 ```
 
@@ -96,7 +100,7 @@ The most common reason a template doesn't work is that the **app path is differe
 ### How to Fix
 
 <Steps>
-1. Open the template file in `~/.config/keyly/`
+1. Open the template file in `~/.config/keyly/templates/`
 2. Find the `# App:` line at the top of the file
 3. Update it to match your app's actual path
 </Steps>
@@ -119,11 +123,11 @@ Example:
 # App: /Applications/Cursor - Nightly.app
 ```
 
-After updating, reload Keyly: **⌘ icon → Reload**
+Keyly reloads the file automatically when you save it. If the change doesn't show, use **⚙︎ → Reload Config** in the shortcuts window
 
 ### Reload Keyly
 
-After editing config files, reload from the menu bar: **⌘ icon → Reload**
+Config files reload automatically when you save them. To reload manually, use **⚙︎ → Reload Config** in the shortcuts window
 
 ### Check File Encoding
 
@@ -160,7 +164,7 @@ Then relaunch Keyly.
 
 ## Updates
 
-Keyly checks for updates every 6 hours. When a new version is out, the menu bar icon shows a red dot and the menu gets an **Update to x.y.z…** item. You can also use **Check for Updates…** at any time.
+Keyly checks for updates every 6 hours. When a new version is out, the menu bar icon shows a red dot and the menu gets an **Update to x.y.z…** item. You can also use **Check for Updates...** at any time.
 
 ### Upgrading from 1.7.3 or Older
 

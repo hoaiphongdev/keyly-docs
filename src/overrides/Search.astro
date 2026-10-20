@@ -1,0 +1,341 @@
+---
+import Default from '@astrojs/starlight/components/Search.astro';
+import { Icon } from '@astrojs/starlight/components';
+
+const isVi = Astro.locals.starlightRoute.locale === 'vi';
+const prefix = isVi ? '/vi' : '';
+
+const queries = isVi
+	? ['Caps Lock', 'super_key', 'Reload Config', 'Trợ năng', 'mẫu']
+	: ['Caps Lock', 'super_key', 'Reload Config', 'Accessibility', 'template'];
+
+const pages = [
+	{
+		icon: 'rocket',
+		slug: 'getting-started',
+		title: isVi ? 'Cài đặt' : 'Getting Started',
+		hint: isVi ? 'Cài Keyly và cấp quyền' : 'Install Keyly and grant access',
+	},
+	{
+		icon: 'pencil',
+		slug: 'configuration/custom-shortcuts',
+		title: isVi ? 'Phím tắt tùy chỉnh' : 'Custom Shortcuts',
+		hint: isVi ? 'Cú pháp file .keyly' : 'The .keyly file syntax',
+	},
+	{
+		icon: 'document',
+		slug: 'configuration/templates',
+		title: isVi ? 'Mẫu có sẵn' : 'Templates',
+		hint: isVi ? 'Cấu hình soạn sẵn cho app phổ biến' : 'Ready-made configs for popular apps',
+	},
+	{
+		icon: 'warning',
+		slug: 'troubleshooting',
+		title: isVi ? 'Xử lý sự cố' : 'Troubleshooting',
+		hint: isVi ? 'Phím tắt không hiện, thiếu quyền' : 'Shortcuts missing, permission issues',
+	},
+	{
+		icon: 'information',
+		slug: 'faq',
+		title: isVi ? 'Câu hỏi thường gặp' : 'FAQ',
+		hint: isVi ? 'Giải đáp nhanh' : 'Quick answers',
+	},
+] as const;
+---
+
+<Default {...Astro.props} />
+
+<div class="keyly-search-suggest" data-empty hidden>
+	<section>
+		<h2>{isVi ? 'Thử tìm' : 'Try searching'}</h2>
+		<div class="chips">
+			{
+				queries.map((query, i) => (
+					<button type="button" data-query={query} style={`--i: ${i}`}>
+						<Icon name="magnifier" size="0.875rem" />
+						{query}
+					</button>
+				))
+			}
+		</div>
+	</section>
+	<section>
+		<h2>{isVi ? 'Trang hay xem' : 'Popular pages'}</h2>
+		<ul>
+			{
+				pages.map((page, i) => (
+					<li style={`--i: ${i + queries.length}`}>
+						<a href={`${prefix}/${page.slug}/`}>
+							<span class="icon">
+								<Icon name={page.icon} size="1rem" />
+							</span>
+							<span class="text">
+								<span class="title">{page.title}</span>
+								<span class="hint">{page.hint}</span>
+							</span>
+							<Icon name="right-arrow" size="1rem" class="arrow" />
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</section>
+</div>
+
+<script>
+	const panel = document.querySelector<HTMLElement>('.keyly-search-suggest');
+	const dialog = document.querySelector<HTMLDialogElement>('site-search dialog');
+	const frame = dialog?.querySelector('.dialog-frame');
+
+	if (panel && dialog && frame) {
+		frame.append(panel);
+		panel.hidden = false;
+
+		const input = () => dialog.querySelector<HTMLInputElement>('.pagefind-ui__search-input');
+		const sync = () => panel.toggleAttribute('data-empty', !input()?.value.trim());
+
+		dialog.addEventListener('input', sync);
+		// Pagefind's clear button empties the field without an input event
+		dialog.addEventListener('click', () => queueMicrotask(sync));
+		// Pagefind keeps the last query across opens, so reflect the field rather than assume empty
+		dialog.addEventListener('close', sync);
+
+		panel.addEventListener('click', (event) => {
+			const chip = (event.target as Element).closest<HTMLButtonElement>('button[data-query]');
+			const field = input();
+			if (!chip || !field) return;
+			field.value = chip.dataset.query ?? '';
+			field.dispatchEvent(new Event('input', { bubbles: true }));
+			field.focus();
+		});
+	}
+</script>
+
+<style>
+	.keyly-search-suggest {
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+	}
+	.keyly-search-suggest:not([data-empty]),
+	.keyly-search-suggest[hidden] {
+		display: none;
+	}
+
+	h2 {
+		margin: 0 0 0.625rem;
+		font-family: var(--sl-font-mono);
+		font-size: 0.6875rem;
+		font-weight: 500;
+		letter-spacing: 0.15em;
+		text-transform: uppercase;
+		color: var(--kc-muted);
+	}
+
+	.chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+	.chips button {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.375rem;
+		padding: 0.3rem 0.7rem;
+		border: 1px solid var(--kc-line);
+		border-radius: 0;
+		background: transparent;
+		color: var(--sl-color-gray-2);
+		font: inherit;
+		font-size: var(--sl-text-sm);
+		cursor: pointer;
+		transition:
+			border-color 120ms ease,
+			color 120ms ease,
+			background-color 120ms ease;
+	}
+	.chips button :global(svg) {
+		color: var(--kc-faint);
+		transition: color 120ms ease;
+	}
+	.chips button:hover,
+	.chips button:focus-visible {
+		border-color: var(--sl-color-accent);
+		background: var(--kc-raised);
+		color: var(--sl-color-white);
+	}
+	.chips button:hover :global(svg),
+	.chips button:focus-visible :global(svg) {
+		color: var(--sl-color-accent);
+	}
+
+	ul {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	a {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 0.5rem 0.625rem;
+		border: 1px solid transparent;
+		border-radius: 0;
+		color: var(--sl-color-gray-2);
+		text-decoration: none;
+		transition:
+			background-color 120ms ease,
+			border-color 120ms ease;
+	}
+	a:hover,
+	a:focus-visible {
+		background: var(--kc-raised);
+		border-color: var(--kc-line);
+	}
+	.icon {
+		display: grid;
+		flex-shrink: 0;
+		place-items: center;
+		width: 2rem;
+		height: 2rem;
+		border: 1px solid var(--kc-line);
+		background: transparent;
+		color: var(--kc-muted);
+		transition:
+			background-color 120ms ease,
+			color 120ms ease;
+	}
+	a:hover .icon,
+	a:focus-visible .icon {
+		border-color: var(--sl-color-accent);
+		color: var(--sl-color-accent);
+	}
+	.text {
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+	}
+	.title {
+		color: var(--sl-color-white);
+		font-family: var(--kc-font-display);
+		font-weight: 600;
+		font-size: var(--sl-text-sm);
+	}
+	.hint {
+		overflow: hidden;
+		color: var(--kc-muted);
+		font-size: var(--sl-text-xs);
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+	a :global(.arrow) {
+		margin-inline-start: auto;
+		flex-shrink: 0;
+		color: var(--sl-color-accent);
+		opacity: 0;
+		transform: translateX(-4px);
+		transition:
+			opacity 120ms ease,
+			transform 120ms ease;
+	}
+	a:hover :global(.arrow),
+	a:focus-visible :global(.arrow) {
+		opacity: 1;
+		transform: none;
+	}
+
+	/* Entrance: fade up with a small stagger each time the dialog opens */
+	:global(site-search dialog[open]) .chips button,
+	:global(site-search dialog[open]) li {
+		animation: keyly-rise 220ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+		animation-delay: calc(var(--i) * 25ms);
+	}
+
+	@keyframes keyly-rise {
+		from {
+			opacity: 0;
+			transform: translateY(4px);
+		}
+	}
+</style>
+
+<style is:global>
+	/* Dialog open/close transition; unlayered so it wins over starlight.core */
+	site-search dialog {
+		opacity: 0;
+		transform: translateY(-8px) scale(0.98);
+		transition:
+			opacity 120ms ease-in,
+			transform 120ms ease-in,
+			overlay 120ms ease-in allow-discrete,
+			display 120ms ease-in allow-discrete;
+	}
+	site-search dialog[open] {
+		opacity: 1;
+		transform: none;
+		transition-duration: 180ms;
+		transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+	}
+	site-search dialog::backdrop {
+		opacity: 0;
+		transition:
+			opacity 180ms ease,
+			overlay 180ms allow-discrete,
+			display 180ms allow-discrete;
+	}
+	site-search dialog[open]::backdrop {
+		opacity: 1;
+	}
+	@starting-style {
+		site-search dialog[open] {
+			opacity: 0;
+			transform: translateY(-8px) scale(0.98);
+		}
+		site-search dialog[open]::backdrop {
+			opacity: 0;
+		}
+	}
+
+	/* Square, hairline dialog to match the site skin */
+	site-search dialog {
+		border-radius: 0 !important;
+		border-color: var(--kc-line-strong) !important;
+		background-color: var(--kc-bg) !important;
+	}
+	site-search #starlight__search {
+		--pagefind-ui-border-radius: 0;
+		--pagefind-ui-border: var(--kc-line);
+		--pagefind-ui-background: var(--kc-bg);
+		--sl-search-corners: 0;
+	}
+	site-search #starlight__search .pagefind-ui__result-tag,
+	site-search #starlight__search .pagefind-ui__message {
+		font-family: var(--sl-font-mono);
+		font-size: 0.6875rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+
+	site-search .pagefind-ui__result {
+		animation: keyly-result-in 160ms ease-out both;
+	}
+	@keyframes keyly-result-in {
+		from {
+			opacity: 0;
+			transform: translateY(3px);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		site-search dialog,
+		site-search dialog::backdrop,
+		site-search .pagefind-ui__result,
+		.keyly-search-suggest * {
+			transition: none !important;
+			animation: none !important;
+		}
+	}
+</style>

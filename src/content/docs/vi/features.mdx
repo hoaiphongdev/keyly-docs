@@ -1,6 +1,6 @@
 ---
 title: "Tính năng Keyly - Hiển thị phím tắt thời gian thực"
-description: "Trích xuất phím tắt từ menu bar theo thời gian thực. Cấu hình tùy chỉnh, giao diện nhiều cột, hiệu ứng blur. Khám phá tất cả tính năng."
+description: "Đọc phím tắt từ thanh menu theo thời gian thực. Cấu hình tùy chỉnh, giao diện nhiều cột, nền kính mờ. Khám phá tất cả tính năng."
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
@@ -8,21 +8,21 @@ import { Card, CardGrid } from '@astrojs/starlight/components';
 ## Tính năng chính
 
 <CardGrid>
-  <Card title="Giữ ⌘ để hiển thị" icon="rocket">
-    Chỉ cần giữ phím Command trong 2 giây, tất cả phím tắt sẽ hiện ra ngay.
+  <Card title="Nhấn đúp ⇪ để hiển thị" icon="rocket">
+    Chỉ cần nhấn đúp phím Caps Lock, tất cả phím tắt sẽ hiện ra ngay.
   </Card>
-  <Card title="Trích xuất phím tắt thực" icon="magnifier">
-    Dùng macOS Accessibility API để đọc phím tắt thực từ menu bar — không phải từ database cũ.
+  <Card title="Đọc phím tắt thật" icon="magnifier">
+    Dùng Accessibility API của macOS để đọc phím tắt thật từ thanh menu — không lấy từ cơ sở dữ liệu cũ.
   </Card>
   <Card title="Tương thích mọi ứng dụng" icon="approve-check">
-    Hoạt động với bất kỳ ứng dụng macOS nào có menu bar.
+    Hoạt động với bất kỳ ứng dụng macOS nào có thanh menu.
   </Card>
   <Card title="Cấu hình phím tắt riêng" icon="document">
-    Tạo file `.keyly` hoặc cài [template cộng đồng](/vi/configuration/templates/) cho bất kỳ app nào.
+    Tạo file `.keyly` hoặc cài [mẫu cộng đồng](/vi/configuration/templates/) cho bất kỳ ứng dụng nào.
   </Card>
 </CardGrid>
 
-## Giao diện & Hiển thị
+## Giao diện & hiển thị
 
 ### Bố cục nhiều cột
 
@@ -30,37 +30,50 @@ Phím tắt được sắp xếp gọn gàng trong nhiều cột để dễ đ�
 
 ### Nhóm theo danh mục
 
-Phím tắt được nhóm theo menu (File, Edit, View,...) giống như trong menu bar của ứng dụng.
+Phím tắt được nhóm theo menu (File, Edit, View,...) giống như trên thanh menu của ứng dụng.
+
+### Tìm kiếm tức thì
+
+Gõ phím ngay trong cửa sổ phím tắt để lọc theo thao tác, danh mục hoặc tổ hợp phím. Nhấn ESC lần đầu để xoá ô tìm kiếm, lần sau để đóng cửa sổ.
 
 ### Mô tả danh mục
 
 Thêm gợi ý ngữ cảnh dưới tiêu đề danh mục bằng cú pháp `> mô tả` trong [phím tắt tùy chỉnh](/vi/configuration/custom-shortcuts/).
 
-### Hiệu ứng Blur Overlay
+### Nền kính mờ
 
-Cửa sổ floating với hiệu ứng blur xuất hiện trên ứng dụng, giữ nguyên ngữ cảnh làm việc.
+Cửa sổ phím tắt nổi phía trên ứng dụng với nền kính mờ, nên bạn vẫn thấy ngữ cảnh đang làm việc.
 
-## Menu Bar
+## Các menu
 
-Keyly nằm ở menu bar với các tùy chọn:
+**Biểu tượng K** trên thanh menu có các tùy chọn:
 
 | Tùy chọn | Mô tả |
 |----------|-------|
-| **Reload** | Tải lại phím tắt cho ứng dụng hiện tại |
-| **Open Config** | Mở thư mục `~/.config/keyly/` |
-| **Accessibility Settings** | Đi tới cài đặt quyền macOS |
+| **About Keyly** | Thông tin phiên bản |
+| **Check for Updates...** | Kiểm tra bản mới |
 | **Quit** | Thoát Keyly |
+
+**Nút ⚙︎** trong cửa sổ phím tắt có thêm:
+
+| Tùy chọn | Mô tả |
+|----------|-------|
+| **Reload Config** | Tải lại các file `.keyly` tùy chỉnh |
+| **Open Config Folder** | Mở thư mục `~/.config/keyly/` |
+| **Open Accessibility Settings** | Mở phần cài đặt quyền Trợ năng của macOS |
+| **Check for Updates...** | Kiểm tra bản mới |
+| **Quit Keyly** | Thoát Keyly |
 
 ## Chi tiết kỹ thuật
 
 - **Xây dựng với Swift 5.9+**
 - **Yêu cầu macOS 12.0+**
-- **Sử dụng Accessibility API** để trích xuất phím tắt
-- **Nhẹ nhàng** — chạy im lặng ở menu bar
+- **Dùng Accessibility API** để đọc phím tắt
+- **Nhẹ** — chạy âm thầm trên thanh menu
 
 ## Tiếp theo
 
-- [Cài Template](/vi/configuration/templates/) — Phím tắt có sẵn cho các ứng dụng phổ biến
+- [Cài mẫu có sẵn](/vi/configuration/templates/) — Phím tắt soạn sẵn cho các ứng dụng phổ biến
 - [Tạo phím tắt tùy chỉnh](/vi/configuration/custom-shortcuts/)
 - [Mẹo tăng năng suất](/vi/resources/productivity-tips/)
 - [Xử lý sự cố](/vi/troubleshooting/)

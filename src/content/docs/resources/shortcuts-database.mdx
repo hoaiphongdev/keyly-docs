@@ -12,13 +12,13 @@ Keyly doesn't use a static database of shortcuts. Instead, it dynamically reads 
 ### 1. Accessibility API
 
 Keyly uses the macOS **Accessibility API** to:
-- Monitor when you hold the ⌘ key
+- Monitor when you double-tap Caps Lock
 - Read the menu bar structure of the active app
 - Extract keyboard shortcuts from menu items
 
 ### 2. Menu Bar Parsing
 
-When you hold ⌘, Keyly:
+When you double-tap Caps Lock, Keyly:
 1. Identifies the frontmost application
 2. Reads its menu bar hierarchy
 3. Extracts shortcuts from each menu item
@@ -29,7 +29,7 @@ When you hold ⌘, Keyly:
 
 Shortcuts are read in real-time, meaning:
 - You always see the current shortcuts
-- Context menus and dynamic menus are included
+- Menus that change with the app's state are read as they are right now (only the menu bar is read; right-click context menus are not)
 - No manual updates needed when apps change
 
 <Aside>

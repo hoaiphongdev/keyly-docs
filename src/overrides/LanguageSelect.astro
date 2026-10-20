@@ -20,16 +20,15 @@ function getLocalizedPath(targetLocale: string): string {
 	return path;
 }
 
-const localeFlags: Record<string, string> = {
-	root: '🇺🇸',
-	en: '🇺🇸',
-	vi: '🇻🇳',
+const localeCodes: Record<string, string> = {
+	root: 'EN',
+	en: 'EN',
+	vi: 'VI',
 };
 
 const locales = Object.entries(config.locales || {}).map(([code, locale]) => ({
-	code,
 	label: locale!.label,
-	flag: localeFlags[code] || '🌐',
+	code: localeCodes[code] || code.toUpperCase(),
 	href: getLocalizedPath(code),
 	isActive: code === currentLocale,
 }));
@@ -39,9 +38,8 @@ const currentLang = locales.find(l => l.isActive) || locales[0];
 
 {config.isMultilingual && (
 	<div class="lang-select">
-		<button class="lang-trigger" aria-expanded="false" aria-haspopup="listbox">
-			<span class="flag">{currentLang.flag}</span>
-			<span class="label">{currentLang.label}</span>
+		<button class="lang-trigger" aria-expanded="false" aria-haspopup="listbox" aria-label={`${Astro.locals.t('languageSelect.accessibleLabel')}: ${currentLang.label}`} title={currentLang.label}>
+			<span class="code">{currentLang.code}</span>
 			<svg class="caret" width="12" height="12" viewBox="0 0 12 12" fill="none">
 				<path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 			</svg>
@@ -50,7 +48,7 @@ const currentLang = locales.find(l => l.isActive) || locales[0];
 			{locales.map(locale => (
 				<li role="option" aria-selected={locale.isActive}>
 					<a href={locale.href} class:list={['lang-option', { active: locale.isActive }]}>
-						<span class="flag">{locale.flag}</span>
+						<span class="code">{locale.code}</span>
 						<span class="label">{locale.label}</span>
 					</a>
 				</li>
@@ -70,32 +68,38 @@ const currentLang = locales.find(l => l.isActive) || locales[0];
 		display: flex;
 		align-items: center;
 		gap: 0.5rem;
-		padding: 0.375rem 0.625rem;
+		height: 2rem;
+		padding: 0 0.625rem;
 		background: transparent;
-		border: 1px solid color-mix(in srgb, var(--sl-color-accent) 30%, transparent);
-		border-radius: 0.5rem;
-		color: var(--sl-color-white);
+		border: 1px solid var(--kc-line);
+		border-radius: 0;
+		color: var(--kc-muted);
 		cursor: pointer;
-		font-size: 0.875rem;
+		font-family: var(--sl-font-mono);
+		font-size: 0.6875rem;
+		font-weight: 500;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
 		line-height: 1;
-		transition: all 0.15s ease;
+		transition:
+			border-color 150ms ease,
+			color 150ms ease,
+			background-color 150ms ease;
 	}
 
-	.lang-trigger:hover {
-		border-color: color-mix(in srgb, var(--sl-color-accent) 60%, transparent);
-		background: color-mix(in srgb, var(--sl-color-accent) 10%, transparent);
+	.lang-trigger:hover,
+	.lang-select[data-open] .lang-trigger {
+		border-color: var(--kc-line-strong);
+		background: var(--kc-raised);
+		color: var(--kc-ink);
 	}
 
-	.lang-trigger .flag {
-		font-size: 1rem;
+	.code {
+		color: var(--sl-color-text-accent);
 	}
 
 	.lang-trigger .caret {
-		transition: transform 0.2s ease;
-	}
-
-	.lang-select[data-open] .lang-trigger {
-		border-color: var(--sl-color-accent);
+		transition: transform 200ms ease;
 	}
 
 	.lang-select[data-open] .lang-trigger .caret {
@@ -104,20 +108,22 @@ const currentLang = locales.find(l => l.isActive) || locales[0];
 
 	.lang-dropdown {
 		position: absolute;
-		top: calc(100% + 0.5rem);
+		top: calc(100% + 0.375rem);
 		right: 0;
 		min-width: 100%;
-		padding: 0.5rem;
+		padding: 0;
 		margin: 0;
 		list-style: none;
-		background: color-mix(in srgb, var(--sl-color-bg) 95%, var(--sl-color-accent));
-		border: 1px solid color-mix(in srgb, var(--sl-color-accent) 40%, transparent);
-		border-radius: 0.5rem;
-		box-shadow: 0 4px 16px color-mix(in srgb, var(--sl-color-accent) 20%, rgba(0, 0, 0, 0.3));
+		background: var(--kc-bg);
+		border: 1px solid var(--kc-line-strong);
+		box-shadow: var(--sl-shadow-lg);
 		opacity: 0;
 		visibility: hidden;
-		transform: translateY(-0.5rem);
-		transition: all 0.15s ease;
+		transform: translateY(-0.25rem);
+		transition:
+			opacity 150ms ease,
+			transform 150ms ease,
+			visibility 150ms;
 		z-index: 100;
 	}
 
@@ -127,35 +133,45 @@ const currentLang = locales.find(l => l.isActive) || locales[0];
 		transform: translateY(0);
 	}
 
+	.lang-dropdown li + li {
+		border-top: 1px solid var(--kc-line);
+	}
+
 	.lang-option {
 		display: flex;
 		align-items: center;
-		gap: 0.5rem;
-		padding: 0.5rem 0.75rem;
-		border-radius: 0.375rem;
-		color: var(--sl-color-gray-2);
+		gap: 0.75rem;
+		padding: 0.625rem 0.875rem;
+		color: var(--kc-muted);
 		text-decoration: none;
 		font-size: 0.875rem;
 		white-space: nowrap;
-		transition: all 0.1s ease;
+		transition:
+			background-color 120ms ease,
+			color 120ms ease;
+	}
+
+	.lang-option .code {
+		font-family: var(--sl-font-mono);
+		font-size: 0.6875rem;
+		font-weight: 500;
+		letter-spacing: 0.12em;
+		color: var(--kc-faint);
 	}
 
 	.lang-option:hover {
-		background: color-mix(in srgb, var(--sl-color-accent) 15%, transparent);
-		color: var(--sl-color-white);
+		background: var(--kc-raised);
+		color: var(--kc-ink);
 	}
 
 	.lang-option.active {
-		color: var(--sl-color-accent);
+		background: var(--kc-ink);
+		color: var(--kc-bg);
 		font-weight: 500;
 	}
 
-	.lang-option.active:hover {
-		color: var(--sl-color-accent);
-	}
-
-	.lang-option .flag {
-		font-size: 1rem;
+	.lang-option.active .code {
+		color: inherit;
 	}
 </style>
 

@@ -1,0 +1,561 @@
+---
+import { copy, type Lang } from './copy';
+
+interface Props {
+	lang: Lang;
+}
+
+const t = copy[Astro.props.lang].features;
+const [instant, menu, configs, ui] = t.items;
+---
+
+<div class="kh-bento not-content" data-reveal>
+	<div class="kh-meta">
+		<span class="kc-label kh-caption">{t.caption}</span>
+	</div>
+
+	<div class="grid">
+		<!-- A · Instant shortcuts: ⇪ ⇪ then the window pops -->
+		<article class="cell wide">
+			<span class="letter kc-label">A</span>
+			<div class="vignette v-instant" aria-hidden="true">
+				<div class="caps-row">
+					<span class="cap">⇪</span>
+					<span class="cap">⇪</span>
+				</div>
+				<div class="pop">
+					<span class="pop-head"></span>
+					<span class="pop-cols"><i></i><i></i><i></i></span>
+				</div>
+			</div>
+			<h3>{instant?.title}</h3>
+			<p set:html={instant?.body} />
+		</article>
+
+		<!-- B · Real menu shortcuts: a File menu opens, items highlight in turn -->
+		<article class="cell">
+			<span class="letter kc-label">B</span>
+			<div class="vignette v-menu" aria-hidden="true">
+				<div class="menubar"><b></b><span class="on">File</span><span>Edit</span><span>View</span></div>
+				<div class="dropdown">
+					<span class="hl"></span>
+					<p><span>New Tab</span><kbd>⌘T</kbd></p>
+					<p><span>New Window</span><kbd>⌘N</kbd></p>
+					<p><span>Reopen Tab</span><kbd>⇧⌘T</kbd></p>
+					<p><span>Close Tab</span><kbd>⌘W</kbd></p>
+				</div>
+			</div>
+			<h3>{menu?.title}</h3>
+			<p set:html={menu?.body} />
+		</article>
+
+		<!-- C · Custom configs: a .keyly file types itself -->
+		<article class="cell">
+			<span class="letter kc-label">C</span>
+			<div class="vignette v-config" aria-hidden="true">
+				<div class="file-tab kc-label">safari.keyly</div>
+				<pre><span class="ln l1"><em># App:</em> /Applications/Safari.app</span><span class="ln l2"><em>[Tabs]</em></span><span class="ln l3">⇧⌘T | Reopen tab</span><span class="ln l4">⌘L  | Open location</span></pre>
+			</div>
+			<h3>{configs?.title}</h3>
+			<p set:html={configs?.body} />
+		</article>
+
+		<!-- D · Modern UI: a query filters the columns -->
+		<article class="cell wide">
+			<span class="letter kc-label">D</span>
+			<div class="vignette v-ui" aria-hidden="true">
+				<div class="mini">
+					<div class="search"><span class="typed">zoom</span><span class="caret"></span></div>
+					<div class="cols">
+						<div><b>View</b><p class="keep"><span>Zoom In</span><kbd>⌘+</kbd></p><p class="keep"><span>Zoom Out</span><kbd>⌘-</kbd></p><p><span>Reload</span><kbd>⌘R</kbd></p></div>
+						<div><b>File</b><p><span>New Tab</span><kbd>⌘T</kbd></p><p><span>Print…</span><kbd>⌘P</kbd></p><p><span>Close</span><kbd>⌘W</kbd></p></div>
+						<div><b>Edit</b><p><span>Copy</span><kbd>⌘C</kbd></p><p><span>Paste</span><kbd>⌘V</kbd></p><p><span>Find…</span><kbd>⌘F</kbd></p></div>
+					</div>
+				</div>
+			</div>
+			<h3>{ui?.title}</h3>
+			<p set:html={ui?.body} />
+		</article>
+	</div>
+</div>
+
+<script>
+	// Run the vignettes only while the grid is on screen
+	document.querySelectorAll<HTMLElement>('.kh-bento').forEach((root) => {
+		new IntersectionObserver(([entry]) => root.classList.toggle('playing', Boolean(entry?.isIntersecting)), {
+			threshold: 0.15,
+		}).observe(root);
+	});
+</script>
+
+<style>
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(5, minmax(0, 1fr));
+		gap: 1px;
+		margin-top: 2rem;
+		border: 1px solid var(--kc-line);
+		background: var(--kc-line);
+	}
+	.cell {
+		position: relative;
+		grid-column: span 2;
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		padding: clamp(1.25rem, 2.5vw, 2rem);
+		background: var(--kc-bg);
+		transition: background-color 250ms ease;
+	}
+	.cell.wide {
+		grid-column: span 3;
+	}
+	.cell:hover {
+		background: var(--kc-raised);
+	}
+	.letter {
+		position: absolute;
+		top: 1rem;
+		right: 1rem;
+		color: var(--kc-faint);
+	}
+	h3 {
+		margin: 0.5rem 0 0;
+		font-family: var(--kc-font-display);
+		font-size: clamp(1.25rem, 1rem + 0.8vw, 1.625rem);
+		font-weight: 620;
+		letter-spacing: -0.02em;
+		color: var(--kc-ink-strong);
+	}
+	.cell > p {
+		margin: 0;
+		max-width: 46ch;
+		color: var(--kc-muted);
+		line-height: 1.6;
+	}
+	.cell > p :global(a) {
+		color: var(--sl-color-text-accent);
+	}
+	.cell > p :global(code) {
+		padding: 0.1em 0.35em;
+		border: 1px solid var(--kc-line);
+		background: var(--kc-sunken);
+		font-size: 0.875em;
+	}
+
+	/* ---------- Vignette frame ---------- */
+	.vignette {
+		position: relative;
+		height: 11rem;
+		overflow: hidden;
+		border: 1px solid var(--kc-line);
+		background:
+			radial-gradient(circle at 50% 120%, var(--kc-glow), transparent 60%),
+			repeating-linear-gradient(90deg, var(--kc-line) 0 1px, transparent 1px 2rem) 0 0 / auto,
+			var(--kc-sunken);
+		background-blend-mode: normal;
+		font-family: var(--sl-font-mono);
+		font-size: 0.75rem;
+		color: var(--kc-muted);
+	}
+	.vignette :global(*) {
+		animation-play-state: paused !important;
+	}
+	.playing .vignette :global(*) {
+		animation-play-state: running !important;
+	}
+	kbd {
+		padding: 0 0.3rem;
+		border: 1px solid var(--kc-line-strong);
+		font: inherit;
+		font-size: 0.6875rem;
+		color: var(--kc-ink);
+	}
+
+	/* A · caps + popup */
+	.v-instant {
+		display: grid;
+		place-items: center;
+	}
+	.caps-row {
+		display: flex;
+		gap: 0.75rem;
+		grid-area: 1 / 1;
+	}
+	.cap {
+		display: grid;
+		place-items: center;
+		width: 3.25rem;
+		height: 3.25rem;
+		border: 1px solid var(--kc-line-strong);
+		background: var(--kc-raised);
+		font-size: 1.25rem;
+		color: var(--kc-ink);
+		box-shadow: 0 4px 0 var(--kc-line);
+		animation: kh-press 3.6s infinite;
+	}
+	.cap + .cap {
+		animation-delay: 0.25s;
+	}
+	.pop {
+		grid-area: 1 / 1;
+		width: 70%;
+		height: 72%;
+		padding: 0.6rem;
+		border: 1px solid var(--sl-color-accent);
+		background: color-mix(in srgb, var(--kc-bg) 85%, transparent);
+		box-shadow: 0 0 40px var(--kc-glow);
+		animation: kh-pop 3.6s infinite;
+	}
+	.pop-head {
+		display: block;
+		width: 35%;
+		height: 0.5rem;
+		background: var(--kc-line-strong);
+	}
+	.pop-cols {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 0.6rem;
+		height: calc(100% - 1.2rem);
+		margin-top: 0.7rem;
+	}
+	.pop-cols i {
+		background: repeating-linear-gradient(to bottom, var(--kc-line-strong) 0 4px, transparent 4px 12px);
+	}
+
+	/* B · menu */
+	.menubar {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		height: 1.75rem;
+		padding: 0 0.75rem;
+		border-bottom: 1px solid var(--kc-line);
+		background: var(--kc-raised);
+	}
+	.menubar b {
+		width: 0.7rem;
+		height: 0.7rem;
+		border-radius: 50%;
+		background: var(--kc-muted);
+	}
+	.menubar .on {
+		padding: 0.1rem 0.4rem;
+		background: var(--sl-color-accent);
+		color: #fff;
+	}
+	.dropdown {
+		position: relative;
+		width: 12.5rem;
+		margin-left: 2.25rem;
+		padding: 0.3rem;
+		border: 1px solid var(--kc-line-strong);
+		border-top: 0;
+		background: var(--kc-bg);
+		transform-origin: top;
+		animation: kh-drop 4s infinite;
+	}
+	.dropdown p {
+		position: relative;
+		display: flex;
+		justify-content: space-between;
+		margin: 0;
+		padding: 0.25rem 0.5rem;
+		color: var(--kc-ink);
+	}
+	.hl {
+		position: absolute;
+		inset: 0.3rem 0.3rem auto;
+		height: 1.6rem;
+		background: color-mix(in srgb, var(--sl-color-accent) 22%, transparent);
+		border-left: 2px solid var(--sl-color-accent);
+		animation: kh-hl 4s steps(1) infinite;
+	}
+
+	/* C · typing config */
+	.file-tab {
+		display: inline-block;
+		padding: 0.4rem 0.75rem;
+		border-right: 1px solid var(--kc-line);
+		border-bottom: 1px solid var(--kc-line);
+		background: var(--kc-raised);
+		color: var(--kc-ink);
+	}
+	.v-config pre {
+		margin: 0;
+		padding: 0.75rem 0.9rem;
+		background: none;
+		border: 0;
+		font: inherit;
+		line-height: 1.9;
+	}
+	.ln {
+		display: block;
+		width: 0;
+		overflow: hidden;
+		white-space: nowrap;
+		color: var(--kc-ink);
+		border-right: 2px solid transparent;
+	}
+	.ln em {
+		font-style: normal;
+		color: var(--sl-color-text-accent);
+	}
+	.l1 {
+		animation: kh-type1 6s steps(32) infinite;
+	}
+	.l2 {
+		animation: kh-type2 6s steps(6) infinite;
+	}
+	.l3 {
+		animation: kh-type3 6s steps(16) infinite;
+	}
+	.l4 {
+		animation: kh-type4 6s steps(19) infinite;
+	}
+
+	/* D · filtering */
+	.v-ui {
+		display: grid;
+		place-items: center;
+	}
+	.mini {
+		width: 88%;
+		padding: 0.6rem;
+		border: 1px solid var(--kc-line-strong);
+		background: color-mix(in srgb, var(--kc-bg) 80%, transparent);
+	}
+	.search {
+		display: flex;
+		align-items: center;
+		height: 1.5rem;
+		padding: 0 0.5rem;
+		border: 1px solid var(--kc-line);
+		background: var(--kc-raised);
+		color: var(--kc-ink);
+	}
+	.typed {
+		display: inline-block;
+		overflow: hidden;
+		white-space: nowrap;
+		animation: kh-query 5s steps(4) infinite;
+	}
+	.caret {
+		width: 1px;
+		height: 0.9rem;
+		margin-left: 1px;
+		background: var(--sl-color-accent);
+		animation: kh-blink 1s steps(1) infinite;
+	}
+	.cols {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 0.75rem;
+		margin-top: 0.6rem;
+	}
+	.cols b {
+		display: block;
+		margin-bottom: 0.25rem;
+		font-size: 0.625rem;
+		font-weight: 500;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--kc-faint);
+	}
+	.cols p {
+		display: flex;
+		justify-content: space-between;
+		gap: 0.25rem;
+		margin: 0 0 0.2rem;
+		color: var(--kc-ink);
+		white-space: nowrap;
+		animation: kh-filter-out 5s infinite;
+	}
+	.cols p.keep {
+		animation: kh-filter-keep 5s infinite;
+	}
+	.cols div:not(:first-child) b {
+		animation: kh-filter-out 5s infinite;
+	}
+
+	@media (max-width: 50rem) {
+		.grid {
+			grid-template-columns: 1fr;
+		}
+		.cell,
+		.cell.wide {
+			grid-column: auto;
+		}
+	}
+
+	/* ---------- Keyframes ---------- */
+	@keyframes kh-press {
+		0%,
+		12%,
+		100% {
+			transform: none;
+			box-shadow: 0 4px 0 var(--kc-line);
+			background: var(--kc-raised);
+			color: var(--kc-ink);
+		}
+		5% {
+			transform: translateY(4px);
+			box-shadow: 0 0 0 var(--kc-line);
+			background: var(--sl-color-accent);
+			color: #fff;
+		}
+	}
+	@keyframes kh-pop {
+		0%,
+		16% {
+			opacity: 0;
+			transform: scale(0.85);
+		}
+		24%,
+		80% {
+			opacity: 1;
+			transform: none;
+		}
+		90%,
+		100% {
+			opacity: 0;
+			transform: scale(0.96);
+		}
+	}
+	@keyframes kh-drop {
+		0%,
+		8% {
+			transform: scaleY(0);
+			opacity: 0;
+		}
+		16%,
+		88% {
+			transform: none;
+			opacity: 1;
+		}
+		96%,
+		100% {
+			transform: scaleY(0);
+			opacity: 0;
+		}
+	}
+	@keyframes kh-hl {
+		0%,
+		24% {
+			transform: translateY(0);
+		}
+		25%,
+		44% {
+			transform: translateY(1.6rem);
+		}
+		45%,
+		64% {
+			transform: translateY(3.2rem);
+		}
+		65%,
+		100% {
+			transform: translateY(4.8rem);
+		}
+	}
+	@keyframes kh-type1 {
+		0% {
+			width: 0;
+		}
+		18%,
+		100% {
+			width: 32ch;
+		}
+	}
+	@keyframes kh-type2 {
+		0%,
+		20% {
+			width: 0;
+		}
+		28%,
+		100% {
+			width: 6ch;
+		}
+	}
+	@keyframes kh-type3 {
+		0%,
+		30% {
+			width: 0;
+		}
+		48%,
+		100% {
+			width: 16ch;
+		}
+	}
+	@keyframes kh-type4 {
+		0%,
+		50% {
+			width: 0;
+		}
+		70%,
+		100% {
+			width: 19ch;
+		}
+	}
+	@keyframes kh-query {
+		0%,
+		10% {
+			width: 0;
+		}
+		30%,
+		85% {
+			width: 4ch;
+		}
+		95%,
+		100% {
+			width: 0;
+		}
+	}
+	@keyframes kh-blink {
+		50% {
+			opacity: 0;
+		}
+	}
+	@keyframes kh-filter-out {
+		0%,
+		30% {
+			opacity: 1;
+		}
+		38%,
+		85% {
+			opacity: 0.12;
+		}
+		95%,
+		100% {
+			opacity: 1;
+		}
+	}
+	@keyframes kh-filter-keep {
+		0%,
+		30% {
+			color: var(--kc-ink);
+		}
+		38%,
+		85% {
+			color: var(--sl-color-text-accent);
+		}
+		95%,
+		100% {
+			color: var(--kc-ink);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.vignette :global(*) {
+			animation: none !important;
+		}
+		.ln {
+			width: auto;
+		}
+		.dropdown,
+		.pop {
+			opacity: 1;
+			transform: none;
+		}
+	}
+</style>

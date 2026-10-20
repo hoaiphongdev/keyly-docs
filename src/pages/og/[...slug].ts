@@ -12,8 +12,8 @@ export const { getStaticPaths, GET } = OGImageRoute({
 		return {
 			title: page.data.title,
 			description: page.data.description || '',
-			bgGradient: [[17, 18, 19] as const/*, [24, 21, 13] as const*/],
-			border: { color: [148, 63, 205], width: 10, side: 'block-end' },
+			bgGradient: [[18, 19, 22] as const],
+			border: { color: [242, 75, 167], width: 10, side: 'block-end' },
 			font: {
 				title: {
 					size: 90,
@@ -28,13 +28,16 @@ export const { getStaticPaths, GET } = OGImageRoute({
 				},
 			},
 			fonts: [
-				'https://cdn.jsdelivr.net/fontsource/fonts/ibm-plex-sans@latest/latin-400-normal.woff2',
-				'https://cdn.jsdelivr.net/fontsource/fonts/ibm-plex-sans@latest/latin-700-normal.woff2',
+				// Complete (non-subset) files: canvaskit keeps one file per family/weight, so
+				// separate latin + vietnamese subsets left Vietnamese titles with missing glyphs
+				'https://cdn.jsdelivr.net/npm/@ibm/plex-sans@1.1.0/fonts/complete/woff2/IBMPlexSans-Regular.woff2',
+				'https://cdn.jsdelivr.net/npm/@ibm/plex-sans@1.1.0/fonts/complete/woff2/IBMPlexSans-Bold.woff2',
 			],
 			padding: 90,
 			logo: {
 				path: './assets/icon.png',
-				size: [500]
+				// Larger logos push the title off the 630px canvas
+				size: [120]
 			},
 		};
 	},

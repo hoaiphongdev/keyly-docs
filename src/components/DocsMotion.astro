@@ -1,0 +1,70 @@
+---
+// Small, scroll/hover-driven touches for docs pages (styles live in global.css):
+// - Steps: a step is marked passed once it scrolls above ~60% of the viewport
+// - h2 sections: the accent segment grows when the heading first comes into view
+// - Link cards: a soft glow follows the pointer
+// - Marquees ([data-marquee], two identical halves shifted by -50%): content is repeated until
+//   each half is wider than its container, so no screen width ever shows an empty tail
+---
+
+<script>
+	const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	const onceVisible = (selector: string, className: string, rootMargin: string) => {
+		const targets = document.querySelectorAll<HTMLElement>(selector);
+		if (!targets.length) return;
+		if (reduceMotion) return targets.forEach((el) => el.classList.add(className));
+		const observer = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					if (!entry.isIntersecting) continue;
+					entry.target.classList.add(className);
+					observer.unobserve(entry.target);
+				}
+			},
+			{ rootMargin }
+		);
+		targets.forEach((el) => observer.observe(el));
+	};
+
+	onceVisible('.sl-markdown-content .sl-steps > li', 'kc-passed', '0px 0px -40% 0px');
+	onceVisible('.sl-markdown-content .sl-heading-wrapper.level-h2', 'kc-seen', '0px 0px -15% 0px');
+
+	document.querySelectorAll<HTMLElement>('[data-marquee]').forEach((track) => {
+		const container = track.parentElement;
+		const unit = [...track.children].slice(0, track.children.length / 2);
+		if (!container || !unit.length) return;
+		const firstHalf = () => track.scrollWidth / 2;
+		const initialHalf = firstHalf();
+		const initialDuration = parseFloat(getComputedStyle(track).animationDuration) || 0;
+		const pxPerSecond = initialDuration ? initialHalf / initialDuration : 0;
+
+		const fill = () => {
+			let guard = 0;
+			while (firstHalf() < container.clientWidth * 1.1 && guard++ < 8) {
+				// Add one unit to each half, keeping the halves identical
+				for (let copy = 0; copy < 2; copy++) {
+					for (const node of unit) {
+						const clone = node.cloneNode(true) as HTMLElement;
+						clone.setAttribute('aria-hidden', 'true');
+						clone.querySelectorAll<HTMLElement>('a, button, [tabindex]').forEach((el) => el.setAttribute('tabindex', '-1'));
+						if (clone.matches('a, [tabindex]')) clone.setAttribute('tabindex', '-1');
+						track.append(clone);
+					}
+				}
+			}
+			// Same speed regardless of how much content each half holds
+			if (pxPerSecond) track.style.animationDuration = `${firstHalf() / pxPerSecond}s`;
+		};
+		fill();
+		new ResizeObserver(fill).observe(container);
+	});
+
+	document.querySelectorAll<HTMLElement>('.sl-link-card').forEach((card) => {
+		card.addEventListener('pointermove', (event) => {
+			const rect = card.getBoundingClientRect();
+			card.style.setProperty('--mx', `${event.clientX - rect.left}px`);
+			card.style.setProperty('--my', `${event.clientY - rect.top}px`);
+		});
+	});
+</script>

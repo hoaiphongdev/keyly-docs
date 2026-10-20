@@ -1,6 +1,6 @@
 ---
 title: "Install Keyly in 60 Seconds - Quick Setup Guide"
-description: "Get Keyly running with one terminal command. Grant Accessibility permission, hold ⌘, and start discovering shortcuts. Follow our step-by-step guide."
+description: "Get Keyly running with one terminal command. Grant Accessibility permission, double-tap Caps Lock, and start discovering shortcuts. Follow our step-by-step guide."
 ---
 
 import { Steps, Aside } from '@astrojs/starlight/components';
@@ -23,14 +23,14 @@ import { Steps, Aside } from '@astrojs/starlight/components';
 
 3. Follow the on-screen instructions to grant Accessibility permission
 
-4. Done! Hold `⌘ Command` for 2 seconds to show shortcuts
+4. Done! Double-tap `⇪ Caps Lock` to show shortcuts
 </Steps>
 
 ## Setting Up Permissions
 
 Keyly requires Accessibility permissions to:
 
-1. **Monitor global keyboard events** — detect when you hold the ⌘ key
+1. **Monitor global keyboard events** — detect when you double-tap Caps Lock
 2. **Read menu bar shortcuts** — extract shortcuts from other applications
 
 <Steps>
@@ -47,21 +47,29 @@ If Keyly doesn't appear in the list, try launching it first, then check again.
 ## Basic Usage
 
 <Steps>
-1. Run the app — you'll see a ⌘ icon in the menu bar
+1. Run the app — you'll see a **K** icon in the menu bar
 2. Open any application (Safari, VS Code, Finder, etc.)
-3. Hold the **Command (⌘)** key for 2 seconds
+3. Double-tap the **Caps Lock (⇪)** key
 4. A floating window will appear showing all keyboard shortcuts
-5. Release ⌘ to hide the window
+5. Start typing to filter the shortcuts — press ESC once to clear the search
+6. Press ESC (again) or click outside to hide the window
 </Steps>
 
-## Menu Bar Options
+## Menus
 
-Click the ⌘ icon in your menu bar to access:
+Click the **K icon** in your menu bar to access:
 
-- **Reload** — Refresh shortcut detection
-- **Open Config** — Open the `.keyly` config folder
-- **Accessibility Settings** — Quick link to grant permissions
+- **About Keyly** — Version and app info
+- **Check for Updates...** — Look for a new version
 - **Quit** — Exit Keyly
+
+Click the **⚙︎ button** at the bottom-right of the shortcuts window to access:
+
+- **Reload Config** — Reload your `.keyly` files
+- **Open Config Folder** — Open the `~/.config/keyly/` folder
+- **Open Accessibility Settings** — Quick link to grant permissions
+- **Check for Updates...** — Look for a new version
+- **Quit Keyly** — Exit Keyly
 
 ## Next Steps
 

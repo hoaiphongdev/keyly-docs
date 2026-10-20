@@ -1,58 +1,857 @@
-:root {
-  --sl-color-accent-high: hsl(328, 90%, 72%);
-  --sl-color-accent: hsl(328, 92%, 64%);
-  --sl-color-accent-low: hsl(328, 80%, 54%);
-  --sl-hero-color: hsla(328, 92%, 64%, 30%);
+/*
+ * Site skin in the getartcraft.com style. Tokens live in theme.css.
+ * Unlayered rules beat Starlight's layered component styles without !important.
+ */
+
+/* ---------- Base ---------- */
+
+body {
+  background-color: var(--kc-bg);
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: 'cv11', 'ss01';
 }
 
-:root[data-theme='light'] {
-  --sl-color-accent-high: hsl(328, 75%, 40%);
-  --sl-color-accent: hsl(328, 80%, 52%);
-  --sl-color-accent-low: hsl(328, 70%, 78%);
-  --sl-hero-color: hsla(328, 85%, 60%, 25%);
+/* Faint CRT scanlines over everything, like the reference site */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: repeating-linear-gradient(to bottom, var(--kc-scanline) 0 1px, transparent 1px 3px);
 }
 
-
-.hero {
-  padding: 0;
+::selection {
+  background: var(--sl-color-accent);
+  color: #fff;
 }
 
-/* Hero style */
-[data-has-hero] .page {
-  height: 100%;
-  background:
-    linear-gradient(215deg, var(--sl-hero-color), transparent 40%),
-    radial-gradient(var(--sl-hero-color), transparent 40%) no-repeat -60vw -40vh / 150vw 200vh,
-    radial-gradient(var(--sl-hero-color), transparent 65%) no-repeat 50% calc(100% + 20rem) / 150rem 30rem;
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
-[data-has-hero] header {
-  border-bottom: 1px solid transparent;
+:focus-visible {
+  outline: 2px solid var(--sl-color-accent);
+  outline-offset: 2px;
+}
+
+/* Theme switch: briefly animate colours (class toggled by ThemeSelect, skipped for reduced motion) */
+html.kc-theme-anim,
+html.kc-theme-anim *:not(kc-theme-toggle svg),
+html.kc-theme-anim *::before,
+html.kc-theme-anim *::after {
+  transition:
+    background-color 300ms ease,
+    border-color 300ms ease,
+    color 300ms ease,
+    fill 300ms ease !important;
+}
+
+/* ---------- Header ---------- */
+
+header.header {
+  border-bottom: 1px solid var(--kc-line);
+  background-color: color-mix(in srgb, var(--kc-bg) 86%, transparent);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+
+.site-title {
+  gap: 0.625rem;
+  font-family: var(--sl-font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--kc-ink);
+}
+.site-title::before {
+  content: '';
+  flex-shrink: 0;
+  width: 0.625rem;
+  height: 0.625rem;
+  background: var(--sl-color-accent);
+  box-shadow: 0 0 12px var(--kc-glow);
+}
+
+/* Search trigger: square hairline field with mono label */
+site-search button[data-open-modal] {
+  height: 2rem;
+  border: 1px solid var(--kc-line);
+  border-radius: 0;
+  background: transparent;
+  color: var(--kc-muted);
+  font-family: var(--sl-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition:
+    border-color 150ms ease,
+    color 150ms ease,
+    background-color 150ms ease;
+}
+site-search button[data-open-modal]:hover {
+  border-color: var(--kc-line-strong);
+  color: var(--kc-ink);
+  background: var(--kc-raised);
+}
+site-search button[data-open-modal] kbd {
+  border-radius: 0;
+  background: transparent;
+  font-family: var(--sl-font-mono);
+}
+site-search button[data-open-modal] > kbd {
+  border: 1px solid var(--kc-line);
+  padding-inline: 0.375rem;
+}
+
+starlight-menu-button button {
+  border: 1px solid var(--kc-line);
+  border-radius: 0;
   background-color: transparent;
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
+  color: var(--kc-ink);
+  box-shadow: none;
 }
 
-
-[data-has-hero] .hero > img {
-  filter: drop-shadow(0 0 3rem var(--sl-hero-color));
+.social-icons::after {
+  border-inline-end-color: var(--kc-line);
+}
+.social-icons a {
+  color: var(--kc-muted);
+  transition: color 150ms ease;
+}
+.social-icons a:hover {
+  color: var(--kc-ink);
 }
 
-starlight-obsidian-theme-select,
-.lang-select {
-  align-self: center !important;
+/* ---------- Sidebar ---------- */
+
+.sidebar-pane {
+  background-color: var(--kc-bg);
+}
+
+.sidebar-content {
+  counter-reset: kc-group;
+}
+.sidebar-content .top-level > li:has(> details) {
+  counter-increment: kc-group;
+}
+.sidebar-content .top-level > li + li {
+  margin-top: 1.25rem;
+}
+.sidebar-content summary {
+  padding-block: 0.25rem 0.375rem;
+}
+.sidebar-content .group-label .large {
+  font-family: var(--sl-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--kc-muted);
+}
+.sidebar-content .group-label .large::before {
+  content: counter(kc-group, decimal-leading-zero) ' / ';
+  color: var(--sl-color-text-accent);
+}
+.sidebar-content summary .caret {
+  color: var(--kc-faint);
+}
+
+.sidebar-content a {
+  border-radius: 0;
+  color: var(--kc-muted);
+  font-size: var(--sl-text-sm);
+  transition:
+    color 150ms ease,
+    background-color 150ms ease;
+}
+.sidebar-content a:hover,
+.sidebar-content a:focus-visible {
+  color: var(--kc-ink);
+  background-color: var(--kc-raised);
+}
+/* Current page: inverted chip with an accent tick */
+.sidebar-content a[aria-current='page'],
+.sidebar-content a[aria-current='page']:hover,
+.sidebar-content a[aria-current='page']:focus {
+  font-weight: 550;
+  color: var(--kc-bg);
+  background-color: var(--kc-ink);
+  box-shadow: inset 3px 0 0 var(--sl-color-accent);
+}
+.sidebar-content ul ul li {
+  border-inline-start-color: var(--kc-line);
+}
+
+/* ---------- Content ---------- */
+
+/* Page title */
+h1#_top {
+  font-family: var(--kc-font-display);
+  font-size: clamp(2rem, 1.4rem + 2.4vw, 2.875rem);
+  font-weight: 620;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: var(--kc-ink-strong);
 }
 
 .content-panel .sl-container {
   display: flex;
   flex-direction: column;
 }
-
-.content-panel .sl-container > h1 {
+.content-panel .sl-container > .kc-pagehead {
   order: 1;
 }
-
+/* Fallback/draft notice sits above the title; drop the sibling margin it inherits from below the h1 */
 .content-panel .sl-container > p.sl-flex {
   order: 0;
+  margin-top: 0;
   margin-bottom: 1rem;
+}
+
+.sl-markdown-content {
+  counter-reset: kc-section;
+}
+
+.sl-markdown-content :is(h2, h3, h4, h5, h6):not(:where(.not-content *)) {
+  font-family: var(--kc-font-display);
+  font-weight: 620;
+  color: var(--kc-ink-strong);
+}
+.sl-markdown-content h2:not(:where(.not-content *)) {
+  letter-spacing: -0.025em;
+}
+.sl-markdown-content :is(h3, h4):not(:where(.not-content *)) {
+  letter-spacing: -0.015em;
+}
+
+/* h2 = section header: hairline rule with an accent segment and a mono index */
+.sl-markdown-content :is(.sl-heading-wrapper.level-h2, h2:not(.sl-heading-wrapper > h2)):not(:where(.not-content *)) {
+  counter-increment: kc-section;
+  margin-top: 3.5rem;
+  padding-top: 1.125rem;
+  background:
+    linear-gradient(var(--sl-color-accent), var(--sl-color-accent)) 0 0 / 2rem 1px no-repeat,
+    linear-gradient(var(--kc-line), var(--kc-line)) 0 0 / 100% 1px no-repeat;
+}
+.sl-markdown-content :is(.sl-heading-wrapper.level-h2, h2:not(.sl-heading-wrapper > h2)):not(:where(.not-content *))::before {
+  content: counter(kc-section, decimal-leading-zero);
+  display: block;
+  margin-bottom: 0.625rem;
+  font-family: var(--sl-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  line-height: 1;
+  color: var(--kc-muted);
+}
+.sl-markdown-content .sl-heading-wrapper.level-h2::before {
+  grid-column: 1 / -1;
+}
+.sl-markdown-content > :is(.sl-heading-wrapper.level-h2, h2):first-child {
+  margin-top: 0.5rem;
+}
+
+.sl-markdown-content a:not(:where(.not-content *)) {
+  color: var(--sl-color-text-accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  transition: color 150ms ease;
+}
+.sl-markdown-content a:not(:where(.not-content *)):hover {
+  color: var(--kc-ink-strong);
+}
+
+.sl-markdown-content :is(strong, b):not(:where(.not-content *)) {
+  color: var(--kc-ink-strong);
+  font-weight: 600;
+}
+
+.sl-markdown-content code:not(:where(.not-content *)) {
+  padding: 0.1em 0.35em;
+  border: 1px solid var(--kc-line);
+  border-radius: 0;
+  font-size: 0.875em;
+}
+
+.sl-markdown-content hr:not(:where(.not-content *)) {
+  border-bottom-color: var(--kc-line);
+}
+
+.sl-markdown-content blockquote:not(:where(.not-content *)) {
+  border-inline-start: 2px solid var(--sl-color-accent);
+  color: var(--kc-muted);
+}
+
+/* Tables: mono uppercase head, hairlines only */
+.sl-markdown-content table:not(:where(.not-content *)) {
+  border-collapse: collapse;
+}
+.sl-markdown-content :is(th, td):not(:where(.not-content *)) {
+  border-bottom: 1px solid var(--kc-line);
+  padding: 0.625rem 1rem;
+}
+.sl-markdown-content th:not(:where(.not-content *)) {
+  border-bottom-color: var(--kc-line-strong);
+  background: transparent;
+  font-family: var(--sl-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--kc-muted);
+}
+
+/* Keycaps for inline shortcuts (src/plugins/rehype-keycaps.mjs) */
+/* Starlight adds margin-top to adjacent block-ish siblings; keycaps are inline */
+.sl-markdown-content kbd.kc-keys,
+.sl-markdown-content kbd.kc-keys kbd {
+  margin: 0;
+}
+.sl-markdown-content kbd.kc-keys {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  gap: 0.2em;
+  vertical-align: 0.05em;
+  font: inherit;
+}
+.sl-markdown-content kbd.kc-keys kbd {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.6em;
+  height: 1.6em;
+  padding: 0 0.4em;
+  border: 1px solid var(--kc-line-strong);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  background: var(--kc-raised);
+  font-family: var(--kc-font-display);
+  font-size: 0.8em;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--kc-ink-strong);
+  white-space: nowrap;
+}
+th kbd.kc-keys kbd {
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* ---------- Components ---------- */
+
+/* Asides: hairline box, thin coloured rule, mono title */
+.starlight-aside {
+  border: 1px solid var(--kc-line);
+  border-inline-start: 2px solid var(--sl-color-asides-border);
+  background-color: color-mix(in srgb, var(--sl-color-asides-border) 6%, var(--kc-raised));
+  color: var(--sl-color-gray-2);
+}
+.starlight-aside--tip {
+  --sl-color-asides-border: var(--sl-color-accent);
+  --sl-color-asides-text-accent: var(--sl-color-accent-high);
+}
+.starlight-aside__title {
+  font-family: var(--sl-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.starlight-aside__icon {
+  font-size: 1rem;
+}
+
+/* Steps: square mono counters */
+.sl-steps > li::before {
+  border-radius: 0;
+  border: 1px solid var(--kc-line-strong);
+  background-color: var(--kc-bg);
+  color: var(--kc-ink);
+  font-family: var(--sl-font-mono);
+  font-weight: 500;
+  box-shadow: none;
+}
+.sl-steps > li::after {
+  background-color: var(--kc-line);
+}
+
+/* Cards: one hairline grid of cells, lettered A / B / C like the reference */
+.card-grid {
+  gap: 1px;
+  border: 1px solid var(--kc-line);
+  background-color: var(--kc-line);
+  counter-reset: kc-card;
+}
+.card-grid.stagger {
+  padding-bottom: 0;
+}
+.card-grid.stagger > :nth-child(2n) {
+  transform: none;
+}
+.card {
+  position: relative;
+  border: 0;
+  background-color: var(--kc-bg);
+  counter-increment: kc-card;
+  transition: background-color 200ms ease;
+}
+.card:hover {
+  background-color: var(--kc-raised);
+}
+.card::before {
+  content: counter(kc-card, upper-alpha);
+  position: absolute;
+  inset-block-start: 1rem;
+  inset-inline-end: 1rem;
+  font-family: var(--sl-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--kc-faint);
+}
+.card .title {
+  font-family: var(--kc-font-display);
+  font-weight: 620;
+  letter-spacing: -0.02em;
+  gap: 0.75rem;
+}
+.card .icon {
+  border: 1px solid var(--kc-line);
+  border-radius: 0;
+  background: transparent;
+  color: var(--sl-color-accent);
+  padding: 0.3em;
+}
+.card .body {
+  color: var(--kc-muted);
+}
+
+/* Link cards */
+.sl-link-card {
+  border: 1px solid var(--kc-line);
+  border-radius: 0;
+  background-color: var(--kc-bg);
+  box-shadow: none;
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease;
+}
+.sl-link-card:hover {
+  border-color: var(--kc-line-strong);
+  background-color: var(--kc-raised);
+}
+.sl-link-card .title {
+  font-family: var(--kc-font-display);
+  font-weight: 620;
+  letter-spacing: -0.015em;
+}
+.sl-link-card .description {
+  color: var(--kc-muted);
+}
+.sl-link-card .icon {
+  color: var(--kc-faint);
+  transition:
+    color 150ms ease,
+    transform 200ms var(--kc-ease);
+}
+.sl-link-card:hover .icon {
+  color: var(--sl-color-accent);
+  transform: translateX(3px);
+}
+
+/* Buttons: solid ink primary, hairline secondary, mono caps */
+.sl-link-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  border-radius: 0;
+  padding: 0.875rem 1.25rem;
+  font-family: var(--sl-font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  text-transform: uppercase;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease;
+}
+.sl-link-button.primary {
+  border: 1px solid var(--kc-ink);
+  background: var(--kc-ink);
+  color: var(--kc-bg);
+}
+/* Dark text on pink (dark theme), white on deep pink (light theme): both ≥ 4.5:1 */
+.sl-link-button.primary:hover {
+  border-color: var(--sl-color-accent);
+  background: var(--sl-color-accent);
+  color: var(--kc-bg);
+}
+:root[data-theme='light'] .sl-link-button.primary:hover {
+  border-color: var(--sl-color-accent-high);
+  background: var(--sl-color-accent-high);
+  color: #fff;
+}
+.sl-link-button.secondary {
+  border: 1px solid var(--kc-line-strong);
+  background: transparent;
+  color: var(--kc-ink);
+}
+.sl-link-button.secondary:hover {
+  border-color: var(--kc-ink);
+  background: var(--kc-raised);
+}
+.sl-link-button svg {
+  transition: transform 200ms var(--kc-ease);
+}
+.sl-link-button:hover svg {
+  transform: translateX(3px);
+}
+
+.sl-badge {
+  border-radius: 0;
+  font-family: var(--sl-font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Tabs */
+starlight-tabs [role='tablist'] {
+  border-bottom-color: var(--kc-line);
+}
+starlight-tabs [role='tab'] {
+  font-family: var(--sl-font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ---------- Right sidebar (table of contents) ---------- */
+
+.right-sidebar-panel h2 {
+  font-family: var(--sl-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--kc-muted);
+}
+starlight-toc nav > ul {
+  border-inline-start: 1px solid var(--kc-line);
+}
+starlight-toc a {
+  color: var(--kc-muted);
+  transition:
+    color 150ms ease,
+    box-shadow 150ms ease;
+}
+starlight-toc a:hover {
+  color: var(--kc-ink);
+}
+/* The accent bar is a single sliding indicator, see overrides/TableOfContents.astro */
+starlight-toc a[aria-current='true'] {
+  color: var(--kc-ink-strong);
+}
+
+mobile-starlight-toc nav {
+  border-bottom-color: var(--kc-line);
+  background-color: color-mix(in srgb, var(--kc-bg) 92%, transparent);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+mobile-starlight-toc .toggle {
+  border-radius: 0;
+  border-color: var(--kc-line);
+  font-family: var(--sl-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+mobile-starlight-toc .dropdown {
+  border-radius: 0;
+  border-color: var(--kc-line);
+  background-color: var(--kc-bg);
+}
+
+/* ---------- Footer: pagination + meta ---------- */
+
+.pagination-links {
+  gap: 0;
+  border: 1px solid var(--kc-line);
+}
+/* No prev/next (e.g. the homepage): drop the empty bordered box */
+.pagination-links:not(:has(a)) {
+  display: none;
+}
+.pagination-links > a {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 1.125rem 1.25rem;
+  background-color: var(--kc-bg);
+  color: var(--kc-muted);
+  font-family: var(--sl-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transition: background-color 150ms ease;
+}
+.pagination-links > a + a {
+  border-inline-start: 1px solid var(--kc-line);
+}
+
+.pagination-links > a svg {
+  color: var(--kc-faint);
+  transition:
+    color 150ms ease,
+    transform 200ms var(--kc-ease);
+}
+.pagination-links > a:hover svg {
+  color: var(--sl-color-accent);
+}
+.pagination-links > a[rel='next']:hover svg {
+  transform: translateX(3px);
+}
+.pagination-links > a[rel='prev']:hover svg {
+  transform: translateX(-3px);
+}
+.pagination-links .link-title {
+  display: inline-block;
+  margin-top: 0.375rem;
+  font-family: var(--kc-font-display);
+  font-size: var(--sl-text-xl);
+  font-weight: 620;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  text-transform: none;
+  color: var(--kc-ink-strong);
+}
+
+/* Homepage footer has no edit link / last-updated, so don't keep the empty row's margin */
+footer .meta:not(:has(*)) {
+  display: none;
+}
+footer .meta {
+  margin-top: 2rem;
+  font-family: var(--sl-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+footer .meta a {
+  color: var(--kc-muted);
+}
+footer .meta a:hover {
+  color: var(--kc-ink);
+}
+footer .kudos {
+  font-family: var(--sl-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* ---------- Splash (homepage) ---------- */
+
+/* Homepage runs full width (Starlight caps splash pages at 67.5rem) */
+html[data-has-hero]:not([data-has-sidebar]) {
+  --sl-content-width: 100%;
+}
+
+[data-has-hero] header.header {
+  background-color: color-mix(in srgb, var(--kc-bg) 70%, transparent);
+}
+
+/* Full-bleed panel; the hero cancels this padding so its rules reach the edges */
+[data-has-hero] .content-panel {
+  padding: 0;
+}
+[data-has-hero] .content-panel .sl-container {
+  padding: 0 clamp(1rem, 4vw, 2.5rem) 1.5rem;
+}
+
+/* Homepage sections: big ArtCraft-style headings with a mono index, lead + caption row */
+[data-has-hero] .sl-markdown-content :is(.sl-heading-wrapper.level-h2, h2:not(.sl-heading-wrapper > h2)) {
+  margin-top: clamp(5rem, 10vw, 9rem);
+  padding-top: 1.5rem;
+}
+[data-has-hero] .sl-markdown-content h2 {
+  font-size: clamp(2.5rem, 1.5rem + 4vw, 5rem);
+  font-weight: 650;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+[data-has-hero] .sl-markdown-content :is(.sl-heading-wrapper.level-h2, h2:not(.sl-heading-wrapper > h2))::before {
+  content: counter(kc-section, decimal-leading-zero) ' /';
+  margin-bottom: 1rem;
+}
+.kh-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+}
+.kh-lead {
+  max-width: 40ch;
+  margin: 0;
+  font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.3125rem);
+  line-height: 1.55;
+  color: var(--sl-color-gray-2);
+}
+.kh-caption {
+  margin-left: auto;
+  color: var(--kc-faint);
+}
+
+/* Reveal homepage sections as they scroll in */
+@media (prefers-reduced-motion: no-preference) {
+  [data-reveal] {
+    animation: kh-reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 40%;
+  }
+}
+@keyframes kh-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+}
+
+/* ---------- Docs details (DocsMotion.astro toggles the classes) ---------- */
+
+/* h2 accent segment grows the first time the section comes into view */
+.sl-markdown-content .sl-heading-wrapper.level-h2 {
+  transition: background-size 800ms var(--kc-ease);
+}
+.sl-markdown-content .sl-heading-wrapper.level-h2.kc-seen {
+  background-size: 5rem 1px, 100% 1px;
+}
+.sl-markdown-content .sl-anchor-link {
+  color: var(--sl-color-text-accent);
+}
+
+/* Steps: counters and the rail turn pink as you read past them */
+.sl-steps > li::before {
+  transition:
+    border-color 300ms ease,
+    color 300ms ease,
+    background-color 300ms ease;
+}
+.sl-steps > li.kc-passed::before {
+  border-color: var(--sl-color-accent);
+  background-color: color-mix(in srgb, var(--sl-color-accent) 14%, var(--kc-bg));
+  color: var(--sl-color-text-accent);
+}
+.sl-steps > li::after {
+  background-image: linear-gradient(var(--sl-color-accent), var(--sl-color-accent));
+  background-repeat: no-repeat;
+  background-size: 100% 0%;
+  transition: background-size 700ms var(--kc-ease) 150ms;
+}
+.sl-steps > li.kc-passed::after {
+  background-size: 100% 100%;
+}
+
+/* Tables: the row under the pointer lifts slightly */
+.sl-markdown-content tbody tr {
+  transition: background-color 150ms ease;
+}
+.sl-markdown-content tbody tr:hover {
+  background-color: var(--kc-raised);
+}
+
+/* Asides: a faint wash of the aside colour from the left */
+.starlight-aside {
+  background-image: linear-gradient(90deg, color-mix(in srgb, var(--sl-color-asides-border) 9%, transparent), transparent 65%);
+}
+
+/* Link cards: a soft glow follows the pointer */
+.sl-link-card {
+  background-image: radial-gradient(
+    260px circle at var(--mx, -999px) var(--my, -999px),
+    var(--kc-glow),
+    transparent 70%
+  );
+}
+
+/* Prev / next: the hover fill sweeps in from the side it points to */
+.pagination-links > a {
+  background: linear-gradient(var(--kc-raised), var(--kc-raised)) no-repeat 0 0 / 0% 100%, var(--kc-bg);
+  transition: background-size 350ms var(--kc-ease);
+}
+.pagination-links > a[rel='next'] {
+  background-position: 100% 0;
+}
+.pagination-links > a:hover {
+  background-size: 100% 100%;
+}
+.pagination-links .link-title {
+  transition: transform 250ms var(--kc-ease);
+}
+.pagination-links > a[rel='next']:hover .link-title {
+  transform: translateX(-4px);
+}
+.pagination-links > a[rel='prev']:hover .link-title {
+  transform: translateX(4px);
+}
+
+/* Sidebar: links lean in a touch on hover */
+.sidebar-content a {
+  transition:
+    color 150ms ease,
+    background-color 150ms ease,
+    transform 200ms var(--kc-ease);
+}
+.sidebar-content a:not([aria-current='page']):hover {
+  transform: translateX(2px);
+}
+
+/* Page-to-page: a quick fade with the header and sidebar held still (cross-document view transitions) */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+  header.header {
+    view-transition-name: kc-header;
+  }
+  .sidebar-pane {
+    view-transition-name: kc-sidebar;
+  }
+  ::view-transition-old(root) {
+    animation: kc-vt-out 140ms ease-in both;
+  }
+  ::view-transition-new(root) {
+    animation: kc-vt-in 260ms var(--kc-ease) both;
+  }
+}
+@keyframes kc-vt-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes kc-vt-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+/* ---------- Motion preferences ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

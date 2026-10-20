@@ -5,25 +5,29 @@ description: "Add any keyboard shortcut to any macOS app using .keyly files. Ful
 
 import { Aside, Steps } from '@astrojs/starlight/components';
 
-Create `.keyly` files in `~/.config/keyly/` to add custom shortcuts for any application.
+Create `.keyly` files in `~/.config/keyly/templates/` to add custom shortcuts for any application.
 
 ## File Location
 
 ```
 ~/.config/keyly/
-├── safari.keyly
-├── vscode.keyly
-├── my-shortcuts.keyly
-└── ...
+├── setting.conf
+└── templates/
+    ├── global.keyly
+    ├── safari.keyly
+    ├── vscode.keyly
+    └── ...
 ```
 
+`.keyly` files placed directly in `~/.config/keyly/` (the old location) are still loaded, for backward compatibility.
+
 <Aside type="tip">
-Open this folder quickly: click the **⌘ icon** in menu bar → **Open Config**
+Open the config folder quickly: click the **⚙︎ button** in the shortcuts window → **Open Config Folder** (it opens `~/.config/keyly/`; your `.keyly` files go in `templates/`)
 </Aside>
 
 ## File Format
 
-```
+```keyly
 # Sheet Name: My Shortcuts
 # App: /Applications/Safari.app
 
@@ -37,28 +41,57 @@ KEY+COMBO   Another shortcut
 
 | Field | Required | Description |
 |-------|----------|-------------|
-| `# Sheet Name:` | Optional | Name displayed in the overlay |
-| `# App:` | **Required** | Full path to the application bundle |
+| `# Sheet Name:` | Optional | Internal label for the file (not shown in the window; the window title shows the app's name) |
+| `# App:` | **Required** (except in `global.keyly`) | Full path to the application bundle |
+| `# Hide Default:` | Optional | `true` hides the app's own menu shortcuts, so only the ones in your file are shown |
+
+### Other Directives
+
+| Line | Description |
+|------|-------------|
+| `[Category]` | Starts a category; the shortcuts below it are listed under that name |
+| `> description` | Sub-title for the current category (see [Category Descriptions](#category-descriptions)) |
+| `# Group: Name - Description` | Groups the following categories into one card, with an optional description after ` - ` |
+| `# Group: none` | Ends the current group |
+
+### Shortcut Lines
+
+Each shortcut line can be written in one of two forms:
+
+```keyly
+CMD+SHIFT+T    Reopen last tab
+⇧⌘T | Reopen last tab
+tool attach <name> | Attach to a session
+```
+
+- **Whitespace form:** the key combo and the description are separated by a tab or two or more spaces (if there is none, the first space is used).
+- **`|` form:** everything before `|` is the shortcut, everything after it is the description. Use it when the shortcut itself contains spaces, such as a terminal command.
 
 ### Key Modifiers
 
 | Modifier | Symbol |
 |----------|--------|
-| `CMD` | ⌘ Command |
+| `CMD` or `COMMAND` | ⌘ Command |
 | `SHIFT` | ⇧ Shift |
-| `OPT` or `ALT` | ⌥ Option |
-| `CTRL` | ⌃ Control |
+| `OPT`, `OPTION` or `ALT` | ⌥ Option |
+| `CTRL` or `CONTROL` | ⌃ Control |
 
-Combine modifiers with `+`:
+Combine modifiers with `+`. They are shown in the macOS order (⌃⌥⇧⌘), whatever order you write them in:
 - `CMD+C` → ⌘C
-- `CMD+SHIFT+T` → ⌘⇧T
-- `CMD+OPT+ESC` → ⌘⌥⎋
+- `CMD+SHIFT+T` → ⇧⌘T
+- `CMD+OPT+ESC` → ⌥⌘esc
+
+Named keys are converted too: `ENTER`/`RETURN` → ⏎, `TAB` → ⇥, `DELETE`/`BACKSPACE` → ⌫, `UP`/`DOWN`/`LEFT`/`RIGHT` → ↑↓←→, plus `ESC`/`ESCAPE` and `SPACE`.
+
+## Global Shortcuts
+
+Shortcuts in `~/.config/keyly/templates/global.keyly` are shown for every app. This is the place for system shortcuts such as `⌘Tab` or `⌘Space`, which are not in any app's menu bar. It uses the same `[Category]`, `# Group:` and shortcut-line syntax, without an `# App:` line.
 
 ## Category Descriptions
 
 Add a description line after `[Category]` using `>` prefix:
 
-```
+```keyly
 [Chat]
 > Focus on chat panel first.
 CMD+L       Focus Chat
@@ -69,7 +102,7 @@ The description appears as a sub-title below the category name in the shortcuts 
 
 ## Complete Example
 
-```
+```keyly
 # Sheet Name: My Shortcuts
 # App: /Applications/Safari.app
 
@@ -101,26 +134,26 @@ CMD+SHIFT+W Close Window
 
 2. Create the config directory (if it doesn't exist):
    ```bash
-   mkdir -p ~/.config/keyly
+   mkdir -p ~/.config/keyly/templates
    ```
 
 3. Create a new `.keyly` file:
    ```bash
-   nano ~/.config/keyly/myapp.keyly
+   nano ~/.config/keyly/templates/myapp.keyly
    ```
 
 4. Add your shortcuts following the format above
 
-5. Save the file and reload Keyly from the menu bar
+5. Save the file. Keyly reloads it automatically (if the change doesn't show, use **⚙︎ → Reload Config** in the shortcuts window)
 </Steps>
 
 ## Tips
 
 - **One file per app** keeps things organized, but you can use any naming convention
 - **Categories** help group related shortcuts (use `[Category Name]` syntax)
-- **Comments** start with `#` and are ignored
-- **Whitespace** between key combo and description is flexible (spaces or tabs)
-- **Reload** Keyly after editing configs to see changes
+- **Comments** start with `#` and are ignored (except the directives above)
+- **Separate** the key combo and description with a tab or two or more spaces, or use `|` when the shortcut contains spaces
+- **Changes apply automatically** when you save a file; **⚙︎ → Reload Config** reloads manually
 
 ## Troubleshooting
 
@@ -128,7 +161,7 @@ CMD+SHIFT+W Close Window
 
 1. Check the `# App:` path is correct
 2. Make sure the app bundle exists at that path
-3. Reload Keyly from the menu bar
+3. Reload with **⚙︎ → Reload Config** in the shortcuts window
 4. Verify file encoding is UTF-8
 
 ### Wrong app bundle path?
@@ -145,7 +178,7 @@ ls ~/Applications/*.app
 Don't want to write configs from scratch? Use community templates:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install-templates.sh | bash -s -- -t cursor
+curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install-templates.sh | bash -s -- -t cursor.keyly
 ```
 
 See [Templates](/configuration/templates/) for available templates and options.

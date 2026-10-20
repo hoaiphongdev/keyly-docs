@@ -1,57 +1,56 @@
 ---
 title: "Cấu hình Keyly - Phím tắt & Cài đặt tùy chỉnh"
-description: "Tùy biến Keyly với file .keyly. Thêm phím tắt riêng, cài template cộng đồng, và điều chỉnh app theo workflow của bạn."
+description: "Tùy biến Keyly với file .keyly. Thêm phím tắt riêng, cài mẫu cộng đồng, và điều chỉnh Keyly theo cách bạn làm việc."
 ---
 
 import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 
-Keyly có thể tùy chỉnh thông qua file cấu hình `.keyly` lưu trong `~/.config/keyly/`.
+Keyly có thể tùy chỉnh thông qua file cấu hình `.keyly` lưu trong `~/.config/keyly/templates/`.
 
-## Vị trí Config
+## Vị trí cấu hình
 
 Tất cả file phím tắt tùy chỉnh được lưu trong:
 
 ```
-~/.config/keyly/
+~/.config/keyly/templates/
 ```
 
-Mở nhanh thư mục này từ menu bar: **biểu tượng ⌘ → Open Config**
+Mở nhanh thư mục cấu hình (`~/.config/keyly/`, chứa `templates/` và `setting.conf`) từ cửa sổ phím tắt: **nút ⚙︎ → Open Config Folder**
 
 ## Bạn có thể cấu hình gì
 
 <CardGrid>
   <LinkCard
     title="Phím tắt tùy chỉnh"
-    description="Tạo file .keyly để thêm phím tắt riêng cho bất kỳ app nào"
+    description="Tạo file .keyly để thêm phím tắt riêng cho bất kỳ ứng dụng nào"
     href="/vi/configuration/custom-shortcuts/"
   />
   <LinkCard
-    title="Templates"
-    description="Cài template phím tắt từ cộng đồng cho các app phổ biến"
+    title="Mẫu có sẵn"
+    description="Cài mẫu phím tắt do cộng đồng soạn cho các ứng dụng phổ biến"
     href="/vi/configuration/templates/"
   />
 </CardGrid>
 
 ## Cách hoạt động
 
-1. Tạo file `.keyly` trong `~/.config/keyly/`
-2. Định nghĩa phím tắt với danh mục và tổ hợp phím
-3. Keyly gộp phím tắt tùy chỉnh với phím tắt gốc của app
-4. Giữ ⌘ để xem tất cả cùng nhau
+1. Tạo file `.keyly` trong `~/.config/keyly/templates/`
+2. Khai báo phím tắt theo danh mục và tổ hợp phím
+3. Keyly gộp phím tắt tùy chỉnh với phím tắt gốc của ứng dụng
+4. Nhấn đúp Caps Lock để xem tất cả cùng nhau
 
 ## Ví dụ nhanh
 
-Tạo file `~/.config/keyly/safari.keyly`:
+Tạo file `~/.config/keyly/templates/safari.keyly`:
 
-```
-# Sheet Name: Safari Extras
+```keyly
+# Sheet Name: Safari nâng cao
 # App: /Applications/Safari.app
 
-[Navigation]
+[Điều hướng]
 CMD+L       Mở thanh địa chỉ
 CMD+T       Tab mới
 CMD+SHIFT+T Mở lại tab vừa đóng
 ```
 
-Xem [Phím tắt tùy chỉnh](/vi/configuration/custom-shortcuts/) để biết đầy đủ cú pháp, hoặc cài [Templates](/vi/configuration/templates/) để dùng config có sẵn.
-
+Xem [Phím tắt tùy chỉnh](/vi/configuration/custom-shortcuts/) để biết đầy đủ cú pháp, hoặc cài [mẫu có sẵn](/vi/configuration/templates/) để dùng cấu hình soạn sẵn.

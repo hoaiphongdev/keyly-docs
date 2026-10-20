@@ -1,0 +1,103 @@
+/*
+ * Design tokens, modelled on getartcraft.com: warm off-black / off-white,
+ * hairline rules, square corners, mono HUD labels. Accent stays Keyly pink.
+ * Unlayered on purpose so it wins over Starlight's @layer starlight.base.
+ */
+
+:root {
+  --kc-bg: #121316;
+  --kc-raised: #16171a;
+  --kc-sunken: #0b0b0d;
+  --kc-ink: #f2f1ee;
+  --kc-ink-strong: #fff;
+  --kc-muted: #a3a29f;
+  --kc-faint: #85847f;
+  --kc-line: rgb(242 241 238 / 0.13);
+  --kc-line-strong: rgb(242 241 238 / 0.4);
+  --kc-scanline: rgb(255 255 255 / 0.014);
+  --kc-glow: hsl(328 92% 64% / 0.22);
+
+  --kc-font-display: 'Archivo Variable', 'Inter Variable', system-ui, sans-serif;
+  --kc-font-serif: 'Instrument Serif', Georgia, serif;
+  --kc-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* Starlight mapping */
+  --sl-color-white: var(--kc-ink-strong);
+  --sl-color-gray-1: var(--kc-ink);
+  --sl-color-gray-2: #d2d1ce;
+  --sl-color-gray-3: var(--kc-muted);
+  --sl-color-gray-4: var(--kc-faint);
+  --sl-color-gray-5: #2c2d30;
+  --sl-color-gray-6: var(--kc-raised);
+  --sl-color-black: var(--kc-bg);
+
+  --sl-color-accent-high: hsl(328, 90%, 74%);
+  --sl-color-accent: hsl(328, 92%, 64%);
+  --sl-color-accent-low: hsl(328, 45%, 18%);
+
+  --sl-color-text: var(--sl-color-gray-2);
+  --sl-color-text-accent: var(--sl-color-accent-high);
+  --sl-color-bg: var(--kc-bg);
+  --sl-color-bg-nav: var(--kc-bg);
+  --sl-color-bg-sidebar: var(--kc-bg);
+  --sl-color-bg-inline-code: var(--kc-sunken);
+  --sl-color-hairline-light: var(--kc-line);
+  --sl-color-hairline: var(--kc-line);
+  --sl-color-hairline-shade: var(--kc-line);
+  --sl-color-backdrop-overlay: rgb(6 6 7 / 0.72);
+
+  --sl-font: 'Inter Variable', system-ui, sans-serif;
+  --sl-font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --sl-line-height: 1.7;
+  --sl-line-height-headings: 1.1;
+
+  --sl-nav-height: 3rem;
+  --sl-nav-pad-y: 0;
+  --sl-shadow-sm: none;
+  --sl-shadow-md: none;
+  --sl-shadow-lg: 0 24px 48px -12px rgb(0 0 0 / 0.6);
+
+  color-scheme: dark;
+}
+
+:root[data-theme='light'] {
+  --kc-bg: #f2f1ee;
+  --kc-raised: #faf9f7;
+  --kc-sunken: #e9e8e4;
+  --kc-ink: #101014;
+  --kc-ink-strong: #000;
+  --kc-muted: #55555b;
+  --kc-faint: #6b6a68;
+  --kc-line: rgb(16 16 20 / 0.14);
+  --kc-line-strong: rgb(16 16 20 / 0.4);
+  --kc-scanline: rgb(16 16 20 / 0.02);
+  --kc-glow: hsl(328 85% 60% / 0.18);
+
+  --sl-color-gray-2: #2b2b30;
+  --sl-color-gray-5: #d6d5d1;
+
+  --sl-color-accent-high: hsl(328, 75%, 38%);
+  --sl-color-accent: hsl(328, 80%, 50%);
+  --sl-color-accent-low: hsl(328, 70%, 92%);
+
+  --sl-color-backdrop-overlay: rgb(16 16 20 / 0.35);
+
+  color-scheme: light;
+}
+
+/* HUD label: the mono uppercase caption used across header, sidebar and sections */
+.kc-label {
+  font-family: var(--sl-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.kc-serif {
+  font-family: var(--kc-font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
