@@ -8,7 +8,7 @@ export default defineConfig({
   integrations: [
     starlight({
       title: "Keyly Docs",
-      credits: true,
+      credits: false,
       defaultLocale: "root",
       locales: {
         root: {
