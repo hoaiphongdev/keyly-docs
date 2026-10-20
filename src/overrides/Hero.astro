@@ -15,6 +15,8 @@ const titleHtml = title.replace(accent, `<em class="${isVi ? 'kc-italic' : 'kc-s
 const bar = isVi
 	? ['00 / Keyly', 'macOS 12+ · Miễn phí & mã nguồn mở']
 	: ['00 / Keyly', 'macOS 12+ · Free & open source'];
+const eyebrow = isVi ? 'Nhấn đúp' : 'Double-tap';
+const scrollLabel = isVi ? 'Cuộn' : 'Scroll';
 
 const ticker = isVi
 	? ['Nhấn đúp Caps Lock', 'Phím tắt tức thì', 'Phím tắt thật từ menu', 'Cấu hình tùy chỉnh', 'Giao diện hiện đại', 'Mã nguồn mở']
@@ -25,57 +27,72 @@ const lightImage = image && 'light' in image ? image.light : undefined;
 const rawHtml = image && 'html' in image ? image.html : undefined;
 ---
 
-<div class="kc-hero not-content">
+<section class="kc-hero not-content">
+	<div class="stage" aria-hidden="true">
+		<canvas class="keys"></canvas>
+		<div class="glow"></div>
+		<div class="vignette"></div>
+	</div>
+
 	<div class="bar kc-label">
 		<span>{bar[0]}</span>
 		<span class="bar-right">{bar[1]}</span>
 	</div>
 
-	<div class="body">
-		<div class="copy">
-			<h1 id="_top" data-page-title set:html={titleHtml} />
-			{tagline && <p class="tagline" set:html={tagline} />}
-			{
-				actions.length > 0 && (
-					<div class="actions">
-						{actions.map(
-							({ attrs: { class: className, ...attrs } = {}, icon, link: href, text, variant }) => (
-								<LinkButton {href} {variant} icon={icon?.name} class:list={[className]} {...attrs}>
-									{text}
-									{icon?.html && <Fragment set:html={icon.html} />}
-								</LinkButton>
-							)
-						)}
-					</div>
-				)
-			}
-		</div>
+	<div class="ruler" aria-hidden="true">
+		{[0, 5, 10, 15, 20].map((n) => <span class="kc-label">{n}</span>)}
+	</div>
 
+	<div class="body">
 		{
 			(darkImage || rawHtml) && (
-				<figure class="art">
-					<span class="tick tl" />
-					<span class="tick tr" />
-					<span class="tick bl" />
-					<span class="tick br" />
+				<div class="mark">
 					{darkImage && (
 						<Image
 							src={darkImage}
 							alt={image?.alt || ''}
-							width={320}
-							height={320}
+							width={160}
+							height={160}
 							loading="eager"
 							class:list={{ 'light:sl-hidden': Boolean(lightImage) }}
 						/>
 					)}
 					{lightImage && (
-						<Image src={lightImage} alt={image?.alt || ''} width={320} height={320} loading="eager" class="dark:sl-hidden" />
+						<Image src={lightImage} alt={image?.alt || ''} width={160} height={160} loading="eager" class="dark:sl-hidden" />
 					)}
-					{rawHtml && <div class="art-html" set:html={rawHtml} />}
-					<figcaption class="kc-label">Fig. 01 — Keyly</figcaption>
-				</figure>
+					{rawHtml && <div class="mark-html" set:html={rawHtml} />}
+				</div>
 			)
 		}
+
+		<p class="eyebrow kc-label">
+			<span>{eyebrow}</span>
+			<kbd>⇪</kbd>
+			<kbd>⇪</kbd>
+		</p>
+
+		<h1 id="_top" data-page-title set:html={titleHtml} />
+		{tagline && <p class="tagline" set:html={tagline} />}
+
+		{
+			actions.length > 0 && (
+				<div class="actions">
+					{actions.map(
+						({ attrs: { class: className, ...attrs } = {}, icon, link: href, text, variant }) => (
+							<LinkButton {href} {variant} icon={icon?.name} class:list={[className]} {...attrs}>
+								{text}
+								{icon?.html && <Fragment set:html={icon.html} />}
+							</LinkButton>
+						)
+					)}
+				</div>
+			)
+		}
+	</div>
+
+	<div class="scroll kc-label" aria-hidden="true">
+		<span class="scroll-line"></span>
+		{scrollLabel}
 	</div>
 
 	<div class="ticker kc-label" aria-hidden="true">
@@ -91,13 +108,261 @@ const rawHtml = image && 'html' in image ? image.html : undefined;
 			}
 		</div>
 	</div>
-</div>
+</section>
+
+<script>
+	// Background: a tilted floor of keycaps. Random keys light up as if typed, and every few
+	// seconds the Caps Lock key in the middle is double-tapped and sends a pink wave outward.
+	const LABELS = ['⌘', '⇧', '⌥', '⌃', '⏎', '⇥', 'esc', 'K', 'C', 'V', 'Z', 'S', 'T', 'W', 'P', 'F', 'L', 'R', 'N', 'A', '/', '.', '[', ']'];
+	const CELL = 52;
+	const GAP = 8;
+	const CYCLE = 4.2; // seconds between double-taps
+	const WAVE_SPEED = 700; // px per second
+	const WAVE_REACH = 1100; // px from Caps Lock where the wave has faded out
+	const HALF_LIFE = 0.28; // seconds for a lit key to lose half its glow
+	const KEYSTROKES_PER_SECOND = 4;
+
+	const canvas = document.querySelector<HTMLCanvasElement>('.kc-hero canvas.keys');
+	const ctx = canvas?.getContext('2d');
+
+	if (canvas && ctx) {
+		const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+		type Key = { x: number; y: number; label: string; energy: number; caps: boolean };
+		let keys: Key[] = [];
+		let width = 0;
+		let height = 0;
+		let center = { x: 0, y: 0 };
+		let colors = { line: '', label: '', accent: '', fill: '' };
+		let running = false;
+		let visible = true;
+		const start = performance.now();
+		let lastTap = -1;
+		let lastFrame = start;
+
+		const readColors = () => {
+			const css = getComputedStyle(document.documentElement);
+			colors = {
+				line: css.getPropertyValue('--kc-line').trim(),
+				label: css.getPropertyValue('--kc-faint').trim(),
+				accent: css.getPropertyValue('--sl-color-accent').trim(),
+				fill: css.getPropertyValue('--kc-raised').trim(),
+			};
+		};
+
+		const layout = () => {
+			width = canvas.offsetWidth;
+			height = canvas.offsetHeight;
+			// Cap the backing store (~6 MP) so huge screens don't redraw tens of millions of pixels
+			const dpr = Math.min(devicePixelRatio || 1, 2, Math.sqrt(6e6 / Math.max(1, width * height)));
+			canvas.width = Math.round(width * dpr);
+			canvas.height = Math.round(height * dpr);
+			ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+			const step = CELL + GAP;
+			const cols = Math.ceil(width / step) + 1;
+			const rows = Math.ceil(height / step) + 1;
+			const offsetX = (width - cols * step) / 2;
+			const offsetY = (height - rows * step) / 2;
+			const midCol = Math.floor(cols / 2);
+			const midRow = Math.floor(rows / 3);
+
+			keys = [];
+			for (let row = 0; row < rows; row++) {
+				for (let col = 0; col < cols; col++) {
+					const caps = row === midRow && col === midCol;
+					keys.push({
+						x: offsetX + col * step,
+						y: offsetY + row * step,
+						label: caps ? '⇪' : (LABELS[(row * 7 + col * 13) % LABELS.length] ?? 'K'),
+						energy: 0,
+						caps,
+					});
+				}
+			}
+			const capsKey = keys.find((k) => k.caps);
+			center = capsKey ? { x: capsKey.x + CELL / 2, y: capsKey.y + CELL / 2 } : { x: width / 2, y: height / 2 };
+		};
+
+		const drawKey = (key: Key, press = key.energy) => {
+			ctx.save();
+			ctx.translate(key.x, key.y + press * 3);
+
+			ctx.beginPath();
+			ctx.roundRect(0, 0, CELL, CELL, 8);
+			if (press > 0.02) {
+				ctx.shadowColor = colors.accent;
+				ctx.shadowBlur = 24 * press;
+				ctx.globalAlpha = 0.06 + press * 0.55;
+				ctx.fillStyle = colors.accent;
+				ctx.fill();
+				ctx.shadowBlur = 0;
+				ctx.globalAlpha = 1;
+			} else {
+				ctx.fillStyle = colors.fill;
+				ctx.fill();
+			}
+			ctx.lineWidth = 1;
+			ctx.strokeStyle = key.caps || press > 0.02 ? colors.accent : colors.line;
+			ctx.stroke();
+
+			ctx.fillStyle = press > 0.35 ? '#fff' : key.caps ? colors.accent : colors.label;
+			ctx.font = `500 ${key.label.length > 1 ? 13 : 18}px "Geist Mono", ui-monospace, monospace`;
+			ctx.textAlign = 'center';
+			ctx.textBaseline = 'middle';
+			ctx.fillText(key.label, CELL / 2, CELL / 2 + 1);
+			ctx.restore();
+		};
+
+		const frame = (now: number) => {
+			if (!running) return;
+			const t = (now - start) / 1000;
+			// Time-based decay so the glow lasts the same on slow and fast displays
+			const dt = Math.min(0.1, (now - lastFrame) / 1000);
+			lastFrame = now;
+			const decay = Math.pow(0.5, dt / HALF_LIFE);
+			const phase = t % CYCLE;
+			const cycle = Math.floor(t / CYCLE);
+
+			// Double-tap the Caps Lock key once per cycle
+			const capsKey = keys.find((k) => k.caps);
+			if (capsKey && cycle !== lastTap && phase > 0.2) {
+				lastTap = cycle;
+				capsKey.energy = 1;
+				setTimeout(() => (capsKey.energy = 1), 220);
+			}
+			const waveRadius = phase > 0.45 ? (phase - 0.45) * WAVE_SPEED : -1;
+
+			// A few random keystrokes per second
+			if (Math.random() < KEYSTROKES_PER_SECOND * dt) {
+				const key = keys[Math.floor(Math.random() * keys.length)];
+				if (key) key.energy = Math.max(key.energy, 0.55 + Math.random() * 0.45);
+			}
+
+			ctx.clearRect(0, 0, width, height);
+			for (const key of keys) {
+				// The wave only lights the ring it is passing through, so it reads as a crisp ripple
+				let wave = 0;
+				if (waveRadius > 0) {
+					const dist = Math.hypot(key.x + CELL / 2 - center.x, key.y + CELL / 2 - center.y);
+					const band = Math.abs(dist - waveRadius);
+					const strength = Math.max(0, 1 - waveRadius / WAVE_REACH) * 0.75;
+					if (band < 40) wave = (1 - band / 40) * strength;
+				}
+				drawKey(key, Math.max(key.energy, wave));
+				key.energy *= decay;
+			}
+			requestAnimationFrame(frame);
+		};
+
+		const drawStatic = () => {
+			ctx.clearRect(0, 0, width, height);
+			keys.forEach((key, i) => {
+				key.energy = key.caps ? 1 : i % 23 === 0 ? 0.5 : 0;
+				drawKey(key);
+			});
+		};
+
+		const update = () => {
+			const shouldRun = visible && !document.hidden && !reduceMotion.matches;
+			if (shouldRun && !running) {
+				running = true;
+				requestAnimationFrame(frame);
+			} else if (!shouldRun) {
+				running = false;
+				drawStatic();
+			}
+		};
+
+		readColors();
+		layout();
+		drawStatic();
+		update();
+
+		new ResizeObserver(() => {
+			layout();
+			if (!running) drawStatic();
+		}).observe(canvas);
+		new IntersectionObserver(([entry]) => {
+			visible = entry?.isIntersecting ?? true;
+			update();
+		}).observe(canvas);
+		document.addEventListener('visibilitychange', update);
+		reduceMotion.addEventListener('change', update);
+		new MutationObserver(() => {
+			readColors();
+			if (!running) drawStatic();
+		}).observe(document.documentElement, { attributeFilter: ['data-theme'] });
+		document.fonts?.ready.then(() => {
+			if (!running) drawStatic();
+		});
+
+		// Subtle parallax: the floor leans toward the pointer
+		const hero = canvas.closest<HTMLElement>('.kc-hero');
+		hero?.addEventListener('pointermove', (event) => {
+			if (reduceMotion.matches) return;
+			const rect = hero.getBoundingClientRect();
+			hero.style.setProperty('--px', ((event.clientX - rect.left) / rect.width - 0.5).toFixed(3));
+			hero.style.setProperty('--py', ((event.clientY - rect.top) / rect.height - 0.5).toFixed(3));
+		});
+	}
+</script>
 
 <style>
 	.kc-hero {
+		--px: 0;
+		--py: 0;
+		position: relative;
+		display: grid;
+		grid-template-rows: auto 1fr auto;
+		min-height: calc(100svh - var(--sl-nav-height));
 		margin-inline: calc(-1 * clamp(1rem, 4vw, 2.5rem));
+		overflow: hidden;
+		isolation: isolate;
 		border-bottom: 1px solid var(--kc-line);
 	}
+
+	/* ---------- Animated background ---------- */
+
+	.stage {
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		perspective: 900px;
+		perspective-origin: 50% 30%;
+	}
+	.keys {
+		position: absolute;
+		left: -40%;
+		top: 18%;
+		width: 180%;
+		height: 120%;
+		transform-origin: 50% 0%;
+		transform: rotateX(58deg) rotateZ(calc(var(--px) * -4deg)) translate3d(calc(var(--px) * -40px), calc(var(--py) * -30px), 0);
+		transition: transform 600ms var(--kc-ease);
+		mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 70%, transparent 100%);
+		opacity: 0.9;
+		animation: kc-floor-in 1400ms var(--kc-ease) both;
+	}
+	.glow {
+		position: absolute;
+		left: 50%;
+		top: 58%;
+		width: min(70rem, 120vw);
+		aspect-ratio: 2;
+		translate: -50% -50%;
+		background: radial-gradient(closest-side, var(--kc-glow), transparent);
+		filter: blur(20px);
+		animation: kc-breathe 4.2s ease-in-out infinite;
+	}
+	.vignette {
+		position: absolute;
+		inset: 0;
+		background:
+			radial-gradient(ellipse 60% 45% at 50% 42%, var(--kc-bg) 0%, color-mix(in srgb, var(--kc-bg) 70%, transparent) 45%, transparent 75%),
+			linear-gradient(to bottom, var(--kc-bg) 0%, transparent 18%, transparent 80%, var(--kc-bg) 100%);
+	}
+
+	/* ---------- HUD ---------- */
 
 	.bar {
 		display: flex;
@@ -106,112 +371,158 @@ const rawHtml = image && 'html' in image ? image.html : undefined;
 		padding: 0.75rem clamp(1rem, 4vw, 2.5rem);
 		border-bottom: 1px solid var(--kc-line);
 		color: var(--kc-muted);
+		background: color-mix(in srgb, var(--kc-bg) 60%, transparent);
 	}
 
-	.body {
-		display: grid;
-		gap: 2.5rem;
-		align-items: center;
-		padding: clamp(2.5rem, 8vw, 6rem) clamp(1rem, 4vw, 2.5rem);
-	}
-
-	.copy {
+	.ruler {
+		position: absolute;
+		top: 3.5rem;
+		bottom: 4rem;
+		right: 0;
+		width: 2.75rem;
 		display: flex;
 		flex-direction: column;
+		justify-content: space-between;
+		align-items: flex-end;
+		border-left: 1px solid var(--kc-line);
+		background: repeating-linear-gradient(to bottom, var(--kc-line) 0 1px, transparent 1px 1.5rem) right / 0.5rem 100% no-repeat;
+		color: var(--kc-faint);
+		pointer-events: none;
+	}
+	.ruler span {
+		font-size: 0.625rem;
+		letter-spacing: 0.05em;
+		padding-right: 0.875rem;
+	}
+
+	.scroll {
+		position: absolute;
+		left: clamp(1rem, 4vw, 2.5rem);
+		bottom: 4.25rem;
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		color: var(--kc-faint);
+	}
+	.scroll-line {
+		position: relative;
+		width: 1px;
+		height: 2.5rem;
+		overflow: hidden;
+		background: var(--kc-line);
+	}
+	.scroll-line::after {
+		content: '';
+		position: absolute;
+		inset-inline: 0;
+		top: -40%;
+		height: 40%;
+		background: var(--sl-color-accent);
+		animation: kc-scroll 1.8s var(--kc-ease) infinite;
+	}
+
+	/* ---------- Copy ---------- */
+
+	.body {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
 		gap: 1.5rem;
-		min-width: 0;
+		padding: clamp(2rem, 6vh, 4rem) clamp(1rem, 4vw, 2.5rem);
+		text-align: center;
+	}
+
+	.mark {
+		width: 5rem;
+		filter: drop-shadow(0 0 2rem var(--kc-glow));
+		animation: kc-rise 700ms var(--kc-ease) both;
+	}
+	.mark img,
+	.mark-html {
+		width: 100%;
+		height: auto;
+	}
+
+	.eyebrow {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin: 0;
+		padding: 0.375rem 0.75rem;
+		border: 1px solid var(--kc-line-strong);
+		background: color-mix(in srgb, var(--kc-bg) 70%, transparent);
+		color: var(--kc-muted);
+		-webkit-backdrop-filter: blur(8px);
+		backdrop-filter: blur(8px);
+		animation: kc-rise 700ms 60ms var(--kc-ease) both;
+	}
+	.eyebrow kbd {
+		display: inline-grid;
+		place-items: center;
+		min-width: 1.5rem;
+		height: 1.5rem;
+		border: 1px solid var(--sl-color-accent);
+		color: var(--sl-color-text-accent);
+		font: inherit;
+		animation: kc-tap 4.2s infinite;
+	}
+	.eyebrow kbd + kbd {
+		animation-delay: 0.22s;
 	}
 
 	h1 {
 		margin: 0;
-		max-width: 18ch;
+		max-width: 20ch;
 		font-family: var(--kc-font-display);
-		font-size: clamp(2.5rem, 1.6rem + 3.6vw, 4.25rem);
-		font-weight: 620;
-		letter-spacing: -0.035em;
-		line-height: 1.02;
+		font-size: clamp(2.5rem, 1.2rem + 5.2vw, 6rem);
+		font-weight: 650;
+		letter-spacing: -0.04em;
+		line-height: 0.98;
 		color: var(--kc-ink-strong);
 		text-wrap: balance;
-		animation: kc-rise 600ms var(--kc-ease) both;
+		animation: kc-rise 800ms 120ms var(--kc-ease) both;
 	}
 	h1 :global(em) {
 		font-style: italic;
 	}
 	h1 :global(.kc-serif) {
-		font-size: 1.08em;
+		font-size: 1.1em;
 		letter-spacing: -0.01em;
-		color: var(--sl-color-accent-high);
+		color: var(--sl-color-text-accent);
 	}
 	h1 :global(.kc-italic) {
 		font-weight: 520;
-		color: var(--sl-color-accent-high);
+		color: var(--sl-color-text-accent);
 	}
 
 	.tagline {
 		margin: 0;
-		max-width: 46ch;
-		font-size: clamp(1rem, 0.9rem + 0.4vw, 1.1875rem);
+		max-width: 44ch;
+		font-size: clamp(1rem, 0.9rem + 0.45vw, 1.25rem);
 		line-height: 1.6;
 		color: var(--sl-color-gray-2);
-		animation: kc-rise 600ms 80ms var(--kc-ease) both;
+		animation: kc-rise 800ms 200ms var(--kc-ease) both;
 	}
 
 	.actions {
 		display: flex;
 		flex-wrap: wrap;
+		justify-content: center;
 		gap: 0.75rem;
 		margin-top: 0.5rem;
-		animation: kc-rise 600ms 160ms var(--kc-ease) both;
+		animation: kc-rise 800ms 280ms var(--kc-ease) both;
 	}
 
-	.art {
-		position: relative;
-		display: grid;
-		place-items: center;
-		width: min(100%, 26rem);
-		aspect-ratio: 1;
-		margin: 0 auto;
-		border: 1px solid var(--kc-line);
-		background:
-			radial-gradient(closest-side, var(--kc-glow), transparent),
-			repeating-linear-gradient(90deg, var(--kc-line) 0 1px, transparent 1px 2.75rem),
-			repeating-linear-gradient(0deg, var(--kc-line) 0 1px, transparent 1px 2.75rem);
-		background-color: var(--kc-sunken);
-		animation: kc-fade 900ms 120ms ease both;
-	}
-	.art img,
-	.art-html {
-		width: 62%;
-		height: auto;
-		filter: drop-shadow(0 0 2.5rem var(--kc-glow));
-	}
-	.art figcaption {
-		position: absolute;
-		inset-inline: 0;
-		bottom: 0;
-		padding: 0.5rem 0.75rem;
-		border-top: 1px solid var(--kc-line);
-		background: var(--kc-bg);
-		color: var(--kc-faint);
-	}
-	.tick {
-		position: absolute;
-		width: 0.625rem;
-		height: 0.625rem;
-		border-color: var(--sl-color-accent);
-		border-style: solid;
-		border-width: 0;
-	}
-	.tl { top: -1px; left: -1px; border-top-width: 1px; border-left-width: 1px; }
-	.tr { top: -1px; right: -1px; border-top-width: 1px; border-right-width: 1px; }
-	.bl { bottom: -1px; left: -1px; border-bottom-width: 1px; border-left-width: 1px; }
-	.br { bottom: -1px; right: -1px; border-bottom-width: 1px; border-right-width: 1px; }
+	/* ---------- Ticker ---------- */
 
-	/* Feature strip, scrolling like the reference's marquee */
 	.ticker {
 		overflow: hidden;
 		border-top: 1px solid var(--kc-line);
 		color: var(--kc-muted);
+		background: color-mix(in srgb, var(--kc-bg) 75%, transparent);
+		-webkit-backdrop-filter: blur(8px);
+		backdrop-filter: blur(8px);
 		mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
 	}
 	.track {
@@ -229,7 +540,7 @@ const rawHtml = image && 'html' in image ? image.html : undefined;
 		display: flex;
 		align-items: center;
 		gap: 2.5rem;
-		padding: 0.75rem 0 0.75rem 2.5rem;
+		padding: 0.875rem 0 0.875rem 2.5rem;
 		white-space: nowrap;
 	}
 	.ticker li::after {
@@ -239,27 +550,58 @@ const rawHtml = image && 'html' in image ? image.html : undefined;
 		background: var(--sl-color-accent);
 	}
 
-	@media (min-width: 50rem) {
-		.body {
-			grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
-			gap: clamp(2rem, 5vw, 4rem);
-		}
-	}
 	@media (max-width: 50rem) {
-		.bar-right {
+		.bar-right,
+		.ruler,
+		.scroll {
 			display: none;
 		}
+		.keys {
+			top: 28%;
+		}
 	}
+
+	/* ---------- Motion ---------- */
 
 	@keyframes kc-rise {
 		from {
 			opacity: 0;
-			transform: translateY(12px);
+			transform: translateY(16px);
 		}
 	}
-	@keyframes kc-fade {
+	@keyframes kc-floor-in {
 		from {
 			opacity: 0;
+		}
+	}
+	@keyframes kc-breathe {
+		0%,
+		100% {
+			opacity: 0.55;
+			scale: 0.92;
+		}
+		15% {
+			opacity: 1;
+			scale: 1.05;
+		}
+	}
+	@keyframes kc-tap {
+		0%,
+		4%,
+		100% {
+			background: transparent;
+			color: var(--sl-color-text-accent);
+			transform: none;
+		}
+		2% {
+			background: var(--sl-color-accent);
+			color: #fff;
+			transform: translateY(1px);
+		}
+	}
+	@keyframes kc-scroll {
+		to {
+			top: 100%;
 		}
 	}
 	@keyframes kc-marquee {
@@ -269,8 +611,14 @@ const rawHtml = image && 'html' in image ? image.html : undefined;
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.track {
+		.track,
+		.glow,
+		.eyebrow kbd,
+		.scroll-line::after {
 			animation: none;
+		}
+		.keys {
+			transition: none;
 		}
 	}
 </style>

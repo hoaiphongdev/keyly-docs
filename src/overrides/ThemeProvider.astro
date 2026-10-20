@@ -1,0 +1,26 @@
+---
+// Same as Starlight's ThemeProvider, except a first visit is always dark instead of
+// following prefers-color-scheme. A theme picked with the toggle is still remembered.
+import { Icon } from '@astrojs/starlight/components';
+---
+
+{/* This is intentionally inlined to avoid FOUC. */}
+<script is:inline>
+	window.StarlightThemeProvider = (() => {
+		let storedTheme = null;
+		try {
+			storedTheme = localStorage.getItem('starlight-theme');
+		} catch {}
+		document.documentElement.dataset.theme = storedTheme === 'light' ? 'light' : 'dark';
+		return {
+			// Kept for API compatibility with Starlight components that call it
+			updatePickers() {},
+		};
+	})();
+</script>
+
+<template id="theme-icons">
+	<Icon name="sun" class="light" />
+	<Icon name="moon" class="dark" />
+	<Icon name="laptop" class="auto" />
+</template>

@@ -16,22 +16,13 @@ const toDark = `${label}: ${t('themeSelect.dark')}`;
 </kc-theme-toggle>
 
 <script>
-	// Same storage key and data-theme attribute as Starlight's ThemeProvider,
-	// so its inline FOUC script keeps applying the saved choice on load.
+	// Same storage key and data-theme attribute as overrides/ThemeProvider.astro, whose
+	// inline script applies the saved choice on load (dark when nothing is saved).
 	type Theme = 'dark' | 'light';
 
 	const storageKey = 'starlight-theme';
 	const root = document.documentElement;
-	const prefersLight = matchMedia('(prefers-color-scheme: light)');
 	const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
-
-	const stored = (): string | null => {
-		try {
-			return localStorage.getItem(storageKey);
-		} catch {
-			return null;
-		}
-	};
 
 	const syncLabels = () => {
 		const next = root.dataset.theme === 'light' ? 'dark' : 'light';
@@ -53,13 +44,6 @@ const toDark = `${label}: ${t('themeSelect.dark')}`;
 		root.dataset.theme = theme;
 		syncLabels();
 	};
-
-	// Until someone picks a theme, keep following the OS setting (Starlight's "auto")
-	prefersLight.addEventListener('change', () => {
-		if (stored() !== 'light' && stored() !== 'dark') {
-			applyTheme(prefersLight.matches ? 'light' : 'dark');
-		}
-	});
 
 	class KcThemeToggle extends HTMLElement {
 		constructor() {

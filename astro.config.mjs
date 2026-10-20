@@ -92,6 +92,7 @@ export default defineConfig({
         Head: "./src/overrides/Head.astro",
         LanguageSelect: "./src/overrides/LanguageSelect.astro",
         Search: "./src/overrides/Search.astro",
+        ThemeProvider: "./src/overrides/ThemeProvider.astro",
         ThemeSelect: "./src/overrides/ThemeSelect.astro",
         Hero: "./src/overrides/Hero.astro",
         TableOfContents: "./src/overrides/TableOfContents.astro",
