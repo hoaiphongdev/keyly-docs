@@ -12,10 +12,10 @@ Mẫu (template) là các file `.keyly` do cộng đồng soạn sẵn cho các 
 Dùng script cài mẫu để tải về từ GitHub:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install-templates.sh | bash -s -- -t cursor
+curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install-templates.sh | bash -s -- -t cursor.keyly
 ```
 
-Lệnh này cài mẫu cho Cursor IDE vào `~/.config/keyly/cursor.keyly`.
+Lệnh này cài mẫu cho Cursor IDE vào `~/.config/keyly/templates/cursor.keyly`.
 
 ## Các mẫu hiện có
 
@@ -36,7 +36,7 @@ Vị trí ứng dụng có thể khác do:
 - Ứng dụng được cài ở thư mục khác
 
 **Nếu mẫu không chạy sau khi cài:**
-1. Mở file `.keyly` trong `~/.config/keyly/`
+1. Mở file `.keyly` trong `~/.config/keyly/templates/`
 2. Tìm dòng `# App:` ở đầu file
 3. Sửa lại đường dẫn cho đúng vị trí thật của ứng dụng
 
@@ -63,7 +63,7 @@ Ví dụ sửa:
 
 | Tham số | Mô tả | Ví dụ |
 |---------|-------|-------|
-| `-t <tên>` | Tên mẫu (bắt buộc) | `-t cursor` |
+| `-t <tên>` | Tên mẫu (bắt buộc) | `-t cursor.keyly` |
 
 ### Tham số tùy chọn
 
@@ -78,21 +78,21 @@ Ví dụ sửa:
 
 ```bash
 # Cài mẫu Cursor
-curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install-templates.sh | bash -s -- -t cursor
+curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install-templates.sh | bash -s -- -t cursor.keyly
 ```
 
 ### Đặt tên file khác
 
 ```bash
 # Cài với tên file tùy chọn
-curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install-templates.sh | bash -s -- -t cursor -n cursor-custom.keyly
+curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install-templates.sh | bash -s -- -t cursor.keyly -n cursor-custom.keyly
 ```
 
 ### Ghi đè file cũ
 
 ```bash
-# Ghi đè mà không hỏi
-curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install-templates.sh | bash -s -- -t cursor -f
+# Ghi đè file đã có cùng tên
+curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install-templates.sh | bash -s -- -t cursor.keyly -f
 ```
 
 ## Quy trình cài đặt
@@ -100,8 +100,8 @@ curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/ins
 <Steps>
 1. Script kiểm tra tên mẫu
 2. Tải mẫu từ GitHub
-3. Nếu file đã tồn tại, hỏi bạn muốn sao lưu hay ghi đè (trừ khi dùng `-f`)
-4. Lưu vào `~/.config/keyly/`
+3. Nếu đã có file cùng tên, script dừng lại, báo lỗi và gợi ý dùng `-f` (có `-f` thì file cũ bị ghi đè)
+4. Lưu vào `~/.config/keyly/templates/`
 5. Sẵn sàng dùng — nhấn đúp Caps Lock để xem phím tắt
 </Steps>
 
@@ -134,7 +134,7 @@ Muốn tạo mẫu cho ứng dụng bạn yêu thích?
 <Steps>
 1. Tạo file `.keyly` theo [cú pháp phím tắt tùy chỉnh](/vi/configuration/custom-shortcuts/)
 2. Thêm mô tả danh mục bằng `> gợi ý` để có ngữ cảnh
-3. Chạy thử trên máy trong `~/.config/keyly/`
+3. Chạy thử trên máy trong `~/.config/keyly/templates/`
 4. Gửi pull request tới [kho mã Keyly](https://github.com/hoaiphongdev/keyly)
 </Steps>
 

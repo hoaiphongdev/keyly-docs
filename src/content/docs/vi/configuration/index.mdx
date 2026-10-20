@@ -5,17 +5,17 @@ description: "Tùy biến Keyly với file .keyly. Thêm phím tắt riêng, cà
 
 import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 
-Keyly có thể tùy chỉnh thông qua file cấu hình `.keyly` lưu trong `~/.config/keyly/`.
+Keyly có thể tùy chỉnh thông qua file cấu hình `.keyly` lưu trong `~/.config/keyly/templates/`.
 
 ## Vị trí cấu hình
 
 Tất cả file phím tắt tùy chỉnh được lưu trong:
 
 ```
-~/.config/keyly/
+~/.config/keyly/templates/
 ```
 
-Mở nhanh thư mục này từ cửa sổ phím tắt: **nút ⚙︎ → Open Config Folder**
+Mở nhanh thư mục cấu hình (`~/.config/keyly/`, chứa `templates/` và `setting.conf`) từ cửa sổ phím tắt: **nút ⚙︎ → Open Config Folder**
 
 ## Bạn có thể cấu hình gì
 
@@ -34,14 +34,14 @@ Mở nhanh thư mục này từ cửa sổ phím tắt: **nút ⚙︎ → Open C
 
 ## Cách hoạt động
 
-1. Tạo file `.keyly` trong `~/.config/keyly/`
+1. Tạo file `.keyly` trong `~/.config/keyly/templates/`
 2. Khai báo phím tắt theo danh mục và tổ hợp phím
 3. Keyly gộp phím tắt tùy chỉnh với phím tắt gốc của ứng dụng
 4. Nhấn đúp Caps Lock để xem tất cả cùng nhau
 
 ## Ví dụ nhanh
 
-Tạo file `~/.config/keyly/safari.keyly`:
+Tạo file `~/.config/keyly/templates/safari.keyly`:
 
 ```
 # Sheet Name: Safari nâng cao

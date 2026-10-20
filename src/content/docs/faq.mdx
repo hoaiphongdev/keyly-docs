@@ -25,7 +25,7 @@ Keyly does not log keystrokes, send data anywhere, or access anything beyond wha
 
 ### How do I show the shortcuts overlay?
 
-Double-tap the **⇪ Caps Lock** key. Press **ESC** or click outside to hide.
+Double-tap the **⇪ Caps Lock** key. Press **ESC** or click outside to hide (if you typed in the search field, the first ESC clears the search).
 
 ### Why don't I see all shortcuts for some apps?
 
@@ -49,7 +49,7 @@ Keyly works with any app that has a standard macOS menu bar. For apps without me
 
 ### Where do I put custom shortcut files?
 
-In `~/.config/keyly/`. Open this folder quickly via the **⚙︎ button in the shortcuts window → Open Config Folder**.
+In `~/.config/keyly/templates/`. Open the config folder quickly via the **⚙︎ button in the shortcuts window → Open Config Folder** (it opens `~/.config/keyly/`, which contains `templates/`).
 
 ### Can I add shortcuts for multiple apps in one file?
 
@@ -57,7 +57,7 @@ Each `.keyly` file should target one app (specified in the `# App:` header). Cre
 
 ### How do I reload after editing configs?
 
-Click the **⚙︎ button** in the shortcuts window and select **Reload Config**.
+Keyly reloads config files automatically when you save them. To reload manually, click the **⚙︎ button** in the shortcuts window and select **Reload Config**.
 
 ### Why doesn't the template work after installation?
 
@@ -66,7 +66,7 @@ Templates use default app paths that may not match your system. The app path can
 - Version-specific bundle names (e.g., `Cursor - Nightly.app`)
 - Custom installation locations (`~/Applications/`)
 
-**Fix:** Open the `.keyly` file in `~/.config/keyly/`, find the `# App:` line, and update it to your app's actual path.
+**Fix:** Open the `.keyly` file in `~/.config/keyly/templates/`, find the `# App:` line, and update it to your app's actual path.
 
 See [Troubleshooting → Template Not Working](/troubleshooting/#template-not-working-after-installation) for detailed steps.
 
@@ -132,7 +132,7 @@ Please [open an issue on GitHub](https://github.com/hoaiphongdev/keyly/issues).
       "name": "How do I show the shortcuts overlay?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Double-tap the ⇪ Caps Lock key. Press ESC or click outside to hide."
+        "text": "Double-tap the ⇪ Caps Lock key. Press ESC or click outside to hide (if you typed in the search field, the first ESC clears the search)."
       }
     },
     {
@@ -164,7 +164,7 @@ Please [open an issue on GitHub](https://github.com/hoaiphongdev/keyly/issues).
       "name": "Where do I put custom shortcut files?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "In ~/.config/keyly/. Open this folder quickly via the ⚙︎ button in the shortcuts window → Open Config Folder."
+        "text": "In ~/.config/keyly/templates/. Open the config folder quickly via the ⚙︎ button in the shortcuts window → Open Config Folder (it opens ~/.config/keyly/, which contains templates/)."
       }
     },
     {
@@ -180,7 +180,7 @@ Please [open an issue on GitHub](https://github.com/hoaiphongdev/keyly/issues).
       "name": "How do I reload after editing configs?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Click the ⚙︎ button in the shortcuts window and select Reload Config."
+        "text": "Keyly reloads config files automatically when you save them. To reload manually, click the ⚙︎ button in the shortcuts window and select Reload Config."
       }
     },
     {

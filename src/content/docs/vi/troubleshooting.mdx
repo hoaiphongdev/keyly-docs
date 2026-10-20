@@ -32,7 +32,11 @@ Sau khi bật quyền, có thể cần khởi động lại Keyly để thay đ�
 
 ### Nhấn đúp Caps Lock đủ nhanh
 
-Bấm Caps Lock **2 lần trong vòng nửa giây**. macOS bỏ qua những lần chạm Caps Lock quá nhẹ, nên hãy bấm dứt khoát. Nếu bạn đã đổi chức năng Caps Lock trong **Cài đặt hệ thống → Bàn phím → Phím bổ trợ** (System Settings → Keyboard → Modifier Keys), hãy đặt `super_key` khác trong `~/.config/keyly/setting.conf`.
+Bấm Caps Lock **2 lần trong vòng nửa giây**. macOS bỏ qua những lần chạm Caps Lock quá nhẹ, nên hãy bấm dứt khoát. Nếu bạn đã đổi chức năng Caps Lock trong **Cài đặt hệ thống → Bàn phím → Phím bổ trợ** (System Settings → Keyboard → Modifier Keys), hãy đặt `super_key` khác trong `~/.config/keyly/setting.conf`. Nếu `super_key` là tên phím Keyly không nhận ra, Keyly sẽ dùng lại phím mặc định (Caps Lock).
+
+### Caps Lock dùng để chuyển nguồn nhập
+
+Nếu bạn bật tùy chọn **Dùng phím Caps Lock để chuyển đổi đến và đi từ ABC** (Use the Caps Lock key to switch to and from ABC) trong **Cài đặt hệ thống → Bàn phím → Nguồn nhập → Sửa…** (System Settings → Keyboard → Input Sources → Edit…), macOS sẽ dùng Caps Lock để chuyển nguồn nhập thay vì bật/tắt Caps Lock, nên Keyly có thể không nhận được cú nhấn đúp. Hãy tắt tùy chọn này, hoặc đặt `super_key` khác trong `~/.config/keyly/setting.conf`.
 
 ### Kiểm tra ứng dụng có thanh menu không
 
@@ -63,7 +67,7 @@ Bạn có thể tự thêm các phím tắt bị thiếu:
 
 Đảm bảo file `.keyly` nằm trong:
 ```
-~/.config/keyly/
+~/.config/keyly/templates/
 ```
 
 ### Kiểm tra đường dẫn ứng dụng
@@ -96,7 +100,7 @@ Lý do phổ biến nhất khiến mẫu không chạy là **đường dẫn ứ
 ### Cách khắc phục
 
 <Steps>
-1. Mở file mẫu trong `~/.config/keyly/`
+1. Mở file mẫu trong `~/.config/keyly/templates/`
 2. Tìm dòng `# App:` ở đầu file
 3. Sửa lại đường dẫn cho đúng vị trí thật của ứng dụng
 </Steps>
@@ -119,11 +123,11 @@ Ví dụ:
 # App: /Applications/Cursor - Nightly.app
 ```
 
-Sau khi sửa, tải lại Keyly: **nút ⚙︎ → Reload Config** trong cửa sổ phím tắt
+Keyly tự tải lại file khi bạn lưu. Nếu chưa thấy thay đổi, dùng **nút ⚙︎ → Reload Config** trong cửa sổ phím tắt
 
 ### Tải lại Keyly
 
-Sau khi sửa cấu hình, tải lại từ cửa sổ phím tắt: **nút ⚙︎ → Reload Config**
+File cấu hình tự tải lại mỗi khi bạn lưu. Muốn tải lại thủ công, dùng **nút ⚙︎ → Reload Config** trong cửa sổ phím tắt
 
 ### Kiểm tra bảng mã của file
 
@@ -160,7 +164,7 @@ Sau đó mở lại Keyly.
 
 ## Cập nhật
 
-Keyly tự kiểm tra bản mới mỗi 6 tiếng. Khi có bản mới, biểu tượng trên thanh menu hiện chấm đỏ và menu có thêm mục **Update to x.y.z…**. Bạn cũng có thể bấm **Check for Updates…** bất cứ lúc nào.
+Keyly tự kiểm tra bản mới mỗi 6 tiếng. Khi có bản mới, biểu tượng trên thanh menu hiện chấm đỏ và menu có thêm mục **Update to x.y.z…**. Bạn cũng có thể bấm **Check for Updates...** bất cứ lúc nào.
 
 ### Nâng cấp từ 1.7.3 trở về trước
 

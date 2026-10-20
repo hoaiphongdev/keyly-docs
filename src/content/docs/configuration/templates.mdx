@@ -12,10 +12,10 @@ Templates are pre-made `.keyly` files created by the community for popular appli
 Use the template installer script to download templates from GitHub:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install-templates.sh | bash -s -- -t cursor
+curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install-templates.sh | bash -s -- -t cursor.keyly
 ```
 
-This installs the Cursor IDE template to `~/.config/keyly/cursor.keyly`.
+This installs the Cursor IDE template to `~/.config/keyly/templates/cursor.keyly`.
 
 ## Available Templates
 
@@ -36,7 +36,7 @@ App locations can vary due to:
 - Custom installation paths
 
 **If a template doesn't work after installation:**
-1. Open the `.keyly` file in `~/.config/keyly/`
+1. Open the `.keyly` file in `~/.config/keyly/templates/`
 2. Find the `# App:` line at the top
 3. Update it to match your app's actual location
 
@@ -63,7 +63,7 @@ Example fix:
 
 | Flag | Description | Example |
 |------|-------------|---------|
-| `-t <name>` | Template name (required) | `-t cursor` |
+| `-t <name>` | Template name (required) | `-t cursor.keyly` |
 
 ### Optional Flags
 
@@ -78,21 +78,21 @@ Example fix:
 
 ```bash
 # Install Cursor template
-curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install-templates.sh | bash -s -- -t cursor
+curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install-templates.sh | bash -s -- -t cursor.keyly
 ```
 
 ### Custom Filename
 
 ```bash
 # Install with custom name
-curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install-templates.sh | bash -s -- -t cursor -n cursor-custom.keyly
+curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install-templates.sh | bash -s -- -t cursor.keyly -n cursor-custom.keyly
 ```
 
 ### Force Replace
 
 ```bash
-# Replace existing file without prompt
-curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install-templates.sh | bash -s -- -t cursor -f
+# Replace an existing file with the same name
+curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install-templates.sh | bash -s -- -t cursor.keyly -f
 ```
 
 ## What Happens
@@ -100,8 +100,8 @@ curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/ins
 <Steps>
 1. Script validates the template name
 2. Downloads the template from GitHub
-3. If file exists, prompts to backup or replace (unless `-f` is used)
-4. Saves to `~/.config/keyly/`
+3. If a file with the same name already exists, stops with an error and suggests `-f` (with `-f`, the file is replaced)
+4. Saves to `~/.config/keyly/templates/`
 5. Ready to use — double-tap Caps Lock to see shortcuts
 </Steps>
 
@@ -134,7 +134,7 @@ Want to create a template for your favorite app?
 <Steps>
 1. Create a `.keyly` file following the [custom shortcuts syntax](/configuration/custom-shortcuts/)
 2. Add category descriptions using `> hint text` for helpful context
-3. Test it locally in `~/.config/keyly/`
+3. Test it locally in `~/.config/keyly/templates/`
 4. Submit a PR to the [Keyly repository](https://github.com/hoaiphongdev/keyly)
 </Steps>
 

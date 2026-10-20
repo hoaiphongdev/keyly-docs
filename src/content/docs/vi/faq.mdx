@@ -25,7 +25,7 @@ Keyly không ghi lại phím bấm, không gửi dữ liệu đi đâu, không t
 
 ### Làm sao để hiện cửa sổ phím tắt?
 
-Nhấn đúp phím **⇪ Caps Lock**. Bấm **ESC** hoặc click ra ngoài để ẩn.
+Nhấn đúp phím **⇪ Caps Lock**. Bấm **ESC** hoặc click ra ngoài để ẩn (nếu bạn đã gõ vào ô tìm kiếm, lần ESC đầu tiên sẽ xóa nội dung tìm kiếm).
 
 ### Tại sao một số ứng dụng không hiển thị đầy đủ phím tắt?
 
@@ -49,7 +49,7 @@ Keyly hoạt động với bất kỳ ứng dụng nào có thanh menu chuẩn c
 
 ### File phím tắt tùy chỉnh để ở đâu?
 
-Trong `~/.config/keyly/`. Mở nhanh thư mục này qua **nút ⚙︎ trong cửa sổ phím tắt → Open Config Folder**.
+Trong `~/.config/keyly/templates/`. Mở nhanh thư mục cấu hình qua **nút ⚙︎ trong cửa sổ phím tắt → Open Config Folder** (mục này mở `~/.config/keyly/`, nơi chứa `templates/`).
 
 ### Có thể thêm phím tắt cho nhiều ứng dụng trong một file không?
 
@@ -57,7 +57,7 @@ Mỗi file `.keyly` chỉ dành cho một ứng dụng (khai báo ở dòng `# A
 
 ### Làm sao để tải lại sau khi sửa cấu hình?
 
-Click **nút ⚙︎** trong cửa sổ phím tắt và chọn **Reload Config**.
+Keyly tự tải lại file cấu hình mỗi khi bạn lưu. Muốn tải lại thủ công, click **nút ⚙︎** trong cửa sổ phím tắt và chọn **Reload Config**.
 
 ### Tại sao mẫu không hoạt động sau khi cài?
 
@@ -66,7 +66,7 @@ Mẫu dùng đường dẫn ứng dụng mặc định, có thể không khớp 
 - Tên file `.app` kèm phiên bản (ví dụ: `Cursor - Nightly.app`)
 - Ứng dụng được cài ở thư mục khác (`~/Applications/`)
 
-**Cách sửa:** Mở file `.keyly` trong `~/.config/keyly/`, tìm dòng `# App:`, và sửa lại đường dẫn cho đúng vị trí thật của ứng dụng.
+**Cách sửa:** Mở file `.keyly` trong `~/.config/keyly/templates/`, tìm dòng `# App:`, và sửa lại đường dẫn cho đúng vị trí thật của ứng dụng.
 
 Xem chi tiết tại [Xử lý sự cố → Mẫu không hoạt động](/vi/troubleshooting/#mẫu-không-hoạt-động-sau-khi-cài).
 
@@ -124,7 +124,7 @@ Vui lòng [mở issue trên GitHub](https://github.com/hoaiphongdev/keyly/issues
       "name": "Keyly có an toàn không? Tại sao cần quyền Trợ năng?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Keyly cần quyền Trợ năng (Accessibility) để: 1) Phát hiện khi bạn nhấn đúp Caps Lock để hiện cửa sổ phím tắt, 2) Đọc thanh menu để lấy phím tắt từ các ứng dụng khác. Keyly không ghi lại phím bấm, không gửi dữ liệu đi đâu."
+        "text": "Keyly cần quyền Trợ năng (Accessibility) để: 1) Phát hiện khi bạn nhấn đúp Caps Lock để hiện cửa sổ phím tắt, 2) Đọc thanh menu để lấy phím tắt từ các ứng dụng khác. Keyly không ghi lại phím bấm, không gửi dữ liệu đi đâu, không truy cập gì ngoài những gì cần để hiển thị phím tắt."
       }
     },
     {
@@ -132,7 +132,7 @@ Vui lòng [mở issue trên GitHub](https://github.com/hoaiphongdev/keyly/issues
       "name": "Làm sao để hiện cửa sổ phím tắt?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Nhấn đúp phím ⇪ Caps Lock. Bấm ESC hoặc click ra ngoài để ẩn."
+        "text": "Nhấn đúp phím ⇪ Caps Lock. Bấm ESC hoặc click ra ngoài để ẩn (nếu bạn đã gõ vào ô tìm kiếm, lần ESC đầu tiên sẽ xóa nội dung tìm kiếm)."
       }
     },
     {
@@ -164,7 +164,7 @@ Vui lòng [mở issue trên GitHub](https://github.com/hoaiphongdev/keyly/issues
       "name": "File phím tắt tùy chỉnh để ở đâu?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Trong ~/.config/keyly/. Mở nhanh thư mục này qua nút ⚙︎ trong cửa sổ phím tắt → Open Config Folder."
+        "text": "Trong ~/.config/keyly/templates/. Mở nhanh thư mục cấu hình qua nút ⚙︎ trong cửa sổ phím tắt → Open Config Folder (mục này mở ~/.config/keyly/, nơi chứa templates/)."
       }
     },
     {
@@ -180,7 +180,7 @@ Vui lòng [mở issue trên GitHub](https://github.com/hoaiphongdev/keyly/issues
       "name": "Làm sao để tải lại sau khi sửa cấu hình?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Click nút ⚙︎ trong cửa sổ phím tắt và chọn Reload Config."
+        "text": "Keyly tự tải lại file cấu hình mỗi khi bạn lưu. Muốn tải lại thủ công, click nút ⚙︎ trong cửa sổ phím tắt và chọn Reload Config."
       }
     },
     {
