@@ -126,11 +126,63 @@ const rows = [0, 1, 2].map((r) => apps.filter((_, i) => i % 3 === r));
 			root.querySelector('.readout')?.animate([{ opacity: 0.4 }, { opacity: 1 }], { duration: 250 });
 		};
 
+		// Lumin gets priority: while its tile is well inside the wall, every other tick lands on it
+		// (up to LUMIN_HITS times per pass); the rest of the time the readout walks the list in order.
+		const LUMIN_HITS = 4;
+		const rowsEl = root.querySelector<HTMLElement>('.rows')!;
+		const lumin = apps.findIndex((app) => app.name === 'Lumin');
+		const luminTiles = tiles.filter((tile) => tile.dataset.app === String(lumin));
+		let luminHits = 0;
+		let ticks = 0;
+		let cursor = 0;
+
+		const luminInView = () => {
+			const box = rowsEl.getBoundingClientRect();
+			const inset = box.width * 0.1;
+			return luminTiles.some((tile) => {
+				const r = tile.getBoundingClientRect();
+				return r.left >= box.left + inset && r.right <= box.right - inset;
+			});
+		};
+
+		const tick = () => {
+			if (hovering) return;
+			ticks++;
+			if (lumin >= 0 && luminInView()) {
+				if (luminHits < LUMIN_HITS && ticks % 2 === 0) {
+					luminHits++;
+					return select(lumin);
+				}
+			} else luminHits = 0;
+			cursor = (cursor + 1) % apps.length;
+			if (cursor === lumin) cursor = (cursor + 1) % apps.length;
+			select(cursor);
+		};
+
 		const start = () => {
 			clearInterval(auto);
 			if (reduceMotion) return;
-			auto = window.setInterval(() => !hovering && select((current + 1) % apps.length), 1800);
+			auto = window.setInterval(tick, 1800);
 		};
+
+		// Hovering the wall eases the marquee down to a crawl instead of stopping it
+		const tracks = [...root.querySelectorAll<HTMLElement>('.track')];
+		let rate = 1;
+		let rateFrame = 0;
+		const easeRate = (target: number) => {
+			cancelAnimationFrame(rateFrame);
+			const step = () => {
+				rate += (target - rate) * 0.12;
+				if (Math.abs(target - rate) < 0.01) rate = target;
+				tracks.forEach((track) => track.getAnimations().forEach((animation) => (animation.playbackRate = rate)));
+				if (rate !== target) rateFrame = requestAnimationFrame(step);
+			};
+			rateFrame = requestAnimationFrame(step);
+		};
+		if (!reduceMotion) {
+			rowsEl.addEventListener('pointerenter', () => easeRate(0.2));
+			rowsEl.addEventListener('pointerleave', () => easeRate(1));
+		}
 
 		tiles.forEach((tile) => {
 			const pick = () => {
@@ -199,9 +251,6 @@ const rows = [0, 1, 2].map((r) => apps.filter((_, i) => i % 3 === r));
 	}
 	.row:nth-child(3) .track {
 		animation-duration: 58s;
-	}
-	.rows:hover .track {
-		animation-play-state: paused;
 	}
 
 	.tile {
