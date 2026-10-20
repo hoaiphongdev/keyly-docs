@@ -16,6 +16,8 @@ const bar = isVi
 	? ['00 / Keyly', 'macOS 12+ · Miễn phí & mã nguồn mở']
 	: ['00 / Keyly', 'macOS 12+ · Free & open source'];
 const eyebrow = isVi ? 'Nhấn đúp' : 'Double-tap';
+const tryIt = isVi ? 'Thử ngay' : 'Try it';
+const tryLabel = isVi ? 'Mở bản demo cửa sổ phím tắt của Keyly' : "Open a demo of Keyly's shortcuts window";
 const scrollLabel = isVi ? 'Cuộn' : 'Scroll';
 
 const ticker = isVi
@@ -65,11 +67,13 @@ const rawHtml = image && 'html' in image ? image.html : undefined;
 			)
 		}
 
-		<p class="eyebrow kc-label">
+		{/* Opens the KeylyDemo window; double-tapping Caps Lock does the same */}
+		<button type="button" class="eyebrow kc-label" aria-label={tryLabel} onclick="dispatchEvent(new Event('keyly:demo'))">
 			<span>{eyebrow}</span>
 			<kbd>⇪</kbd>
 			<kbd>⇪</kbd>
-		</p>
+			<span class="try">{tryIt} →</span>
+		</button>
 
 		<h1 id="_top" data-page-title set:html={titleHtml} />
 		{tagline && <p class="tagline" set:html={tagline} />}
@@ -434,7 +438,7 @@ const rawHtml = image && 'html' in image ? image.html : undefined;
 	}
 
 	.mark {
-		width: 5rem;
+		width: clamp(7rem, 11vw, 10.5rem);
 		filter: drop-shadow(0 0 2rem var(--kc-glow));
 		animation: kc-rise 700ms var(--kc-ease) both;
 	}
@@ -455,7 +459,21 @@ const rawHtml = image && 'html' in image ? image.html : undefined;
 		color: var(--kc-muted);
 		-webkit-backdrop-filter: blur(8px);
 		backdrop-filter: blur(8px);
+		cursor: pointer;
+		transition:
+			border-color 150ms ease,
+			color 150ms ease;
 		animation: kc-rise 700ms 60ms var(--kc-ease) both;
+	}
+	.eyebrow:hover {
+		border-color: var(--sl-color-accent);
+		color: var(--kc-ink);
+	}
+	.eyebrow .try {
+		padding-left: 0.625rem;
+		margin-left: 0.125rem;
+		border-left: 1px solid var(--kc-line-strong);
+		color: var(--sl-color-text-accent);
 	}
 	.eyebrow kbd {
 		display: inline-grid;

@@ -95,6 +95,7 @@ export default defineConfig({
         ThemeProvider: "./src/overrides/ThemeProvider.astro",
         ThemeSelect: "./src/overrides/ThemeSelect.astro",
         Hero: "./src/overrides/Hero.astro",
+        Footer: "./src/overrides/Footer.astro",
         TableOfContents: "./src/overrides/TableOfContents.astro",
       },
     }),

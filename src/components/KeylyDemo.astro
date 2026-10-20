@@ -1,0 +1,800 @@
+---
+// A working replica of Keyly's shortcuts window (Sources/Keyly/Windows in the app repo).
+// Double-tap Caps Lock anywhere on the site, or dispatch `keyly:demo` on window, to open it.
+// Sizes and colours mirror WindowConstants.swift.
+---
+
+<dialog class="kd" aria-label="Keyly shortcuts window (demo)">
+	<div class="kd-window" tabindex="-1">
+		<header class="kd-header">
+			<span class="kd-app-icon" aria-hidden="true"></span>
+			<span class="kd-app-name"></span>
+			<span class="kd-count"></span>
+		</header>
+		<label class="kd-search">
+			<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.6" fill="none" stroke="currentColor" stroke-width="1.5"></circle><path d="m10.4 10.4 3.4 3.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
+			<input type="search" spellcheck="false" autocomplete="off" aria-label="Search shortcuts" />
+			<button type="button" class="kd-clear" aria-label="Clear search" hidden>
+				<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="currentColor"></circle><path d="m5.5 5.5 5 5m0-5-5 5" stroke="#2a2a2c" stroke-width="1.4" stroke-linecap="round"></path></svg>
+			</button>
+		</label>
+		<div class="kd-scroll">
+			<div class="kd-grid"></div>
+			<p class="kd-empty" hidden></p>
+		</div>
+		<footer class="kd-footer">
+			<span class="kd-hint"><span class="kd-caps"><kbd>esc</kbd></span><span class="kd-esc-label">Close</span></span>
+			<span class="kd-hint kd-type-hint">Type to search</span>
+			<button type="button" class="kd-gear" aria-label="Settings" aria-haspopup="menu" aria-expanded="false">
+				<svg viewBox="0 0 20 20" aria-hidden="true"><path fill="currentColor" d="M10 6.6a3.4 3.4 0 1 0 0 6.8 3.4 3.4 0 0 0 0-6.8Zm0 5.5a2.1 2.1 0 1 1 0-4.2 2.1 2.1 0 0 1 0 4.2Zm7.1-3.2-1.5-.3a5.8 5.8 0 0 0-.5-1.2l.9-1.3a.7.7 0 0 0-.1-.9l-1.1-1.1a.7.7 0 0 0-.9-.1l-1.3.9a5.8 5.8 0 0 0-1.2-.5l-.3-1.5a.7.7 0 0 0-.7-.6H8.6a.7.7 0 0 0-.7.6l-.3 1.5c-.4.1-.8.3-1.2.5l-1.3-.9a.7.7 0 0 0-.9.1L3.1 5.1a.7.7 0 0 0-.1.9l.9 1.3c-.2.4-.4.8-.5 1.2l-1.5.3a.7.7 0 0 0-.6.7v1.6c0 .3.3.6.6.7l1.5.3c.1.4.3.8.5 1.2l-.9 1.3a.7.7 0 0 0 .1.9l1.1 1.1c.2.2.6.3.9.1l1.3-.9c.4.2.8.4 1.2.5l.3 1.5c.1.3.4.6.7.6h1.6c.3 0 .6-.3.7-.6l.3-1.5c.4-.1.8-.3 1.2-.5l1.3.9c.3.2.7.1.9-.1l1.1-1.1c.2-.2.3-.6.1-.9l-.9-1.3c.2-.4.4-.8.5-1.2l1.5-.3c.3-.1.6-.4.6-.7V9.6a.7.7 0 0 0-.6-.7Zm-.7 2-1.6.3a.6.6 0 0 0-.5.5c-.1.6-.4 1.1-.7 1.6a.6.6 0 0 0 0 .7l.9 1.4-.6.6-1.4-.9a.6.6 0 0 0-.7 0c-.5.3-1 .6-1.6.7a.6.6 0 0 0-.5.5l-.3 1.6h-.8l-.3-1.6a.6.6 0 0 0-.5-.5c-.6-.1-1.1-.4-1.6-.7a.6.6 0 0 0-.7 0l-1.4.9-.6-.6.9-1.4a.6.6 0 0 0 0-.7c-.3-.5-.6-1-.7-1.6a.6.6 0 0 0-.5-.5l-1.6-.3v-.8l1.6-.3c.3-.1.5-.3.5-.5.1-.6.4-1.1.7-1.6a.6.6 0 0 0 0-.7l-.9-1.4.6-.6 1.4.9c.2.1.5.1.7 0 .5-.3 1-.6 1.6-.7.3-.1.5-.3.5-.5l.3-1.6h.8l.3 1.6c.1.3.3.5.5.5.6.1 1.1.4 1.6.7.2.1.5.1.7 0l1.4-.9.6.6-.9 1.4a.6.6 0 0 0 0 .7c.3.5.6 1 .7 1.6.1.3.3.5.5.5l1.6.3v.8Z"></path></svg>
+			</button>
+			<div class="kd-menu" role="menu" hidden>
+				<button type="button" role="menuitem">Reload Config<span>⌘R</span></button>
+				<button type="button" role="menuitem">Open Config Folder</button>
+				<hr />
+				<button type="button" role="menuitem">Open Accessibility Settings</button>
+				<button type="button" role="menuitem">Check for Updates...</button>
+				<hr />
+				<button type="button" role="menuitem" data-quit>Quit Keyly<span>⌘Q</span></button>
+			</div>
+		</footer>
+	</div>
+</dialog>
+
+<script>
+	import { demoAppFor, type DemoBlock, type DemoCategory, type DemoGroup } from './keyly-demo-data';
+
+	// --- Constants mirrored from WindowConstants.swift ---
+	const COLUMN_WIDTH = 200;
+	const COMPACT_COLUMN_WIDTH = 180;
+	const COMPACT_SCREEN_WIDTH = 1300;
+	const COLUMN_SPACING = 20;
+	const ROW_SPACING = 16;
+	const PADDING = 16;
+	const CHROME_HEIGHT = 16 + 28 + 8 + 32 + 12 + 4 + 32;
+	const MIN_WINDOW_WIDTH = 460;
+	const MIN_WINDOW_HEIGHT = 240;
+	const MAX_SCREEN_HEIGHT_RATIO = 0.8;
+	// The app defaults to 0.7; the demo uses 0.8 (screen_width_ratio) so long menu names fit
+	const SCREEN_WIDTH_RATIO = 0.8;
+	const GROUP_PADDING = 12;
+	const GROUP_INNER_SPACING = 16;
+	const GROUP_MIN_INNER_COLUMN = 220;
+	const GROUP_SINGLE_COLUMN_LIMIT = 10;
+	const GROUP_MAX_INNER_COLUMNS = 4;
+	const DOUBLE_TAP_INTERVAL = 500; // AppConstants.doubleClickTimeInterval
+	const MODIFIERS = new Set(['⌘', '⌃', '⌥', '⇧']);
+
+	const dialog = document.querySelector<HTMLDialogElement>('dialog.kd');
+
+	if (dialog) {
+		const win = dialog.querySelector<HTMLElement>('.kd-window')!;
+		const appIcon = dialog.querySelector<HTMLElement>('.kd-app-icon')!;
+		const appName = dialog.querySelector<HTMLElement>('.kd-app-name')!;
+		const count = dialog.querySelector<HTMLElement>('.kd-count')!;
+		const input = dialog.querySelector<HTMLInputElement>('.kd-search input')!;
+		const clear = dialog.querySelector<HTMLButtonElement>('.kd-clear')!;
+		const scroll = dialog.querySelector<HTMLElement>('.kd-scroll')!;
+		const grid = dialog.querySelector<HTMLElement>('.kd-grid')!;
+		const empty = dialog.querySelector<HTMLElement>('.kd-empty')!;
+		const escLabel = dialog.querySelector<HTMLElement>('.kd-esc-label')!;
+		const typeHint = dialog.querySelector<HTMLElement>('.kd-type-hint')!;
+		const gear = dialog.querySelector<HTMLButtonElement>('.kd-gear')!;
+		const menu = dialog.querySelector<HTMLElement>('.kd-menu')!;
+
+		type Row = { el: HTMLElement; action: HTMLElement; text: string; label: string };
+		type Block = { el: HTMLElement; span: number; rows: Row[]; sections?: HTMLElement[] };
+		let blocks: Block[] = [];
+		let rows: Row[] = [];
+		let numColumns = 1;
+		let columnWidth = COLUMN_WIDTH;
+		let contentWidth = 0;
+		let returnFocus: HTMLElement | null = null;
+
+		// --- Keycaps: same splitting as Keycaps.tokenize in ShortcutRowView.swift ---
+		const tokenize = (shortcut: string): string[][] => {
+			const chords: string[][] = [];
+			let current: string[] = [];
+			let key = '';
+			const closeChord = () => {
+				if (key.length > 1 && key.startsWith('+') && current.length) key = key.slice(1);
+				if (key) {
+					current.push(key);
+					key = '';
+				}
+				if (current.length) {
+					chords.push(current);
+					current = [];
+				}
+			};
+			for (const ch of shortcut) {
+				if (ch === ' ') closeChord();
+				else if (MODIFIERS.has(ch)) {
+					if (key) closeChord();
+					current.push(ch);
+				} else key += ch;
+			}
+			closeChord();
+			return chords;
+		};
+
+		const keycaps = (shortcut: string) => {
+			const wrap = document.createElement('span');
+			wrap.className = 'kd-keys';
+			for (const chord of tokenize(shortcut)) {
+				const group = document.createElement('span');
+				group.className = 'kd-chord';
+				for (const cap of chord) {
+					const kbd = document.createElement('kbd');
+					kbd.textContent = cap;
+					group.append(kbd);
+				}
+				wrap.append(group);
+			}
+			return wrap;
+		};
+
+		const el = (tag: string, className: string, text?: string) => {
+			const node = document.createElement(tag);
+			node.className = className;
+			if (text !== undefined) node.textContent = text;
+			return node;
+		};
+
+		const makeSection = (category: DemoCategory, group?: DemoGroup) => {
+			const section = el('section', 'kd-section');
+			section.append(el('h3', 'kd-category', category.title));
+			if (category.description) section.append(el('p', 'kd-desc', category.description));
+			const sectionRows = category.shortcuts.map(({ action, keys }) => {
+				const row = el('div', 'kd-row');
+				const actionEl = el('span', 'kd-action', action);
+				row.append(actionEl, keycaps(keys));
+				row.title = `${action}  ${keys}`;
+				section.append(row);
+				return {
+					el: row,
+					action: actionEl,
+					label: action,
+					text: [action, category.title, group?.group, category.description, group?.description, keys]
+						.filter(Boolean)
+						.join('\n')
+						.toLowerCase(),
+				};
+			});
+			rows.push(...sectionRows);
+			return { section, rows: sectionRows };
+		};
+
+		const build = () => {
+			const app = demoAppFor(navigator.userAgent);
+			appName.textContent = app.name;
+			appIcon.style.setProperty('--a', app.color[0]);
+			appIcon.style.setProperty('--b', app.color[1]);
+			input.placeholder = `Search in ${app.name}…`;
+
+			grid.replaceChildren();
+			blocks = [];
+			rows = [];
+			for (const block of app.blocks as DemoBlock[]) {
+				if ('group' in block) {
+					const card = el('div', 'kd-group');
+					const title = el('div', 'kd-group-title');
+					title.append(el('span', 'kd-accent'), el('span', '', block.group));
+					card.append(title);
+					if (block.description) card.append(el('p', 'kd-group-desc', block.description));
+					const inner = el('div', 'kd-group-inner');
+					const parts = block.categories.map((category) => makeSection(category, block));
+					parts.forEach((part) => inner.append(part.section));
+					card.append(inner);
+					const itemCount = parts.reduce((n, part) => n + part.rows.length, 0);
+					const span = itemCount > GROUP_SINGLE_COLUMN_LIMIT ? Math.max(1, Math.min(parts.length, GROUP_MAX_INNER_COLUMNS)) : 1;
+					blocks.push({ el: card, span, rows: parts.flatMap((p) => p.rows), sections: parts.map((p) => p.section) });
+				} else {
+					const part = makeSection(block);
+					blocks.push({ el: part.section, span: 1, rows: part.rows });
+				}
+			}
+			blocks.forEach((block) => grid.append(block.el));
+		};
+
+		// --- Sizing: ShortcutsWindow.sizeWindow ---
+		const size = () => {
+			const screenWidth = innerWidth;
+			const maxWindowWidth = Math.max(MIN_WINDOW_WIDTH, screenWidth * SCREEN_WIDTH_RATIO);
+			const maxGridWidth = Math.min(maxWindowWidth, screenWidth - 24) - PADDING * 2;
+			const minColumn = screenWidth < COMPACT_SCREEN_WIDTH ? COMPACT_COLUMN_WIDTH : COLUMN_WIDTH;
+
+			// Widest row decides the column width; rows in a group card lose its padding
+			grid.classList.add('kd-measuring');
+			const widest = Math.max(
+				minColumn,
+				// +4: scrollWidth rounds down sub-pixel text widths
+				...rows.map((row) => row.el.scrollWidth + 4 + (row.el.closest('.kd-group') ? GROUP_PADDING * 2 : 0))
+			);
+			grid.classList.remove('kd-measuring');
+
+			// Unlike the app (which packs columns at the minimum width and may truncate), the demo
+			// only adds columns that fit the widest row, so no action is cut off
+			const maxPossible = Math.max(1, Math.floor((maxGridWidth + COLUMN_SPACING) / (widest + COLUMN_SPACING)));
+			const wanted = Math.max(...blocks.map((b) => b.span), blocks.length);
+			numColumns = Math.max(1, Math.min(wanted, maxPossible));
+
+			const fitting = (maxGridWidth - (numColumns - 1) * COLUMN_SPACING) / numColumns;
+			columnWidth = Math.floor(numColumns === 1 ? fitting : Math.min(widest, fitting));
+			const gridWidth = numColumns * columnWidth + (numColumns - 1) * COLUMN_SPACING;
+			const windowWidth = Math.max(gridWidth + PADDING * 2, Math.min(MIN_WINDOW_WIDTH, screenWidth - 24));
+			contentWidth = windowWidth - PADDING * 2;
+			win.style.width = `${windowWidth}px`;
+
+			const gridHeight = layout();
+			const maxHeight = innerHeight * MAX_SCREEN_HEIGHT_RATIO;
+			win.style.height = `${Math.min(Math.max(CHROME_HEIGHT + gridHeight, MIN_WINDOW_HEIGHT), maxHeight)}px`;
+		};
+
+		// --- Masonry: ShortcutsWindow.layoutGrid (each block goes to the shortest column) ---
+		const layout = () => {
+			const gridWidth = numColumns * columnWidth + (numColumns - 1) * COLUMN_SPACING;
+			const offset = Math.max(0, Math.floor((contentWidth - gridWidth) / 2));
+			const heights = new Array(numColumns).fill(0);
+
+			for (const block of blocks) {
+				const visible = block.rows.some((row) => !row.el.hidden);
+				block.el.hidden = !visible;
+				if (!visible) continue;
+				block.sections?.forEach((section) => {
+					section.hidden = !Array.from(section.querySelectorAll<HTMLElement>('.kd-row')).some((row) => !row.hidden);
+				});
+
+				const span = Math.min(block.span, numColumns);
+				const width = span * columnWidth + (span - 1) * COLUMN_SPACING;
+				block.el.style.width = `${width}px`;
+				if (block.sections) {
+					const innerWidth = width - GROUP_PADDING * 2;
+					const fits = Math.max(1, Math.floor((innerWidth + GROUP_INNER_SPACING) / (GROUP_MIN_INNER_COLUMN + GROUP_INNER_SPACING)));
+					block.el.style.setProperty('--inner', String(Math.min(block.span, fits)));
+				}
+
+				let best = 0;
+				let bestY = Infinity;
+				for (let start = 0; start <= numColumns - span; start++) {
+					const y = Math.max(...heights.slice(start, start + span));
+					if (y < bestY) {
+						bestY = y;
+						best = start;
+					}
+				}
+				block.el.style.transform = `translate(${offset + best * (columnWidth + COLUMN_SPACING)}px, ${bestY}px)`;
+				const height = block.el.offsetHeight;
+				for (let c = best; c < best + span; c++) heights[c] = bestY + height + ROW_SPACING;
+			}
+
+			const height = Math.max(0, Math.max(...heights) - ROW_SPACING);
+			grid.style.height = `${height}px`;
+			return height;
+		};
+
+		// --- Search: ShortcutsWindow.applySearch / updateStatus ---
+		const escapeHtml = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+		const search = () => {
+			const query = input.value.trim().toLowerCase();
+			let visible = 0;
+			for (const row of rows) {
+				const match = !query || row.text.includes(query);
+				row.el.hidden = !match;
+				if (!match) continue;
+				visible++;
+				const at = query ? row.label.toLowerCase().indexOf(query) : -1;
+				row.action.innerHTML =
+					at < 0
+						? escapeHtml(row.label)
+						: `${escapeHtml(row.label.slice(0, at))}<mark>${escapeHtml(row.label.slice(at, at + query.length))}</mark>${escapeHtml(row.label.slice(at + query.length))}`;
+			}
+			layout();
+			scroll.scrollTop = 0;
+
+			const total = rows.length;
+			count.textContent = query ? `${visible} of ${total}` : `${total} shortcut${total === 1 ? '' : 's'}`;
+			typeHint.hidden = Boolean(query);
+			escLabel.textContent = query ? 'Clear search' : 'Close';
+			clear.hidden = !input.value;
+			empty.hidden = visible > 0;
+			if (!visible) {
+				empty.innerHTML = `<strong>No shortcuts match “${escapeHtml(input.value.trim())}”</strong>Try an action name, a menu, or a key like ⌘K`;
+			}
+		};
+
+		const closeMenu = () => {
+			menu.hidden = true;
+			gear.setAttribute('aria-expanded', 'false');
+		};
+
+		const open = () => {
+			if (!dialog.open) {
+				returnFocus = document.activeElement as HTMLElement | null;
+				build();
+				dialog.showModal();
+			}
+			// Showing again resets the popup, like the app does
+			input.value = '';
+			closeMenu();
+			search();
+			size();
+			win.focus({ preventScroll: true });
+		};
+
+		const close = () => {
+			if (!dialog.open) return;
+			dialog.close();
+			returnFocus?.focus?.({ preventScroll: true });
+		};
+
+		// --- Trigger: double-tap Caps Lock, counting only real toggles (AppDelegate.swift) ---
+		let capsOn: boolean | null = null;
+		let lastTap = 0;
+		let taps = 0;
+		const isEditable = (target: EventTarget | null) =>
+			target instanceof HTMLElement && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName));
+		const onCaps = (event: KeyboardEvent) => {
+			if (event.key !== 'CapsLock' && event.code !== 'CapsLock') return;
+			const on = event.getModifierState('CapsLock');
+			if (on === capsOn) return;
+			capsOn = on;
+			if (isEditable(event.target)) return;
+			const now = performance.now();
+			taps = now - lastTap < DOUBLE_TAP_INTERVAL ? taps + 1 : 1;
+			lastTap = now;
+			if (taps >= 2) {
+				taps = 0;
+				open();
+			}
+		};
+		addEventListener('keydown', onCaps);
+		addEventListener('keyup', onCaps);
+		addEventListener('keyly:demo', open);
+
+		// --- Window behaviour ---
+		dialog.addEventListener('keydown', (event) => {
+			if (event.key === 'Escape') {
+				event.preventDefault();
+				if (!menu.hidden) closeMenu();
+				else if (input.value) {
+					input.value = '';
+					search();
+					win.focus({ preventScroll: true });
+				} else close();
+				return;
+			}
+			// Type-to-search: a printable key goes into the search field
+			if (event.key.length === 1 && !event.metaKey && !event.ctrlKey && !event.altKey && document.activeElement !== input) {
+				input.focus({ preventScroll: true });
+			}
+		});
+		dialog.addEventListener('click', (event) => {
+			if (!win.contains(event.target as Node)) close();
+			else if (!menu.contains(event.target as Node) && event.target !== gear && !gear.contains(event.target as Node)) closeMenu();
+		});
+		input.addEventListener('input', search);
+		clear.addEventListener('click', () => {
+			input.value = '';
+			search();
+			input.focus();
+		});
+		gear.addEventListener('click', () => {
+			const willOpen = menu.hidden;
+			menu.hidden = !willOpen;
+			gear.setAttribute('aria-expanded', String(willOpen));
+		});
+		menu.addEventListener('click', (event) => {
+			const item = (event.target as Element).closest('button');
+			if (!item) return;
+			closeMenu();
+			if (item.hasAttribute('data-quit')) close();
+		});
+		addEventListener('resize', () => dialog.open && size());
+	}
+</script>
+
+<style is:global>
+	/* Always dark, like the app (NSAppearance .darkAqua) */
+	dialog.kd {
+		--kd-accent: #0a84ff;
+		--kd-font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter Variable', system-ui, sans-serif;
+		position: fixed;
+		inset: 0;
+		width: 100vw;
+		height: 100vh;
+		max-width: none;
+		max-height: none;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		background: transparent;
+		color: rgb(255 255 255 / 0.85);
+		font-family: var(--kd-font);
+		color-scheme: dark;
+		overflow: hidden;
+	}
+	dialog.kd[open] {
+		display: grid;
+		place-items: center;
+	}
+	dialog.kd::backdrop {
+		background: transparent;
+	}
+
+	.kd-window {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		max-width: calc(100vw - 24px);
+		max-height: 80vh;
+		border-radius: 14px;
+		background: rgb(40 40 44 / 0.72);
+		-webkit-backdrop-filter: blur(40px) saturate(1.8);
+		backdrop-filter: blur(40px) saturate(1.8);
+		box-shadow:
+			inset 0 0 0 0.5px rgb(255 255 255 / 0.1),
+			0 0 0 0.5px rgb(0 0 0 / 0.6),
+			0 24px 70px rgb(0 0 0 / 0.55);
+		outline: none;
+		animation: kd-show 160ms ease-out;
+	}
+	@keyframes kd-show {
+		from {
+			opacity: 0;
+		}
+	}
+
+	.kd-header {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		height: 28px;
+		margin: 16px 18px 0;
+	}
+	.kd-app-icon {
+		flex: none;
+		width: 20px;
+		height: 20px;
+		border-radius: 5px;
+		background:
+			radial-gradient(circle at 50% 50%, transparent 4px, rgb(255 255 255 / 0.9) 4.5px, rgb(255 255 255 / 0.9) 5.5px, transparent 6px),
+			linear-gradient(160deg, var(--a), var(--b));
+		box-shadow: inset 0 0 0 0.5px rgb(255 255 255 / 0.25);
+	}
+	.kd-app-name {
+		flex: 1;
+		min-width: 0;
+		overflow: hidden;
+		font-size: 13px;
+		font-weight: 600;
+		color: rgb(255 255 255 / 0.95);
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	.kd-count {
+		font-size: 11px;
+		font-variant-numeric: tabular-nums;
+		color: rgb(255 255 255 / 0.5);
+		white-space: nowrap;
+	}
+
+	.kd-search {
+		position: relative;
+		display: flex;
+		align-items: center;
+		height: 32px;
+		margin: 8px 16px 0;
+		border-radius: 8px;
+		background: rgb(255 255 255 / 0.07);
+		box-shadow: inset 0 0 0 0.5px rgb(255 255 255 / 0.12);
+		color: rgb(255 255 255 / 0.5);
+		cursor: text;
+	}
+	.kd-search:focus-within {
+		box-shadow:
+			inset 0 0 0 0.5px rgb(255 255 255 / 0.12),
+			0 0 0 3.5px color-mix(in srgb, var(--kd-accent) 55%, transparent);
+	}
+	.kd-search > svg {
+		flex: none;
+		width: 15px;
+		height: 15px;
+		margin: 0 6px 0 9px;
+	}
+	.kd-search input {
+		flex: 1;
+		min-width: 0;
+		height: 100%;
+		padding: 0;
+		border: 0;
+		background: transparent;
+		color: rgb(255 255 255 / 0.95);
+		font: 14px var(--kd-font);
+		outline: none;
+		appearance: none;
+	}
+	.kd-search input::placeholder {
+		color: rgb(255 255 255 / 0.4);
+	}
+	.kd-search input::-webkit-search-cancel-button {
+		display: none;
+	}
+	.kd-clear {
+		flex: none;
+		display: grid;
+		place-items: center;
+		width: 28px;
+		height: 28px;
+		padding: 0;
+		border: 0;
+		background: none;
+		color: rgb(255 255 255 / 0.45);
+		cursor: pointer;
+	}
+	.kd-clear[hidden] {
+		display: none;
+	}
+	.kd-clear svg {
+		width: 14px;
+		height: 14px;
+	}
+
+	.kd-scroll {
+		position: relative;
+		flex: 1;
+		min-height: 0;
+		margin: 12px 16px 4px;
+		overflow-y: auto;
+		scrollbar-width: thin;
+		scrollbar-color: rgb(255 255 255 / 0.25) transparent;
+	}
+	.kd-grid {
+		position: relative;
+	}
+	.kd-grid > * {
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+	/* Measuring pass: rows report the width they need without truncation */
+	.kd-grid.kd-measuring > * {
+		position: absolute;
+		width: max-content !important;
+		visibility: hidden;
+	}
+	.kd-grid.kd-measuring .kd-row {
+		width: max-content;
+	}
+	.kd-grid.kd-measuring .kd-action {
+		overflow: visible;
+	}
+
+	.kd-category {
+		height: 16px;
+		margin: 0 8px 4px;
+		overflow: hidden;
+		font-size: 10.5px;
+		font-weight: 600;
+		letter-spacing: 0.6px;
+		line-height: 16px;
+		text-transform: uppercase;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		color: rgb(255 255 255 / 0.55);
+	}
+	.kd-desc,
+	.kd-group-desc {
+		margin: 0 8px 4px;
+		font-size: 10.5px;
+		line-height: 1.35;
+		color: rgb(255 255 255 / 0.5);
+	}
+	.kd-group-desc {
+		margin: 4px 0 0;
+		color: rgb(255 255 255 / 0.55);
+	}
+
+	.kd-row {
+		display: flex;
+		align-items: center;
+		gap: 16px;
+		height: 26px;
+		padding: 0 8px;
+		border-radius: 6px;
+		transition: background-color 120ms ease;
+	}
+	.kd-row[hidden] {
+		display: none;
+	}
+	.kd-row:hover {
+		background: rgb(255 255 255 / 0.06);
+	}
+	.kd-action {
+		flex: 1;
+		min-width: 0;
+		overflow: hidden;
+		font-size: 12px;
+		color: rgb(255 255 255 / 0.85);
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	.kd-action mark {
+		background: none;
+		color: var(--kd-accent);
+		font-weight: 600;
+	}
+
+	.kd-keys {
+		display: inline-flex;
+		flex: none;
+		gap: 8px;
+	}
+	.kd-chord {
+		display: inline-flex;
+		gap: 3px;
+	}
+	.kd kbd {
+		display: inline-grid;
+		place-items: center;
+		min-width: 18px;
+		height: 18px;
+		padding: 0 5px;
+		border-radius: 5px;
+		background: rgb(255 255 255 / 0.08);
+		box-shadow: inset 0 0 0 0.5px rgb(255 255 255 / 0.12);
+		font: 500 11px/1 var(--kd-font);
+		color: rgb(255 255 255 / 0.9);
+		white-space: nowrap;
+		box-sizing: border-box;
+	}
+
+	.kd-group {
+		padding: 12px;
+		border-radius: 10px;
+		background: rgb(255 255 255 / 0.03);
+		box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08);
+		box-sizing: border-box;
+	}
+	.kd-group-title {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		height: 18px;
+		font-size: 13px;
+		font-weight: 600;
+		color: #fff;
+	}
+	.kd-accent {
+		width: 2px;
+		height: 14px;
+		border-radius: 1px;
+		background: var(--kd-accent);
+	}
+	.kd-group-inner {
+		display: grid;
+		grid-template-columns: repeat(var(--inner, 1), minmax(0, 1fr));
+		align-items: start;
+		gap: 16px;
+		margin-top: 10px;
+	}
+	.kd-section[hidden],
+	.kd-group[hidden] {
+		display: none;
+	}
+
+	.kd-empty {
+		margin: 32px auto 0;
+		max-width: 80%;
+		font-size: 11px;
+		line-height: 1.5;
+		text-align: center;
+		color: rgb(255 255 255 / 0.45);
+	}
+	.kd-empty strong {
+		display: block;
+		font-size: 13px;
+		font-weight: 500;
+		color: rgb(255 255 255 / 0.7);
+	}
+
+	.kd-footer {
+		position: relative;
+		display: flex;
+		align-items: center;
+		gap: 14px;
+		height: 32px;
+		padding: 0 14px 0 18px;
+		font-size: 11px;
+		color: rgb(255 255 255 / 0.5);
+	}
+	.kd-hint {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+	}
+	.kd-hint[hidden] {
+		display: none;
+	}
+	.kd-gear {
+		display: grid;
+		place-items: center;
+		width: 24px;
+		height: 24px;
+		margin-left: auto;
+		padding: 0;
+		border: 0;
+		border-radius: 5px;
+		background: none;
+		color: rgb(255 255 255 / 0.6);
+		cursor: pointer;
+	}
+	.kd-gear:hover,
+	.kd-gear[aria-expanded='true'] {
+		background: rgb(255 255 255 / 0.1);
+	}
+	.kd-gear svg {
+		width: 16px;
+		height: 16px;
+	}
+
+	/* NSMenu, dark */
+	.kd-menu {
+		position: absolute;
+		right: 10px;
+		bottom: 32px;
+		z-index: 1;
+		min-width: 236px;
+		padding: 5px;
+		border-radius: 8px;
+		background: rgb(36 36 40 / 0.86);
+		-webkit-backdrop-filter: blur(30px) saturate(1.8);
+		backdrop-filter: blur(30px) saturate(1.8);
+		box-shadow:
+			inset 0 0 0 0.5px rgb(255 255 255 / 0.14),
+			0 0 0 0.5px rgb(0 0 0 / 0.5),
+			0 10px 30px rgb(0 0 0 / 0.45);
+	}
+	.kd-menu[hidden] {
+		display: none;
+	}
+	.kd-menu button {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		width: 100%;
+		height: 22px;
+		padding: 0 10px;
+		border: 0;
+		border-radius: 4px;
+		background: none;
+		color: rgb(255 255 255 / 0.9);
+		font: 13px var(--kd-font);
+		text-align: left;
+		cursor: default;
+	}
+	.kd-menu button span {
+		color: rgb(255 255 255 / 0.45);
+	}
+	.kd-menu button:hover,
+	.kd-menu button:focus-visible {
+		background: var(--kd-accent);
+		color: #fff;
+		outline: none;
+	}
+	.kd-menu button:hover span {
+		color: rgb(255 255 255 / 0.85);
+	}
+	.kd-menu hr {
+		height: 1px;
+		margin: 5px 10px;
+		border: 0;
+		background: rgb(255 255 255 / 0.12);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.kd-window {
+			animation: none;
+		}
+	}
+</style>
