@@ -202,7 +202,7 @@ h1#_top {
   display: flex;
   flex-direction: column;
 }
-.content-panel .sl-container > h1 {
+.content-panel .sl-container > .kc-pagehead {
   order: 1;
 }
 /* Fallback/draft notice sits above the title; drop the sibling margin it inherits from below the h1 */
