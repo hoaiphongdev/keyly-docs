@@ -17,138 +17,21 @@ hero:
       variant: secondary
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
-import { Image } from 'astro:assets';
-import example1 from '../../../assets/images/example-1.png';
-import example2 from '../../../assets/images/example-2.png';
-
-<div class="card-stack" id="cardStack">
-  <figure class="stack-card" data-index="0">
-    <Image src={example1} alt="Keyly hiển thị phím tắt Chrome" loading="eager" />
-  </figure>
-  <figure class="stack-card" data-index="1">
-    <Image src={example2} alt="Keyly hiển thị phím tắt Cursor" loading="eager" />
-  </figure>
-</div>
-
-<style>{`
-  .card-stack {
-    position: relative;
-    width: 100%;
-    max-width: 1200px;
-    height: 750px;
-    margin: 0 auto 4rem;
-    perspective: 1500px;
-  }
-  
-  .stack-card {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 90%;
-    max-width: 1000px;
-    margin: 0;
-    border-radius: 0;
-    overflow: hidden;
-    background: var(--kc-sunken);
-    border: 1px solid var(--kc-line-strong);
-    box-shadow: 0 24px 48px -16px rgb(0 0 0 / 0.45);
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    transform-origin: center center;
-  }
-  
-  .stack-card img {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
-  
-  /* Default stacked positions */
-  .stack-card[data-index="0"] {
-    transform: translate(-50%, -50%) rotate(-4deg) translateX(-50px) translateY(20px);
-    z-index: 1;
-  }
-  .stack-card[data-index="1"] {
-    transform: translate(-50%, -50%) rotate(3deg) translateX(40px) translateY(-10px);
-    z-index: 2;
-  }
-  
-  /* Active card - brought to front */
-  .stack-card.active {
-    z-index: 10 !important;
-    transform: translate(-50%, -50%) rotate(0deg) scale(1.02) !important;
-    box-shadow: 0 32px 64px -20px rgb(0 0 0 / 0.55), 0 0 48px -12px var(--kc-glow);
-    border-color: var(--sl-color-accent);
-  }
-  
-  .stack-card:hover:not(.active) {
-    filter: brightness(1.05);
-  }
-  
-  @media (max-width: 768px) {
-    .card-stack {
-      height: 450px;
-    }
-    .stack-card {
-      width: 95%;
-    }
-    .stack-card[data-index="0"] {
-      transform: translate(-50%, -50%) rotate(-3deg) translateX(-15px) translateY(15px);
-    }
-    .stack-card[data-index="1"] {
-      transform: translate(-50%, -50%) rotate(2deg) translateX(15px) translateY(-8px);
-    }
-  }
-`}</style>
-
-<script>{`
-  document.addEventListener('DOMContentLoaded', () => {
-    const cards = document.querySelectorAll('.stack-card');
-    
-    cards.forEach(card => {
-      card.addEventListener('click', () => {
-        cards.forEach(c => c.classList.remove('active'));
-        card.classList.add('active');
-      });
-    });
-    
-    // Set last card as active by default
-    if (cards.length > 0) {
-      cards[cards.length - 1].classList.add('active');
-    }
-  });
-`}</script>
+import FeatureBento from '../../../components/home/FeatureBento.astro';
+import AppWall from '../../../components/home/AppWall.astro';
+import InstallTerminal from '../../../components/home/InstallTerminal.astro';
+import FooterBand from '../../../components/home/FooterBand.astro';
 
 ## Tính năng
 
-<CardGrid stagger>
-  <Card title="Phím tắt tức thì" icon="rocket">
-    Nhấn đúp ⇪ Caps Lock để xem tất cả phím tắt của ứng dụng đang hoạt động. Không cần ghi nhớ.
-  </Card>
-  <Card title="Phím tắt thật từ menu" icon="document">
-    Đọc phím tắt thật từ thanh menu của ứng dụng qua Accessibility API của macOS. Luôn chính xác.
-  </Card>
-  <Card title="Cấu hình tùy chỉnh" icon="setting">
-    Tạo file `.keyly` để thêm phím tắt riêng cho bất kỳ ứng dụng nào. Dùng [mẫu cộng đồng](/vi/configuration/templates/) cho các ứng dụng phổ biến.
-  </Card>
-  <Card title="Giao diện hiện đại" icon="star">
-    Bố cục nhiều cột với nhóm danh mục, phần mô tả và nền kính mờ.
-  </Card>
-</CardGrid>
+<FeatureBento lang="vi" />
+
+## Tương thích
+
+<AppWall lang="vi" />
 
 ## Cài đặt nhanh
 
-Mở Terminal và chạy:
+<InstallTerminal lang="vi" />
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install.sh | bash
-```
-
-Sau đó cấp quyền Trợ năng (Accessibility) khi được hỏi. Xong!
-
----
-Keyly lấy cảm hứng từ [CheatSheet](https://www.mediaatelier.com/CheatSheet) — được xây dựng lại bằng Swift với các tính năng bổ sung như cấu hình phím tắt tùy chỉnh và menu cài đặt.
-
-Được làm với ❤️ bởi [hoaiphongdev](https://github.com/hoaiphongdev)
-
+<FooterBand lang="vi" />

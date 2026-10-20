@@ -428,6 +428,10 @@ h1#_top {
 
 /* Buttons: solid ink primary, hairline secondary, mono caps */
 .sl-link-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
   border-radius: 0;
   padding: 0.875rem 1.25rem;
   font-family: var(--sl-font-mono);
@@ -627,6 +631,55 @@ html[data-has-hero]:not([data-has-sidebar]) {
 }
 [data-has-hero] .content-panel .sl-container {
   padding: 0 clamp(1rem, 4vw, 2.5rem) 3rem;
+}
+
+/* Homepage sections: big ArtCraft-style headings with a mono index, lead + caption row */
+[data-has-hero] .sl-markdown-content :is(.sl-heading-wrapper.level-h2, h2:not(.sl-heading-wrapper > h2)) {
+  margin-top: clamp(5rem, 10vw, 9rem);
+  padding-top: 1.5rem;
+}
+[data-has-hero] .sl-markdown-content h2 {
+  font-size: clamp(2.5rem, 1.5rem + 4vw, 5rem);
+  font-weight: 650;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+[data-has-hero] .sl-markdown-content :is(.sl-heading-wrapper.level-h2, h2:not(.sl-heading-wrapper > h2))::before {
+  content: counter(kc-section, decimal-leading-zero) ' /';
+  margin-bottom: 1rem;
+}
+.kh-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+}
+.kh-lead {
+  max-width: 40ch;
+  margin: 0;
+  font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.3125rem);
+  line-height: 1.55;
+  color: var(--sl-color-gray-2);
+}
+.kh-caption {
+  margin-left: auto;
+  color: var(--kc-faint);
+}
+
+/* Reveal homepage sections as they scroll in */
+@media (prefers-reduced-motion: no-preference) {
+  [data-reveal] {
+    animation: kh-reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 40%;
+  }
+}
+@keyframes kh-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
 }
 
 /* ---------- Motion preferences ---------- */

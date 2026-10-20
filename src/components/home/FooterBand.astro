@@ -1,0 +1,116 @@
+---
+import { copy, type Lang } from './copy';
+
+interface Props {
+	lang: Lang;
+}
+
+const t = copy[Astro.props.lang].footer;
+---
+
+<section class="kh-band not-content">
+	<div class="words" aria-hidden="true">
+		<div class="words-track">
+			{
+				[0, 1].map(() => (
+					<span class="word">
+						KEYLY <i>⇪⇪</i> KEYLY <i>⇪⇪</i>
+					</span>
+				))
+			}
+		</div>
+	</div>
+
+	<div class="cta">
+		<a class="sl-link-button primary" href={t.startHref}>{t.start} →</a>
+		<button type="button" class="sl-link-button secondary" onclick="dispatchEvent(new Event('keyly:demo'))">
+			⇪ ⇪ {t.tryIt}
+		</button>
+	</div>
+
+	<div class="credits">
+		<p set:html={t.made} />
+	</div>
+</section>
+
+<style>
+	.kh-band {
+		margin: 6rem calc(-1 * clamp(1rem, 4vw, 2.5rem)) -3rem;
+		padding-bottom: 3rem;
+		border-top: 1px solid var(--kc-line);
+		overflow: hidden;
+	}
+	.words {
+		padding-block: clamp(1.5rem, 4vw, 3rem);
+		border-bottom: 1px solid var(--kc-line);
+		mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+	}
+	.words-track {
+		display: flex;
+		width: max-content;
+		animation: kh-words 30s linear infinite;
+	}
+	.word {
+		padding-right: 0.3em;
+		font-family: var(--kc-font-display);
+		font-size: clamp(5rem, 16vw, 15rem);
+		font-weight: 800;
+		letter-spacing: -0.05em;
+		line-height: 0.9;
+		white-space: nowrap;
+		color: transparent;
+		-webkit-text-stroke: 1px var(--kc-line-strong);
+	}
+	.word i {
+		font-style: normal;
+		font-weight: 400;
+		font-size: 0.45em;
+		vertical-align: 0.6em;
+		color: var(--sl-color-accent);
+		-webkit-text-stroke: 0;
+	}
+
+	.cta {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.75rem;
+		margin-top: 2.5rem;
+	}
+	.cta button {
+		cursor: pointer;
+	}
+
+	.credits {
+		max-width: 48rem;
+		margin: 2rem auto 0;
+		padding-inline: clamp(1rem, 4vw, 2.5rem);
+		text-align: center;
+		font-family: var(--sl-font-mono);
+		font-size: 0.75rem;
+		letter-spacing: 0.02em;
+		line-height: 1.8;
+		color: var(--kc-faint);
+	}
+	.credits p {
+		margin: 0;
+	}
+	.credits :global(a) {
+		color: var(--kc-muted);
+		text-underline-offset: 0.2em;
+	}
+	.credits :global(a:hover) {
+		color: var(--sl-color-text-accent);
+	}
+
+	@keyframes kh-words {
+		to {
+			transform: translateX(-50%);
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.words-track {
+			animation: none;
+		}
+	}
+</style>

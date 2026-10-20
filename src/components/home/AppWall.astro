@@ -1,0 +1,392 @@
+---
+import { apps } from './apps';
+import { copy, type Lang } from './copy';
+
+interface Props {
+	lang: Lang;
+}
+
+const t = copy[Astro.props.lang].works;
+const half = Math.ceil(apps.length / 2);
+const rows = [apps.slice(0, half), apps.slice(half)];
+---
+
+<div class="kh-wall not-content" data-reveal>
+	<div class="kh-meta">
+		<p class="kh-lead">{t.lead}</p>
+		<span class="kc-label kh-caption">{t.caption}</span>
+	</div>
+
+	<div class="rows">
+		{
+			rows.map((row, r) => (
+				<div class:list={['row', { reverse: r === 1 }]}>
+					<div class="track">
+						{[0, 1].map((copyIndex) =>
+							row.map((app) => {
+								const index = apps.indexOf(app);
+								const hidden = copyIndex === 1;
+								const Tag = app.template ? 'a' : 'span';
+								return (
+									<Tag
+										class:list={['tile', { template: app.template }]}
+										data-app={index}
+										data-name={app.name}
+										data-keys={app.keys}
+										data-action={app.action}
+										data-template={app.template ? '' : undefined}
+										href={app.template ? t.templatesLink : undefined}
+										tabindex={hidden ? -1 : app.template ? undefined : 0}
+										aria-hidden={hidden ? 'true' : undefined}
+										aria-label={`${app.name}: ${app.action} ${app.keys}`}
+									>
+										{app.path ? (
+											<svg viewBox="0 0 24 24" aria-hidden="true">
+												<path d={app.path} />
+											</svg>
+										) : (
+											<span class="mono">{app.monogram}</span>
+										)}
+										<span class="name">{app.name}</span>
+									</Tag>
+								);
+							})
+						)}
+					</div>
+				</div>
+			))
+		}
+	</div>
+
+	<div class="readout" aria-live="polite">
+		<span class="kc-label r-index">01 / {String(apps.length).padStart(2, '0')}</span>
+		<span class="r-name">{apps[0]?.name}</span>
+		<span class="r-keys"></span>
+		<span class="r-action">{apps[0]?.action}</span>
+		<span class="kc-label r-template" hidden>{t.template}</span>
+	</div>
+
+	<div class="stats">
+		{
+			t.stats.map(([label, value]) => (
+				<div class="stat">
+					<span class="value" data-count={value}>
+						{value}
+					</span>
+					<span class="kc-label">{label}</span>
+				</div>
+			))
+		}
+		<a class="stat browse kc-label" href={t.templatesLink}>{t.browse} →</a>
+	</div>
+</div>
+
+<script>
+	document.querySelectorAll<HTMLElement>('.kh-wall').forEach((root) => {
+		const tiles = [...root.querySelectorAll<HTMLElement>('.tile')];
+		const index = root.querySelector<HTMLElement>('.r-index')!;
+		const name = root.querySelector<HTMLElement>('.r-name')!;
+		const keys = root.querySelector<HTMLElement>('.r-keys')!;
+		const action = root.querySelector<HTMLElement>('.r-action')!;
+		const template = root.querySelector<HTMLElement>('.r-template')!;
+		const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+		// One entry per app, read from the first (focusable) copy of each tile
+		const apps = tiles
+			.filter((tile) => tile.getAttribute('aria-hidden') !== 'true')
+			.map((tile) => ({
+				index: Number(tile.dataset.app),
+				name: tile.dataset.name ?? '',
+				keys: tile.dataset.keys ?? '',
+				action: tile.dataset.action ?? '',
+				template: tile.hasAttribute('data-template'),
+			}))
+			.sort((a, b) => a.index - b.index);
+		let current = 0;
+		let auto = 0;
+		let hovering = false;
+
+		const select = (i: number) => {
+			const app = apps[i];
+			if (!app) return;
+			current = i;
+			index.textContent = `${String(i + 1).padStart(2, '0')} / ${String(apps.length).padStart(2, '0')}`;
+			name.textContent = app.name;
+			action.textContent = app.action;
+			template.hidden = !app.template;
+			keys.replaceChildren(
+				...app.keys.split(' ').flatMap((chord) =>
+					[...chord].map((cap) => {
+						const kbd = document.createElement('kbd');
+						kbd.textContent = cap;
+						return kbd;
+					})
+				)
+			);
+			tiles.forEach((tile) => tile.classList.toggle('lit', tile.dataset.app === String(i)));
+			root.querySelector('.readout')?.animate([{ opacity: 0.4 }, { opacity: 1 }], { duration: 250 });
+		};
+
+		const start = () => {
+			clearInterval(auto);
+			if (reduceMotion) return;
+			auto = window.setInterval(() => !hovering && select((current + 1) % apps.length), 1800);
+		};
+
+		tiles.forEach((tile) => {
+			const pick = () => {
+				hovering = true;
+				select(Number(tile.dataset.app));
+			};
+			tile.addEventListener('pointerenter', pick);
+			tile.addEventListener('focus', pick);
+			tile.addEventListener('pointerleave', () => (hovering = false));
+			tile.addEventListener('blur', () => (hovering = false));
+		});
+
+		// Count the stats up once, and only run the readout while the section is visible
+		let counted = false;
+		new IntersectionObserver(
+			([entry]) => {
+				root.classList.toggle('playing', Boolean(entry?.isIntersecting));
+				if (!entry?.isIntersecting) return clearInterval(auto);
+				start();
+				if (counted) return;
+				counted = true;
+				root.querySelectorAll<HTMLElement>('[data-count]').forEach((el) => {
+					const target = Number(el.dataset.count);
+					if (!Number.isFinite(target) || reduceMotion) return;
+					const begin = performance.now();
+					const tick = (now: number) => {
+						const p = Math.min(1, (now - begin) / 1200);
+						el.textContent = String(Math.round(target * (1 - Math.pow(1 - p, 3))));
+						if (p < 1) requestAnimationFrame(tick);
+					};
+					requestAnimationFrame(tick);
+				});
+			},
+			{ threshold: 0.2 }
+		).observe(root);
+
+		select(0);
+	});
+</script>
+
+<style>
+	.rows {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		margin: 2.5rem calc(-1 * clamp(1rem, 4vw, 2.5rem)) 0;
+		mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+	}
+	.row {
+		overflow: hidden;
+		padding-block: 0.5rem;
+	}
+	.track {
+		display: flex;
+		gap: 1rem;
+		width: max-content;
+		animation: kh-marquee 46s linear infinite;
+		animation-play-state: paused;
+	}
+	.playing .track {
+		animation-play-state: running;
+	}
+	.reverse .track {
+		animation-direction: reverse;
+		animation-duration: 52s;
+	}
+	.rows:hover .track {
+		animation-play-state: paused;
+	}
+
+	.tile {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.625rem;
+		width: 7.5rem;
+		height: 7.5rem;
+		border: 1px solid var(--kc-line);
+		border-radius: 14px;
+		background: linear-gradient(to bottom, var(--kc-raised), var(--kc-sunken));
+		box-shadow:
+			0 6px 0 -1px var(--kc-line),
+			inset 0 1px 0 rgb(255 255 255 / 0.04);
+		color: var(--kc-muted);
+		text-decoration: none;
+		transition:
+			transform 160ms var(--kc-ease),
+			box-shadow 160ms var(--kc-ease),
+			color 160ms ease,
+			border-color 160ms ease;
+	}
+	.tile svg {
+		width: 2.25rem;
+		height: 2.25rem;
+		fill: currentColor;
+	}
+	.mono {
+		display: grid;
+		place-items: center;
+		width: 2.5rem;
+		height: 2.5rem;
+		border: 1.5px solid currentColor;
+		border-radius: 7px;
+		font-family: var(--kc-font-display);
+		font-size: 1.05rem;
+		font-weight: 700;
+		letter-spacing: -0.02em;
+	}
+	.name {
+		font-family: var(--sl-font-mono);
+		font-size: 0.625rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--kc-faint);
+		white-space: nowrap;
+	}
+	.tile.template::after {
+		content: '';
+		position: absolute;
+		top: 0.6rem;
+		right: 0.6rem;
+		width: 6px;
+		height: 6px;
+		border-radius: 50%;
+		background: var(--sl-color-accent);
+	}
+	.tile:hover,
+	.tile:focus-visible,
+	.tile.lit {
+		transform: translateY(5px);
+		box-shadow:
+			0 1px 0 -1px var(--kc-line),
+			0 0 34px var(--kc-glow);
+		border-color: var(--sl-color-accent);
+		color: var(--sl-color-text-accent);
+	}
+	.tile.lit .name,
+	.tile:hover .name {
+		color: var(--kc-ink);
+	}
+
+	/* ---------- Readout ---------- */
+	.readout {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.75rem 1.25rem;
+		max-width: 48rem;
+		margin: 2rem auto 0;
+		padding: 0.875rem 1.25rem;
+		border: 1px solid var(--kc-line);
+		background: color-mix(in srgb, var(--kc-raised) 70%, transparent);
+	}
+	.r-index {
+		color: var(--kc-faint);
+	}
+	.r-name {
+		font-family: var(--kc-font-display);
+		font-size: 1.125rem;
+		font-weight: 620;
+		letter-spacing: -0.01em;
+		color: var(--kc-ink-strong);
+	}
+	.r-keys {
+		display: inline-flex;
+		gap: 0.25rem;
+	}
+	.r-keys :global(kbd) {
+		display: inline-grid;
+		place-items: center;
+		min-width: 1.75rem;
+		height: 1.75rem;
+		padding: 0 0.375rem;
+		border: 1px solid var(--sl-color-accent);
+		background: color-mix(in srgb, var(--sl-color-accent) 12%, transparent);
+		font: 500 0.875rem var(--sl-font-mono);
+		color: var(--kc-ink-strong);
+	}
+	.r-action {
+		color: var(--kc-muted);
+	}
+	.r-template {
+		margin-left: auto;
+		padding: 0.25rem 0.5rem;
+		border: 1px solid var(--sl-color-accent);
+		color: var(--sl-color-text-accent);
+	}
+	.r-template[hidden] {
+		display: none;
+	}
+
+	/* ---------- Stats ---------- */
+	.stats {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 1px;
+		margin-top: 2.5rem;
+		border: 1px solid var(--kc-line);
+		background: var(--kc-line);
+	}
+	.stat {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		padding: 1.25rem 1.5rem;
+		background: var(--kc-bg);
+		color: var(--kc-muted);
+	}
+	.value {
+		font-family: var(--kc-font-display);
+		font-size: clamp(2rem, 1.5rem + 2vw, 3.25rem);
+		font-weight: 650;
+		letter-spacing: -0.04em;
+		line-height: 1;
+		color: var(--kc-ink-strong);
+	}
+	.browse {
+		justify-content: flex-end;
+		color: var(--sl-color-text-accent);
+		text-decoration: none;
+		transition: background-color 150ms ease;
+	}
+	.browse:hover {
+		background: var(--kc-raised);
+	}
+
+	@media (max-width: 50rem) {
+		.tile {
+			width: 6rem;
+			height: 6rem;
+		}
+		.stats {
+			grid-template-columns: 1fr 1fr;
+		}
+	}
+
+	@keyframes kh-marquee {
+		to {
+			transform: translateX(calc(-50% - 0.5rem));
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.rows {
+			mask-image: none;
+		}
+		.track {
+			animation: none;
+			flex-wrap: wrap;
+			justify-content: center;
+			width: auto;
+		}
+		.track > [aria-hidden='true'] {
+			display: none;
+		}
+	}
+</style>

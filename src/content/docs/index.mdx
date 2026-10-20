@@ -17,136 +17,21 @@ hero:
       variant: secondary
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
-import { Image } from 'astro:assets';
-import example1 from '../../assets/images/example-1.png';
-import example2 from '../../assets/images/example-2.png';
-
-<div class="card-stack" id="cardStack">
-  <figure class="stack-card" data-index="0">
-    <Image src={example1} alt="Keyly showing Chrome shortcuts" loading="eager" />
-  </figure>
-  <figure class="stack-card" data-index="1">
-    <Image src={example2} alt="Keyly showing Cursor shortcuts" loading="eager" />
-  </figure>
-</div>
-
-<style>{`
-  .card-stack {
-    position: relative;
-    width: 100%;
-    max-width: 1200px;
-    height: 750px;
-    margin: 0 auto 4rem;
-    perspective: 1500px;
-  }
-  
-  .stack-card {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 90%;
-    max-width: 1000px;
-    margin: 0;
-    border-radius: 0;
-    overflow: hidden;
-    background: var(--kc-sunken);
-    border: 1px solid var(--kc-line-strong);
-    box-shadow: 0 24px 48px -16px rgb(0 0 0 / 0.45);
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    transform-origin: center center;
-  }
-  
-  .stack-card img {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
-  
-  /* Default stacked positions */
-  .stack-card[data-index="0"] {
-    transform: translate(-50%, -50%) rotate(-4deg) translateX(-50px) translateY(20px);
-    z-index: 1;
-  }
-  .stack-card[data-index="1"] {
-    transform: translate(-50%, -50%) rotate(3deg) translateX(40px) translateY(-10px);
-    z-index: 2;
-  }
-  
-  /* Active card - brought to front */
-  .stack-card.active {
-    z-index: 10 !important;
-    transform: translate(-50%, -50%) rotate(0deg) scale(1.02) !important;
-    box-shadow: 0 32px 64px -20px rgb(0 0 0 / 0.55), 0 0 48px -12px var(--kc-glow);
-    border-color: var(--sl-color-accent);
-  }
-  
-  .stack-card:hover:not(.active) {
-    filter: brightness(1.05);
-  }
-  
-  @media (max-width: 768px) {
-    .card-stack {
-      height: 450px;
-    }
-    .stack-card {
-      width: 95%;
-    }
-    .stack-card[data-index="0"] {
-      transform: translate(-50%, -50%) rotate(-3deg) translateX(-15px) translateY(15px);
-    }
-    .stack-card[data-index="1"] {
-      transform: translate(-50%, -50%) rotate(2deg) translateX(15px) translateY(-8px);
-    }
-  }
-`}</style>
-
-<script>{`
-  document.addEventListener('DOMContentLoaded', () => {
-    const cards = document.querySelectorAll('.stack-card');
-    
-    cards.forEach(card => {
-      card.addEventListener('click', () => {
-        cards.forEach(c => c.classList.remove('active'));
-        card.classList.add('active');
-      });
-    });
-    
-    if (cards.length > 0) {
-      cards[cards.length - 1].classList.add('active');
-    }
-  });
-`}</script>
+import FeatureBento from '../../components/home/FeatureBento.astro';
+import AppWall from '../../components/home/AppWall.astro';
+import InstallTerminal from '../../components/home/InstallTerminal.astro';
+import FooterBand from '../../components/home/FooterBand.astro';
 
 ## Features
 
-<CardGrid stagger>
-  <Card title="Instant Shortcuts" icon="rocket">
-    Double-tap ⇪ Caps Lock to see all keyboard shortcuts for the currently active app. No memorization needed.
-  </Card>
-  <Card title="Real Menu Shortcuts" icon="document">
-    Extracts actual shortcuts from the app's menu bar via macOS Accessibility API. Always accurate.
-  </Card>
-  <Card title="Custom Configs" icon="setting">
-    Create `.keyly` files to add your own shortcuts for any application. Use [community templates](/configuration/templates/) for popular apps.
-  </Card>
-  <Card title="Modern UI" icon="star">
-    Multi-column layout with category grouping, descriptions, and blur effect overlay.
-  </Card>
-</CardGrid>
+<FeatureBento lang="en" />
+
+## Works with
+
+<AppWall lang="en" />
 
 ## Quick Install
 
-Open Terminal and run:
+<InstallTerminal lang="en" />
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install.sh | bash
-```
-
-Then grant Accessibility permission when prompted. That's it!
-
----
-Keyly is inspired by [CheatSheet](https://www.mediaatelier.com/CheatSheet) — reimplemented in Swift with additional features like custom shortcut configs and a settings menu.
-
-Made with ❤️ by [hoaiphongdev](https://github.com/hoaiphongdev)
+<FooterBand lang="en" />

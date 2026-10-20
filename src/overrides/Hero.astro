@@ -10,7 +10,9 @@ const isVi = Astro.locals.starlightRoute.locale === 'vi';
 // Vietnamese glyphs, so the VI title uses Archivo italic instead.
 // The title stays raw HTML, as in Starlight's own Hero.
 const accent = isVi ? 'Tức Thì' : 'Instantly';
-const titleHtml = title.replace(accent, `<em class="${isVi ? 'kc-italic' : 'kc-serif'}">${accent}</em>`);
+// The brand is already in the logo above, so drop the "Keyly - " SEO prefix from the visible title
+const displayTitle = title.replace(/^Keyly\s*[-–—]\s*/, '');
+const titleHtml = displayTitle.replace(accent, `<em class="${isVi ? 'kc-italic' : 'kc-serif'}">${accent}</em>`);
 
 const bar = isVi
 	? ['00 / Keyly', 'macOS 12+ · Miễn phí & mã nguồn mở']
