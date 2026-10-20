@@ -8,13 +8,9 @@ const isVi = Astro.locals.starlightRoute.locale === 'vi';
 
 // Set the closing phrase of the title in the accent face. Instrument Serif has no
 // Vietnamese glyphs, so the VI title uses Archivo italic instead.
+// The title stays raw HTML, as in Starlight's own Hero.
 const accent = isVi ? 'Tức Thì' : 'Instantly';
-const escape = (s: string) =>
-	s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-const titleHtml = escape(title).replace(
-	escape(accent),
-	`<em class="${isVi ? 'kc-italic' : 'kc-serif'}">${escape(accent)}</em>`
-);
+const titleHtml = title.replace(accent, `<em class="${isVi ? 'kc-italic' : 'kc-serif'}">${accent}</em>`);
 
 const bar = isVi
 	? ['00 / Keyly', 'macOS 12+ · Miễn phí & mã nguồn mở']
@@ -24,7 +20,9 @@ const ticker = isVi
 	? ['Nhấn đúp Caps Lock', 'Phím tắt tức thì', 'Phím tắt thật từ menu', 'Cấu hình tùy chỉnh', 'Giao diện hiện đại', 'Mã nguồn mở']
 	: ['Double-tap Caps Lock', 'Instant Shortcuts', 'Real Menu Shortcuts', 'Custom Configs', 'Modern UI', 'Open source'];
 
-const logo = image && 'file' in image ? image.file : image && 'dark' in image ? image.dark : undefined;
+const darkImage = image && 'file' in image ? image.file : image && 'dark' in image ? image.dark : undefined;
+const lightImage = image && 'light' in image ? image.light : undefined;
+const rawHtml = image && 'html' in image ? image.html : undefined;
 ---
 
 <div class="kc-hero not-content">
@@ -54,13 +52,26 @@ const logo = image && 'file' in image ? image.file : image && 'dark' in image ? 
 		</div>
 
 		{
-			logo && (
+			(darkImage || rawHtml) && (
 				<figure class="art">
 					<span class="tick tl" />
 					<span class="tick tr" />
 					<span class="tick bl" />
 					<span class="tick br" />
-					<Image src={logo} alt={image?.alt || ''} width={320} height={320} loading="eager" />
+					{darkImage && (
+						<Image
+							src={darkImage}
+							alt={image?.alt || ''}
+							width={320}
+							height={320}
+							loading="eager"
+							class:list={{ 'light:sl-hidden': Boolean(lightImage) }}
+						/>
+					)}
+					{lightImage && (
+						<Image src={lightImage} alt={image?.alt || ''} width={320} height={320} loading="eager" class="dark:sl-hidden" />
+					)}
+					{rawHtml && <div class="art-html" set:html={rawHtml} />}
 					<figcaption class="kc-label">Fig. 01 — Keyly</figcaption>
 				</figure>
 			)
@@ -168,7 +179,8 @@ const logo = image && 'file' in image ? image.file : image && 'dark' in image ? 
 		background-color: var(--kc-sunken);
 		animation: kc-fade 900ms 120ms ease both;
 	}
-	.art img {
+	.art img,
+	.art-html {
 		width: 62%;
 		height: auto;
 		filter: drop-shadow(0 0 2.5rem var(--kc-glow));

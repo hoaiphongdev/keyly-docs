@@ -16,8 +16,9 @@ const currentPath = Astro.url.pathname;
 
 function getDefaultUrl(): string {
 	let path = currentPath;
+	// English is the root locale, so the default version lives at the unprefixed path
 	if (currentLocale === 'vi') {
-		path = path.replace(/^\/vi/, '/en');
+		path = path.replace(/^\/vi/, '') || '/';
 	}
 	if (!path.endsWith('/')) path += '/';
 	return new URL(path, Astro.site).href;

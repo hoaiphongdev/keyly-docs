@@ -31,7 +31,8 @@ import Default from '@astrojs/starlight/components/TableOfContents.astro';
 			subtree: true,
 			attributeFilter: ['aria-current'],
 		});
-		addEventListener('resize', move);
+		// Covers window resizes and line re-wraps once web fonts swap in
+		new ResizeObserver(move).observe(list);
 	}
 </script>
 

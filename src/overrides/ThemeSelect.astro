@@ -1,10 +1,14 @@
 ---
 import { Icon } from '@astrojs/starlight/components';
 
-const label = Astro.locals.t('themeSelect.accessibleLabel');
+const t = Astro.locals.t;
+const label = t('themeSelect.accessibleLabel');
+// The button names the theme it switches to, e.g. "Select theme: Light"
+const toLight = `${label}: ${t('themeSelect.light')}`;
+const toDark = `${label}: ${t('themeSelect.dark')}`;
 ---
 
-<kc-theme-toggle>
+<kc-theme-toggle data-to-light={toLight} data-to-dark={toDark}>
 	<button type="button" aria-label={label} title={label}>
 		<Icon name="sun" class="sun" size="1rem" />
 		<Icon name="moon" class="moon" size="1rem" />
@@ -14,20 +18,59 @@ const label = Astro.locals.t('themeSelect.accessibleLabel');
 <script>
 	// Same storage key and data-theme attribute as Starlight's ThemeProvider,
 	// so its inline FOUC script keeps applying the saved choice on load.
+	type Theme = 'dark' | 'light';
+
 	const storageKey = 'starlight-theme';
+	const root = document.documentElement;
+	const prefersLight = matchMedia('(prefers-color-scheme: light)');
+	const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+
+	const stored = (): string | null => {
+		try {
+			return localStorage.getItem(storageKey);
+		} catch {
+			return null;
+		}
+	};
+
+	const syncLabels = () => {
+		const next = root.dataset.theme === 'light' ? 'dark' : 'light';
+		document.querySelectorAll<HTMLElement>('kc-theme-toggle').forEach((toggle) => {
+			const text = next === 'light' ? toggle.dataset.toLight : toggle.dataset.toDark;
+			const button = toggle.querySelector('button');
+			if (text && button) {
+				button.setAttribute('aria-label', text);
+				button.title = text;
+			}
+		});
+	};
+
+	const applyTheme = (theme: Theme) => {
+		if (!reduceMotion.matches) {
+			root.classList.add('kc-theme-anim');
+			setTimeout(() => root.classList.remove('kc-theme-anim'), 320);
+		}
+		root.dataset.theme = theme;
+		syncLabels();
+	};
+
+	// Until someone picks a theme, keep following the OS setting (Starlight's "auto")
+	prefersLight.addEventListener('change', () => {
+		if (stored() !== 'light' && stored() !== 'dark') {
+			applyTheme(prefersLight.matches ? 'light' : 'dark');
+		}
+	});
 
 	class KcThemeToggle extends HTMLElement {
 		constructor() {
 			super();
+			syncLabels();
 			this.querySelector('button')?.addEventListener('click', () => {
-				const root = document.documentElement;
-				const next = root.dataset.theme === 'light' ? 'dark' : 'light';
-				root.classList.add('kc-theme-anim');
-				root.dataset.theme = next;
+				const next: Theme = root.dataset.theme === 'light' ? 'dark' : 'light';
+				applyTheme(next);
 				try {
 					localStorage.setItem(storageKey, next);
 				} catch {}
-				setTimeout(() => root.classList.remove('kc-theme-anim'), 320);
 			});
 		}
 	}

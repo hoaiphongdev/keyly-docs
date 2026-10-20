@@ -97,7 +97,8 @@ const pages = [
 		dialog.addEventListener('input', sync);
 		// Pagefind's clear button empties the field without an input event
 		dialog.addEventListener('click', () => queueMicrotask(sync));
-		dialog.addEventListener('close', () => panel.toggleAttribute('data-empty', true));
+		// Pagefind keeps the last query across opens, so reflect the field rather than assume empty
+		dialog.addEventListener('close', sync);
 
 		panel.addEventListener('click', (event) => {
 			const chip = (event.target as Element).closest<HTMLButtonElement>('button[data-query]');
@@ -116,7 +117,8 @@ const pages = [
 		flex-direction: column;
 		gap: 1.25rem;
 	}
-	.keyly-search-suggest:not([data-empty]) {
+	.keyly-search-suggest:not([data-empty]),
+	.keyly-search-suggest[hidden] {
 		display: none;
 	}
 

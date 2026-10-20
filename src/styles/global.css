@@ -37,9 +37,9 @@ body::before {
   outline-offset: 2px;
 }
 
-/* Theme switch: briefly animate colours (class toggled by ThemeSelect) */
+/* Theme switch: briefly animate colours (class toggled by ThemeSelect, skipped for reduced motion) */
 html.kc-theme-anim,
-html.kc-theme-anim *,
+html.kc-theme-anim *:not(kc-theme-toggle svg),
 html.kc-theme-anim *::before,
 html.kc-theme-anim *::after {
   transition:
@@ -154,7 +154,7 @@ starlight-menu-button button {
 }
 .sidebar-content .group-label .large::before {
   content: counter(kc-group, decimal-leading-zero) ' / ';
-  color: var(--sl-color-accent);
+  color: var(--sl-color-text-accent);
 }
 .sidebar-content summary .caret {
   color: var(--kc-faint);
@@ -205,8 +205,10 @@ h1#_top {
 .content-panel .sl-container > h1 {
   order: 1;
 }
+/* Fallback/draft notice sits above the title; drop the sibling margin it inherits from below the h1 */
 .content-panel .sl-container > p.sl-flex {
   order: 0;
+  margin-top: 0;
   margin-bottom: 1rem;
 }
 
@@ -444,9 +446,15 @@ h1#_top {
   background: var(--kc-ink);
   color: var(--kc-bg);
 }
+/* Dark text on pink (dark theme), white on deep pink (light theme): both ≥ 4.5:1 */
 .sl-link-button.primary:hover {
   border-color: var(--sl-color-accent);
   background: var(--sl-color-accent);
+  color: var(--kc-bg);
+}
+:root[data-theme='light'] .sl-link-button.primary:hover {
+  border-color: var(--sl-color-accent-high);
+  background: var(--sl-color-accent-high);
   color: #fff;
 }
 .sl-link-button.secondary {
