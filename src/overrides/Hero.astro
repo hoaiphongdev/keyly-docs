@@ -77,7 +77,7 @@ const rawHtml = image && 'html' in image ? image.html : undefined;
 			<span class="try">{tryIt} →</span>
 		</button>
 
-		<h1 id="_top" data-page-title set:html={titleHtml} />
+		<h1 id="_top" tabindex="-1" data-page-title set:html={titleHtml} />
 		{tagline && <p class="tagline" set:html={tagline} />}
 
 		{
