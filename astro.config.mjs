@@ -3,6 +3,7 @@ import starlight from "@astrojs/starlight";
 import starlightLinksValidator from "starlight-links-validator";
 import sitemapRename from "./src/integrations/sitemap-rename";
 import rehypeKeycaps from "./src/plugins/rehype-keycaps.mjs";
+import keylyGrammar from "./src/plugins/keyly-grammar.mjs";
 
 export default defineConfig({
   site: "https://keyly-docs.com",
@@ -33,6 +34,9 @@ export default defineConfig({
       },
       customCss: ["./src/styles/fonts.css", "./src/styles/theme.css", "./src/styles/global.css"],
       expressiveCode: {
+        shiki: { langs: [keylyGrammar] },
+        // `# App: /path/to/App.app` is content in .keyly files, not a file-name comment to lift into a tab
+        frames: { extractFileNameFromCode: false },
         styleOverrides: {
           borderRadius: "0",
           borderColor: "var(--kc-line)",
