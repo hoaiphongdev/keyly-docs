@@ -70,6 +70,7 @@ export default defineConfig({
       components: {
         Head: "./src/overrides/Head.astro",
         LanguageSelect: "./src/overrides/LanguageSelect.astro",
+        Search: "./src/overrides/Search.astro",
       },
     }),
     sitemapRename(),
