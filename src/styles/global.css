@@ -604,10 +604,7 @@ mobile-starlight-toc .dropdown {
 .pagination-links > a + a {
   border-inline-start: 1px solid var(--kc-line);
 }
-.pagination-links > a:hover {
-  border-color: var(--kc-line);
-  background-color: var(--kc-raised);
-}
+
 .pagination-links > a svg {
   color: var(--kc-faint);
   transition:
@@ -724,6 +721,125 @@ html[data-has-hero]:not([data-has-sidebar]) {
   from {
     opacity: 0;
     transform: translateY(40px);
+  }
+}
+
+/* ---------- Docs details (DocsMotion.astro toggles the classes) ---------- */
+
+/* h2 accent segment grows the first time the section comes into view */
+.sl-markdown-content .sl-heading-wrapper.level-h2 {
+  transition: background-size 800ms var(--kc-ease);
+}
+.sl-markdown-content .sl-heading-wrapper.level-h2.kc-seen {
+  background-size: 5rem 1px, 100% 1px;
+}
+.sl-markdown-content .sl-anchor-link {
+  color: var(--sl-color-text-accent);
+}
+
+/* Steps: counters and the rail turn pink as you read past them */
+.sl-steps > li::before {
+  transition:
+    border-color 300ms ease,
+    color 300ms ease,
+    background-color 300ms ease;
+}
+.sl-steps > li.kc-passed::before {
+  border-color: var(--sl-color-accent);
+  background-color: color-mix(in srgb, var(--sl-color-accent) 14%, var(--kc-bg));
+  color: var(--sl-color-text-accent);
+}
+.sl-steps > li::after {
+  background-image: linear-gradient(var(--sl-color-accent), var(--sl-color-accent));
+  background-repeat: no-repeat;
+  background-size: 100% 0%;
+  transition: background-size 700ms var(--kc-ease) 150ms;
+}
+.sl-steps > li.kc-passed::after {
+  background-size: 100% 100%;
+}
+
+/* Tables: the row under the pointer lifts slightly */
+.sl-markdown-content tbody tr {
+  transition: background-color 150ms ease;
+}
+.sl-markdown-content tbody tr:hover {
+  background-color: var(--kc-raised);
+}
+
+/* Asides: a faint wash of the aside colour from the left */
+.starlight-aside {
+  background-image: linear-gradient(90deg, color-mix(in srgb, var(--sl-color-asides-border) 9%, transparent), transparent 65%);
+}
+
+/* Link cards: a soft glow follows the pointer */
+.sl-link-card {
+  background-image: radial-gradient(
+    260px circle at var(--mx, -999px) var(--my, -999px),
+    var(--kc-glow),
+    transparent 70%
+  );
+}
+
+/* Prev / next: the hover fill sweeps in from the side it points to */
+.pagination-links > a {
+  background: linear-gradient(var(--kc-raised), var(--kc-raised)) no-repeat 0 0 / 0% 100%, var(--kc-bg);
+  transition: background-size 350ms var(--kc-ease);
+}
+.pagination-links > a[rel='next'] {
+  background-position: 100% 0;
+}
+.pagination-links > a:hover {
+  background-size: 100% 100%;
+}
+.pagination-links .link-title {
+  transition: transform 250ms var(--kc-ease);
+}
+.pagination-links > a[rel='next']:hover .link-title {
+  transform: translateX(-4px);
+}
+.pagination-links > a[rel='prev']:hover .link-title {
+  transform: translateX(4px);
+}
+
+/* Sidebar: links lean in a touch on hover */
+.sidebar-content a {
+  transition:
+    color 150ms ease,
+    background-color 150ms ease,
+    transform 200ms var(--kc-ease);
+}
+.sidebar-content a:not([aria-current='page']):hover {
+  transform: translateX(2px);
+}
+
+/* Page-to-page: a quick fade with the header and sidebar held still (cross-document view transitions) */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+  header.header {
+    view-transition-name: kc-header;
+  }
+  .sidebar-pane {
+    view-transition-name: kc-sidebar;
+  }
+  ::view-transition-old(root) {
+    animation: kc-vt-out 140ms ease-in both;
+  }
+  ::view-transition-new(root) {
+    animation: kc-vt-in 260ms var(--kc-ease) both;
+  }
+}
+@keyframes kc-vt-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes kc-vt-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
   }
 }
 

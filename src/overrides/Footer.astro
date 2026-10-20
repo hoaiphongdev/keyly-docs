@@ -2,6 +2,7 @@
 import Default from '@astrojs/starlight/components/Footer.astro';
 import KeylyDemo from '../components/KeylyDemo.astro';
 import ScrollTop from '../components/ScrollTop.astro';
+import DocsMotion from '../components/DocsMotion.astro';
 
 const isVi = Astro.locals.starlightRoute.locale === 'vi';
 ---
@@ -13,6 +14,7 @@ const isVi = Astro.locals.starlightRoute.locale === 'vi';
 </div>
 <KeylyDemo />
 <ScrollTop />
+<DocsMotion />
 
 <style>
 	.kc-credit {

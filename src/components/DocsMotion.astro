@@ -1,0 +1,38 @@
+---
+// Small, scroll/hover-driven touches for docs pages (styles live in global.css):
+// - Steps: a step is marked passed once it scrolls above ~60% of the viewport
+// - h2 sections: the accent segment grows when the heading first comes into view
+// - Link cards: a soft glow follows the pointer
+---
+
+<script>
+	const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	const onceVisible = (selector: string, className: string, rootMargin: string) => {
+		const targets = document.querySelectorAll<HTMLElement>(selector);
+		if (!targets.length) return;
+		if (reduceMotion) return targets.forEach((el) => el.classList.add(className));
+		const observer = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					if (!entry.isIntersecting) continue;
+					entry.target.classList.add(className);
+					observer.unobserve(entry.target);
+				}
+			},
+			{ rootMargin }
+		);
+		targets.forEach((el) => observer.observe(el));
+	};
+
+	onceVisible('.sl-markdown-content .sl-steps > li', 'kc-passed', '0px 0px -40% 0px');
+	onceVisible('.sl-markdown-content .sl-heading-wrapper.level-h2', 'kc-seen', '0px 0px -15% 0px');
+
+	document.querySelectorAll<HTMLElement>('.sl-link-card').forEach((card) => {
+		card.addEventListener('pointermove', (event) => {
+			const rect = card.getBoundingClientRect();
+			card.style.setProperty('--mx', `${event.clientX - rect.left}px`);
+			card.style.setProperty('--my', `${event.clientY - rect.top}px`);
+		});
+	});
+</script>
