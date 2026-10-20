@@ -1,72 +1,71 @@
 ---
-title: "Cách Keyly đọc phím tắt qua macOS Accessibility API"
-description: "Keyly trích xuất phím tắt từ menu bar theo thời gian thực bằng Accessibility API. Không có database lỗi thời — luôn chính xác."
+title: "Cách Keyly đọc phím tắt qua Accessibility API của macOS"
+description: "Keyly đọc phím tắt từ thanh menu theo thời gian thực bằng Accessibility API. Không dùng cơ sở dữ liệu lỗi thời — luôn chính xác."
 ---
 
 import { Aside } from '@astrojs/starlight/components';
 
-Keyly không dùng database phím tắt cố định. Thay vào đó, nó đọc phím tắt động từ ứng dụng đang hoạt động.
+Keyly không dùng cơ sở dữ liệu phím tắt cố định. Thay vào đó, Keyly đọc phím tắt trực tiếp từ ứng dụng đang dùng.
 
 ## Cách hoạt động
 
 ### 1. Accessibility API
 
-Keyly sử dụng **Accessibility API** của macOS để:
-- Theo dõi khi bạn nhấn đúp Caps Lock
-- Đọc cấu trúc menu bar của app đang hoạt động
-- Trích xuất phím tắt từ các menu item
+Keyly dùng **Accessibility API** của macOS để:
+- Nhận biết khi bạn nhấn đúp Caps Lock
+- Đọc cấu trúc thanh menu của ứng dụng đang dùng
+- Lấy phím tắt từ các mục menu
 
-### 2. Phân tích Menu Bar
+### 2. Phân tích thanh menu
 
 Khi bạn nhấn đúp Caps Lock, Keyly:
-1. Xác định ứng dụng đang ở foreground
-2. Đọc cấu trúc phân cấp menu bar
-3. Trích xuất phím tắt từ mỗi menu item
-4. Nhóm theo danh mục menu (File, Edit, View,...)
-5. Hiển thị trong overlay floating
+1. Xác định ứng dụng đang ở phía trước
+2. Đọc cấu trúc phân cấp của thanh menu
+3. Lấy phím tắt từ từng mục menu
+4. Nhóm theo menu (File, Edit, View,...)
+5. Hiển thị trong cửa sổ phím tắt nổi phía trên
 
-### 3. Trích xuất thời gian thực
+### 3. Đọc theo thời gian thực
 
-Phím tắt được đọc theo thời gian thực, nghĩa là:
+Phím tắt được đọc ngay lúc bạn mở cửa sổ, nghĩa là:
 - Bạn luôn thấy phím tắt hiện tại
-- Context menu và menu động được bao gồm
-- Không cần cập nhật thủ công khi app thay đổi
+- Bao gồm cả menu ngữ cảnh và menu thay đổi theo tình huống
+- Không cần cập nhật thủ công khi ứng dụng thay đổi
 
 <Aside>
-Đây là lý do Keyly cần quyền Accessibility — nó cần đọc dữ liệu menu từ các ứng dụng khác.
+Đây là lý do Keyly cần quyền Trợ năng (Accessibility) — để đọc dữ liệu menu từ các ứng dụng khác.
 </Aside>
 
-## Tại sao dùng cách này?
+## Tại sao làm theo cách này?
 
 ### Ưu điểm
 
-- **Luôn chính xác** — Hiển thị đúng những gì trong menu bar
-- **Không cần bảo trì** — Không có database cần cập nhật
-- **Phổ quát** — Hoạt động với bất kỳ app nào có menu bar
-- **Bao gồm phím tắt tùy chỉnh** — Nếu bạn đã đặt phím tắt riêng trong System Settings, Keyly sẽ thấy
+- **Luôn chính xác** — Hiển thị đúng những gì có trên thanh menu
+- **Không cần bảo trì** — Không có cơ sở dữ liệu nào phải cập nhật
+- **Dùng được mọi nơi** — Hoạt động với bất kỳ ứng dụng nào có thanh menu
+- **Có cả phím tắt bạn tự đặt** — Nếu bạn đã đặt phím tắt riêng trong Cài đặt hệ thống, Keyly cũng thấy
 
 ### Hạn chế
 
-- **Cần menu bar** — App không có menu chuẩn có thể hiển thị ít phím tắt
-- **Cần quyền** — Yêu cầu quyền truy cập Accessibility
-- **Phím tắt ẩn** — Một số phím tắt không trong menu sẽ không xuất hiện
+- **Cần thanh menu** — Ứng dụng không có menu chuẩn có thể hiện ít phím tắt
+- **Cần quyền** — Phải cấp quyền Trợ năng
+- **Phím tắt ẩn** — Một số phím tắt không nằm trong menu sẽ không xuất hiện
 
 ## Phím tắt tùy chỉnh
 
-Với app không hiển thị phím tắt qua menu, hoặc để thêm phím tắt riêng, dùng [file .keyly tùy chỉnh](/vi/configuration/custom-shortcuts/).
+Với ứng dụng không đưa phím tắt lên menu, hoặc khi muốn thêm phím tắt riêng, hãy dùng [file .keyly tùy chỉnh](/vi/configuration/custom-shortcuts/).
 
-Phím tắt tùy chỉnh sẽ được gộp với phím tắt gốc của app trong overlay.
+Phím tắt tùy chỉnh sẽ được gộp với phím tắt gốc của ứng dụng trong cửa sổ phím tắt.
 
 ## Yêu cầu kỹ thuật
 
-- **macOS 12.0+** — Cho các tính năng Accessibility API cần thiết
-- **Swift 5.9+** — Keyly được xây dựng với Swift hiện đại
-- **Quyền Accessibility** — Cấp trong System Settings
+- **macOS 12.0+** — Cần cho các tính năng Accessibility API
+- **Swift 5.9+** — Keyly được viết bằng Swift hiện đại
+- **Quyền Trợ năng** — Cấp trong Cài đặt hệ thống
 
 ## Liên quan
 
 - [Tính năng](/vi/features/)
-- [Templates](/vi/configuration/templates/) — Phím tắt có sẵn
+- [Mẫu có sẵn](/vi/configuration/templates/) — Phím tắt soạn sẵn
 - [Phím tắt tùy chỉnh](/vi/configuration/custom-shortcuts/)
 - [Xử lý sự cố](/vi/troubleshooting/)
-

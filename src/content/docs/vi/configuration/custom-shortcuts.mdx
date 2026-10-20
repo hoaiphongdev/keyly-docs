@@ -1,6 +1,6 @@
 ---
 title: "Tạo phím tắt tùy chỉnh với file .keyly"
-description: "Thêm bất kỳ phím tắt nào cho bất kỳ app macOS nào bằng file .keyly. Hướng dẫn đầy đủ cú pháp, ví dụ và mẹo."
+description: "Thêm bất kỳ phím tắt nào cho bất kỳ ứng dụng macOS nào bằng file .keyly. Hướng dẫn đầy đủ cú pháp, ví dụ và mẹo."
 ---
 
 import { Aside, Steps } from '@astrojs/starlight/components';
@@ -18,7 +18,7 @@ Tạo file `.keyly` trong `~/.config/keyly/` để thêm phím tắt tùy chỉn
 ```
 
 <Aside type="tip">
-Mở nhanh thư mục này: click **biểu tượng ⌘** ở menu bar → **Open Config**
+Mở nhanh thư mục này: click **nút ⚙︎** trong cửa sổ phím tắt → **Open Config Folder**
 </Aside>
 
 ## Định dạng file
@@ -29,43 +29,43 @@ Mở nhanh thư mục này: click **biểu tượng ⌘** ở menu bar → **Ope
 
 [Tên danh mục]
 > Mô tả tùy chọn cho danh mục này
-KEY+COMBO   Mô tả phím tắt
-KEY+COMBO   Phím tắt khác
+CMD+K       Mô tả phím tắt
+CMD+SHIFT+K Một phím tắt khác
 ```
 
-### Header
+### Phần đầu file
 
 | Trường | Bắt buộc | Mô tả |
 |--------|----------|-------|
-| `# Sheet Name:` | Tùy chọn | Tên hiển thị trong overlay |
-| `# App:` | **Bắt buộc** | Đường dẫn đầy đủ tới app bundle |
+| `# Sheet Name:` | Không | Tên hiển thị trong cửa sổ phím tắt |
+| `# App:` | **Có** | Đường dẫn đầy đủ tới ứng dụng (file `.app`) |
 
-### Các phím modifier
+### Các phím bổ trợ
 
-| Modifier | Ký hiệu |
-|----------|---------|
+| Phím bổ trợ | Ký hiệu |
+|-------------|---------|
 | `CMD` | ⌘ Command |
 | `SHIFT` | ⇧ Shift |
 | `OPT` hoặc `ALT` | ⌥ Option |
 | `CTRL` | ⌃ Control |
 
-Kết hợp modifier bằng `+`:
+Nối các phím bổ trợ bằng dấu `+`:
 - `CMD+C` → ⌘C
 - `CMD+SHIFT+T` → ⌘⇧T
 - `CMD+OPT+ESC` → ⌘⌥⎋
 
 ## Mô tả danh mục
 
-Thêm dòng mô tả sau `[Danh mục]` bằng prefix `>`:
+Thêm một dòng mô tả ngay sau `[Danh mục]`, bắt đầu bằng dấu `>`:
 
 ```
 [Chat]
-> Focus vào panel chat trước.
-CMD+L       Focus Chat
+> Đặt con trỏ vào khung chat trước.
+CMD+L       Mở khung chat
 CMD+I       Mở Composer
 ```
 
-Mô tả sẽ hiển thị như tiêu đề phụ dưới tên danh mục trong cửa sổ phím tắt. Rất hữu ích để thêm gợi ý ngữ cảnh.
+Mô tả hiển thị như tiêu đề phụ dưới tên danh mục trong cửa sổ phím tắt. Rất hữu ích để thêm gợi ý ngữ cảnh.
 
 ## Ví dụ đầy đủ
 
@@ -73,7 +73,7 @@ Mô tả sẽ hiển thị như tiêu đề phụ dưới tên danh mục trong 
 # Sheet Name: Phím tắt của tôi
 # App: /Applications/Safari.app
 
-[Navigation]
+[Điều hướng]
 > Các phím tắt điều hướng cơ bản
 CMD+L       Mở thanh địa chỉ
 CMD+T       Tab mới
@@ -81,12 +81,12 @@ CMD+SHIFT+T Mở lại tab vừa đóng
 CMD+[       Quay lại
 CMD+]       Tiến tới
 
-[Bookmarks]
-> Quản lý bookmark
-CMD+D       Thêm Bookmark
-CMD+SHIFT+B Xem tất cả Bookmark
+[Dấu trang]
+> Quản lý dấu trang
+CMD+D       Thêm dấu trang
+CMD+SHIFT+B Xem tất cả dấu trang
 
-[Tabs]
+[Tab]
 > Quản lý tab
 CTRL+TAB    Tab kế tiếp
 CTRL+SHIFT+TAB Tab trước đó
@@ -94,12 +94,12 @@ CMD+W       Đóng tab
 CMD+SHIFT+W Đóng cửa sổ
 ```
 
-## Tạo file config
+## Tạo file cấu hình
 
 <Steps>
 1. Mở Terminal
 
-2. Tạo thư mục config (nếu chưa có):
+2. Tạo thư mục cấu hình (nếu chưa có):
    ```bash
    mkdir -p ~/.config/keyly
    ```
@@ -109,51 +109,50 @@ CMD+SHIFT+W Đóng cửa sổ
    nano ~/.config/keyly/myapp.keyly
    ```
 
-4. Thêm phím tắt theo định dạng trên
+4. Thêm phím tắt theo định dạng ở trên
 
-5. Lưu file và reload Keyly từ menu bar
+5. Lưu file và tải lại bằng **nút ⚙︎ → Reload Config** trong cửa sổ phím tắt
 </Steps>
 
 ## Mẹo hay
 
-- **Mỗi file một app** giúp gọn gàng hơn, nhưng bạn có thể đặt tên tùy ý
-- **Danh mục** giúp nhóm phím tắt liên quan (dùng cú pháp `[Tên danh mục]`)
-- **Comment** bắt đầu bằng `#` và sẽ bị bỏ qua
-- **Khoảng trắng** giữa tổ hợp phím và mô tả linh hoạt (space hoặc tab đều được)
-- **Reload** Keyly sau khi sửa config để thấy thay đổi
+- **Mỗi file cho một ứng dụng** giúp gọn gàng hơn, còn tên file thì đặt tùy ý
+- **Danh mục** giúp nhóm các phím tắt liên quan (dùng cú pháp `[Tên danh mục]`)
+- **Chú thích** bắt đầu bằng `#` và sẽ bị bỏ qua
+- **Khoảng trắng** giữa tổ hợp phím và mô tả rất linh hoạt (dấu cách hoặc tab đều được)
+- **Tải lại** Keyly sau khi sửa cấu hình để thấy thay đổi
 
 ## Xử lý sự cố
 
 ### Phím tắt không xuất hiện?
 
 1. Kiểm tra đường dẫn `# App:` có đúng không
-2. Đảm bảo app bundle tồn tại ở đường dẫn đó
-3. Reload Keyly từ menu bar
-4. Kiểm tra encoding file là UTF-8
+2. Đảm bảo ứng dụng thật sự nằm ở đường dẫn đó
+3. Tải lại bằng **nút ⚙︎ → Reload Config** trong cửa sổ phím tắt
+4. Kiểm tra file được lưu với bảng mã UTF-8
 
-### Đường dẫn app bundle sai?
+### Đường dẫn ứng dụng bị sai?
 
 Tìm đường dẫn đúng:
 ```bash
 ls /Applications/*.app
-# hoặc app cài trong user
+# hoặc ứng dụng cài riêng cho người dùng
 ls ~/Applications/*.app
 ```
 
-## Dùng Templates
+## Dùng mẫu có sẵn
 
-Không muốn viết config từ đầu? Dùng template cộng đồng:
+Không muốn viết cấu hình từ đầu? Dùng mẫu do cộng đồng soạn:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install-templates.sh | bash -s -- -t cursor
 ```
 
-Xem [Templates](/vi/configuration/templates/) để biết các template có sẵn.
+Xem [Mẫu có sẵn](/vi/configuration/templates/) để biết các mẫu hiện có.
 
 ## Liên quan
 
-- [Templates](/vi/configuration/templates/) — Config phím tắt có sẵn
+- [Mẫu có sẵn](/vi/configuration/templates/) — Cấu hình phím tắt soạn sẵn
 - [Tổng quan cấu hình](/vi/configuration/)
 - [Tính năng](/vi/features/)
 - [Xử lý sự cố](/vi/troubleshooting/)
-

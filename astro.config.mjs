@@ -42,24 +42,28 @@ export default defineConfig({
       sidebar: [
         {
           label: "Start Here",
+          translations: { vi: "Bắt đầu" },
           items: [
-            { label: "Getting Started", slug: "getting-started" },
-            { label: "Features", slug: "features" },
+            { label: "Getting Started", translations: { vi: "Cài đặt" }, slug: "getting-started" },
+            { label: "Features", translations: { vi: "Tính năng" }, slug: "features" },
           ],
         },
         {
           label: "Configuration",
+          translations: { vi: "Cấu hình" },
           autogenerate: { directory: "configuration" },
         },
         {
           label: "Resources",
+          translations: { vi: "Tài liệu thêm" },
           autogenerate: { directory: "resources" },
         },
         {
           label: "Help",
+          translations: { vi: "Trợ giúp" },
           items: [
-            { label: "Troubleshooting", slug: "troubleshooting" },
-            { label: "FAQ", slug: "faq" },
+            { label: "Troubleshooting", translations: { vi: "Xử lý sự cố" }, slug: "troubleshooting" },
+            { label: "FAQ", translations: { vi: "Câu hỏi thường gặp" }, slug: "faq" },
           ],
         },
       ],

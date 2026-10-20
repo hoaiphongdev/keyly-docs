@@ -30,6 +30,9 @@ export const { getStaticPaths, GET } = OGImageRoute({
 			fonts: [
 				'https://cdn.jsdelivr.net/fontsource/fonts/ibm-plex-sans@latest/latin-400-normal.woff2',
 				'https://cdn.jsdelivr.net/fontsource/fonts/ibm-plex-sans@latest/latin-700-normal.woff2',
+				// Vietnamese pages need the diacritics, which are not in the latin subset
+				'https://cdn.jsdelivr.net/fontsource/fonts/ibm-plex-sans@latest/vietnamese-400-normal.woff2',
+				'https://cdn.jsdelivr.net/fontsource/fonts/ibm-plex-sans@latest/vietnamese-700-normal.woff2',
 			],
 			padding: 90,
 			logo: {

@@ -1,125 +1,125 @@
 ---
-title: "Template phím tắt - Config có sẵn cho các app phổ biến"
-description: "Cài template .keyly từ cộng đồng chỉ với một lệnh. Phím tắt có sẵn cho các app phổ biến. Dùng ngay, không cần setup."
+title: "Mẫu phím tắt - Cấu hình soạn sẵn cho các ứng dụng phổ biến"
+description: "Cài mẫu .keyly do cộng đồng soạn chỉ với một lệnh. Phím tắt soạn sẵn cho các ứng dụng phổ biến. Dùng được ngay, không cần thiết lập."
 ---
 
 import { Steps, Aside, Tabs, TabItem } from '@astrojs/starlight/components';
 
-Templates là các file `.keyly` được cộng đồng tạo sẵn cho các ứng dụng phổ biến. Cài đặt ngay với một lệnh duy nhất.
+Mẫu (template) là các file `.keyly` do cộng đồng soạn sẵn cho các ứng dụng phổ biến. Cài đặt chỉ với một lệnh.
 
 ## Cài đặt nhanh
 
-Dùng script cài template để tải về từ GitHub:
+Dùng script cài mẫu để tải về từ GitHub:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install-templates.sh | bash -s -- -t cursor
 ```
 
-Lệnh này cài template Cursor IDE vào `~/.config/keyly/cursor.keyly`.
+Lệnh này cài mẫu cho Cursor IDE vào `~/.config/keyly/cursor.keyly`.
 
-## Templates có sẵn
+## Các mẫu hiện có
 
-Xem tất cả templates có sẵn trên GitHub:
+Xem tất cả mẫu trên GitHub:
 
-👉 **[Xem Tất Cả Templates](https://github.com/hoaiphongdev/keyly/tree/main/templates)**
+👉 **[Xem tất cả mẫu](https://github.com/hoaiphongdev/keyly/tree/main/templates)**
 
 <Aside type="tip">
-Muốn đóng góp template? Xem [Tạo Template](#tạo-template) bên dưới.
+Muốn đóng góp mẫu? Xem [Tạo mẫu mới](#tạo-mẫu-mới) bên dưới.
 </Aside>
 
-<Aside type="caution" title="Template Có Thể Không Hoạt Động Ngay">
-Một số template có thể không hoạt động ngay vì **đường dẫn app có thể khác** trên máy Mac của bạn.
+<Aside type="caution" title="Mẫu có thể chưa chạy ngay">
+Một số mẫu có thể chưa chạy ngay vì **đường dẫn ứng dụng** trên máy Mac của bạn có thể khác.
 
-Vị trí app có thể khác do:
-- Cách cài đặt khác nhau (App Store vs tải trực tiếp)
-- Phiên bản mới thay đổi tên app bundle
-- Đường dẫn cài đặt tùy chỉnh
+Vị trí ứng dụng có thể khác do:
+- Cách cài khác nhau (App Store hay tải trực tiếp)
+- Phiên bản mới đổi tên file `.app`
+- Ứng dụng được cài ở thư mục khác
 
-**Nếu template không hoạt động sau khi cài:**
+**Nếu mẫu không chạy sau khi cài:**
 1. Mở file `.keyly` trong `~/.config/keyly/`
 2. Tìm dòng `# App:` ở đầu file
-3. Cập nhật đường dẫn đúng với vị trí thực của app
+3. Sửa lại đường dẫn cho đúng vị trí thật của ứng dụng
 
 ```bash
-# Tìm đường dẫn đúng của app
+# Tìm đường dẫn đúng của ứng dụng
 ls /Applications/*.app
-# Hoặc với app cài trong thư mục user
+# Hoặc với ứng dụng cài riêng cho người dùng
 ls ~/Applications/*.app
 ```
 
 Ví dụ sửa:
 ```keyly
-# Trước (mặc định của template)
+# Trước (mặc định của mẫu)
 # App: /Applications/Cursor.app
 
-# Sau (đường dẫn thực trên máy bạn)
+# Sau (đường dẫn thật trên máy bạn)
 # App: /Applications/Cursor - Nightly.app
 ```
 </Aside>
 
 ## Tùy chọn cài đặt
 
-### Flag bắt buộc
+### Tham số bắt buộc
 
-| Flag | Mô tả | Ví dụ |
-|------|-------|-------|
-| `-t <tên>` | Tên template (bắt buộc) | `-t cursor` |
+| Tham số | Mô tả | Ví dụ |
+|---------|-------|-------|
+| `-t <tên>` | Tên mẫu (bắt buộc) | `-t cursor` |
 
-### Flag tùy chọn
+### Tham số tùy chọn
 
-| Flag | Mô tả | Ví dụ |
-|------|-------|-------|
-| `-n <tên file>` | Tên file tùy chỉnh | `-n my-cursor.keyly` |
-| `-f` | Ghi đè file có sẵn | `-f` |
+| Tham số | Mô tả | Ví dụ |
+|---------|-------|-------|
+| `-n <tên file>` | Đặt tên file khác | `-n my-cursor.keyly` |
+| `-f` | Ghi đè file đã có | `-f` |
 
 ## Ví dụ
 
 ### Cài đặt cơ bản
 
 ```bash
-# Cài template Cursor
+# Cài mẫu Cursor
 curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install-templates.sh | bash -s -- -t cursor
 ```
 
-### Đặt tên file tùy chỉnh
+### Đặt tên file khác
 
 ```bash
-# Cài với tên tùy chỉnh
+# Cài với tên file tùy chọn
 curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install-templates.sh | bash -s -- -t cursor -n cursor-custom.keyly
 ```
 
 ### Ghi đè file cũ
 
 ```bash
-# Ghi đè không hỏi
+# Ghi đè mà không hỏi
 curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install-templates.sh | bash -s -- -t cursor -f
 ```
 
 ## Quy trình cài đặt
 
 <Steps>
-1. Script kiểm tra tên template
-2. Tải template từ GitHub
-3. Nếu file đã tồn tại, hỏi backup hoặc ghi đè (trừ khi dùng `-f`)
+1. Script kiểm tra tên mẫu
+2. Tải mẫu từ GitHub
+3. Nếu file đã tồn tại, hỏi bạn muốn sao lưu hay ghi đè (trừ khi dùng `-f`)
 4. Lưu vào `~/.config/keyly/`
 5. Sẵn sàng dùng — nhấn đúp Caps Lock để xem phím tắt
 </Steps>
 
-## Định dạng Template
+## Định dạng mẫu
 
-Templates dùng định dạng `.keyly` chuẩn với tính năng thêm: **mô tả danh mục**.
+Mẫu dùng định dạng `.keyly` chuẩn, có thêm **mô tả danh mục**.
 
 ```keyly
 # Sheet Name: Cursor IDE
 # App: /Applications/Cursor.app
 
 [Chat]
-> Focus vào panel chat trước.
-CMD+L       Focus Chat
+> Đặt con trỏ vào khung chat trước.
+CMD+L       Mở khung chat
 CMD+I       Mở Composer
-CMD+SHIFT+I Inline Composer
+CMD+SHIFT+I Mở Composer ngay trong trình soạn thảo
 
-[Editor]
+[Trình soạn thảo]
 > Các phím tắt chỉnh sửa cơ bản.
 CMD+D       Chọn lần xuất hiện tiếp theo
 CMD+SHIFT+L Chọn tất cả lần xuất hiện
@@ -127,28 +127,27 @@ CMD+SHIFT+L Chọn tất cả lần xuất hiện
 
 Dòng `> mô tả` sau `[Danh mục]` thêm gợi ý hiển thị dưới tiêu đề danh mục trong cửa sổ phím tắt.
 
-## Tạo Template
+## Tạo mẫu mới
 
-Muốn tạo template cho app yêu thích của bạn?
+Muốn tạo mẫu cho ứng dụng bạn yêu thích?
 
 <Steps>
 1. Tạo file `.keyly` theo [cú pháp phím tắt tùy chỉnh](/vi/configuration/custom-shortcuts/)
-2. Thêm mô tả danh mục bằng `> text gợi ý` cho ngữ cảnh
-3. Test ở local trong `~/.config/keyly/`
-4. Gửi PR tới [Keyly repository](https://github.com/hoaiphongdev/keyly)
+2. Thêm mô tả danh mục bằng `> gợi ý` để có ngữ cảnh
+3. Chạy thử trên máy trong `~/.config/keyly/`
+4. Gửi pull request tới [kho mã Keyly](https://github.com/hoaiphongdev/keyly)
 </Steps>
 
-### Hướng dẫn tạo Template
+### Hướng dẫn soạn mẫu
 
 - Dùng tên danh mục rõ ràng, dễ hiểu
-- Thêm gợi ý `> mô tả` cho ngữ cảnh
-- Bao gồm các phím tắt thường dùng
-- Test với app thực tế
-- Đặt tên theo convention: `tên-app.keyly`
+- Thêm gợi ý `> mô tả` để có ngữ cảnh
+- Đưa vào các phím tắt hay dùng
+- Thử với ứng dụng thật
+- Đặt tên file theo quy ước: `tên-ứng-dụng.keyly`
 
 ## Liên quan
 
 - [Phím tắt tùy chỉnh](/vi/configuration/custom-shortcuts/) — Hướng dẫn đầy đủ cú pháp
-- [Cấu hình](/vi/configuration/) — Tổng quan các tùy chọn config
+- [Cấu hình](/vi/configuration/) — Tổng quan các tùy chọn cấu hình
 - [Bắt đầu](/vi/getting-started/) — Hướng dẫn cài đặt
-

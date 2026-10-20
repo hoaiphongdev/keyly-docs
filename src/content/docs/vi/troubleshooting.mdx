@@ -1,17 +1,17 @@
 ---
 title: "Xử lý sự cố Keyly - Giải pháp từng bước"
-description: "Phím tắt không hiện? Không có quyền? Icon menu bar mất? Làm theo hướng dẫn từng bước để khắc phục nhanh."
+description: "Phím tắt không hiện? Chưa có quyền? Mất biểu tượng trên thanh menu? Làm theo hướng dẫn từng bước để khắc phục nhanh."
 ---
 
 import { Steps, Aside } from '@astrojs/starlight/components';
 
 ## Keyly không hiển thị phím tắt
 
-### Kiểm tra quyền Accessibility
+### Kiểm tra quyền Trợ năng
 
 <Steps>
-1. Mở **System Settings**
-2. Vào **Privacy & Security → Accessibility**
+1. Mở **Cài đặt hệ thống** (System Settings)
+2. Vào **Quyền riêng tư & Bảo mật → Trợ năng** (Privacy & Security → Accessibility)
 3. Đảm bảo **Keyly** có trong danh sách và đã **bật**
 4. Nếu không thấy, thử mở Keyly trước
 </Steps>
@@ -23,28 +23,28 @@ Sau khi bật quyền, có thể cần khởi động lại Keyly để thay đ�
 ### Khởi động lại Keyly
 
 <Steps>
-1. Click **biểu tượng ⌘** ở menu bar
+1. Click **biểu tượng K** trên thanh menu
 2. Chọn **Quit**
-3. Mở lại Keyly từ Applications
+3. Mở lại Keyly từ thư mục Ứng dụng (Applications)
 </Steps>
 
 ## Cửa sổ phím tắt không xuất hiện
 
 ### Nhấn đúp Caps Lock đủ nhanh
 
-Bấm Caps Lock **2 lần trong vòng nửa giây**. macOS bỏ qua những lần chạm Caps Lock quá nhẹ, nên hãy bấm dứt khoát. Nếu bạn đã đổi chức năng Caps Lock trong **System Settings → Keyboard → Modifier Keys**, hãy đặt `super_key` khác trong `~/.config/keyly/setting.conf`.
+Bấm Caps Lock **2 lần trong vòng nửa giây**. macOS bỏ qua những lần chạm Caps Lock quá nhẹ, nên hãy bấm dứt khoát. Nếu bạn đã đổi chức năng Caps Lock trong **Cài đặt hệ thống → Bàn phím → Phím bổ trợ** (System Settings → Keyboard → Modifier Keys), hãy đặt `super_key` khác trong `~/.config/keyly/setting.conf`.
 
-### Kiểm tra app có menu bar không
+### Kiểm tra ứng dụng có thanh menu không
 
-Một số app (đặc biệt game hoặc app toàn màn hình) có thể không hiển thị phím tắt qua menu bar. Keyly chỉ đọc được những gì Accessibility API có thể truy cập.
+Một số ứng dụng (đặc biệt là game hoặc ứng dụng toàn màn hình) có thể không đưa phím tắt lên thanh menu. Keyly chỉ đọc được những gì Accessibility API cho phép truy cập.
 
 ## Thiếu một số phím tắt
 
-### Không phải tất cả đều phát hiện được
+### Không phải phím tắt nào cũng phát hiện được
 
-Đây là giới hạn của macOS, không phải bug. Một số phím tắt là **nội bộ** — app xử lý trực tiếp mà không thông qua macOS.
+Đây là giới hạn của macOS, không phải lỗi. Một số phím tắt là **nội bộ** — ứng dụng tự xử lý mà không thông qua macOS.
 
-Ví dụ: `⌘P` (Quick Open) hay `⌘⇧P` (Command Palette) của VS Code là phím tắt nội bộ mà macOS không thể thấy.
+Ví dụ: `⌘P` (Mở nhanh) hay `⌘⇧P` (Bảng lệnh) của VS Code là phím tắt nội bộ mà macOS không thấy được.
 
 <Aside>
 Đọc thêm tại [Tại sao một số phím tắt không được phát hiện](/vi/resources/detection-limits/).
@@ -52,9 +52,9 @@ Ví dụ: `⌘P` (Quick Open) hay `⌘⇧P` (Command Palette) của VS Code là 
 
 ### Giải pháp: Dùng cấu hình tùy chỉnh
 
-Bạn có thể thêm phím tắt bị thiếu:
+Bạn có thể tự thêm các phím tắt bị thiếu:
 
-1. **Dùng template** — Xem [Templates](/vi/configuration/templates/) để cài config có sẵn
+1. **Dùng mẫu có sẵn** — Xem [Mẫu có sẵn](/vi/configuration/templates/) để cài cấu hình soạn sẵn
 2. **Tự tạo** — Xem [Phím tắt tùy chỉnh](/vi/configuration/custom-shortcuts/)
 
 ## Phím tắt tùy chỉnh không hoạt động
@@ -66,9 +66,9 @@ Bạn có thể thêm phím tắt bị thiếu:
 ~/.config/keyly/
 ```
 
-### Kiểm tra đường dẫn App
+### Kiểm tra đường dẫn ứng dụng
 
-Header `# App:` phải trỏ đúng tới application bundle:
+Dòng `# App:` phải trỏ đúng tới file `.app` của ứng dụng:
 
 ```
 # App: /Applications/Safari.app
@@ -79,79 +79,79 @@ Tìm đường dẫn đúng:
 ls /Applications/*.app
 ```
 
-## Template không hoạt động sau khi cài
+## Mẫu không hoạt động sau khi cài
 
 <Aside type="caution">
-Templates từ cộng đồng sử dụng đường dẫn app mặc định có thể không khớp với hệ thống của bạn.
+Mẫu từ cộng đồng dùng đường dẫn ứng dụng mặc định, có thể không khớp với máy của bạn.
 </Aside>
 
-### Đường dẫn App không khớp
+### Đường dẫn ứng dụng không khớp
 
-Lý do phổ biến nhất khiến template không hoạt động là **đường dẫn app khác** trên máy Mac của bạn. Điều này xảy ra vì:
+Lý do phổ biến nhất khiến mẫu không chạy là **đường dẫn ứng dụng** trên máy Mac của bạn khác với mẫu. Điều này xảy ra vì:
 
-- **Cách cài đặt khác nhau** — App từ App Store vs tải trực tiếp có thể có tên bundle khác nhau
-- **Phiên bản khác nhau** — Một số app có thông tin version trong tên (ví dụ: `Cursor - Nightly.app`)
-- **Vị trí tùy chỉnh** — App cài trong `~/Applications/` thay vì `/Applications/`
+- **Cách cài khác nhau** — Ứng dụng từ App Store và bản tải trực tiếp có thể có tên file `.app` khác nhau
+- **Phiên bản khác nhau** — Một số ứng dụng ghi phiên bản trong tên (ví dụ: `Cursor - Nightly.app`)
+- **Vị trí cài khác** — Ứng dụng nằm trong `~/Applications/` thay vì `/Applications/`
 
 ### Cách khắc phục
 
 <Steps>
-1. Mở file template trong `~/.config/keyly/`
+1. Mở file mẫu trong `~/.config/keyly/`
 2. Tìm dòng `# App:` ở đầu file
-3. Cập nhật đường dẫn đúng với vị trí thực của app
+3. Sửa lại đường dẫn cho đúng vị trí thật của ứng dụng
 </Steps>
 
-Tìm đường dẫn đúng của app:
+Tìm đường dẫn đúng của ứng dụng:
 ```bash
-# Liệt kê app trong /Applications
+# Liệt kê ứng dụng trong /Applications
 ls /Applications/*.app
 
-# Liệt kê app trong ~/Applications
+# Liệt kê ứng dụng trong ~/Applications
 ls ~/Applications/*.app
 ```
 
 Ví dụ:
 ```keyly
-# Mặc định của template (có thể không hoạt động)
+# Mặc định của mẫu (có thể không chạy)
 # App: /Applications/Cursor.app
 
-# Đường dẫn thực trên máy bạn (cập nhật thành này)
+# Đường dẫn thật trên máy bạn (sửa thành dòng này)
 # App: /Applications/Cursor - Nightly.app
 ```
 
-Sau khi cập nhật, reload Keyly: **biểu tượng ⌘ → Reload**
+Sau khi sửa, tải lại Keyly: **nút ⚙︎ → Reload Config** trong cửa sổ phím tắt
 
-### Reload Keyly
+### Tải lại Keyly
 
-Sau khi sửa config, reload từ menu bar: **biểu tượng ⌘ → Reload**
+Sau khi sửa cấu hình, tải lại từ cửa sổ phím tắt: **nút ⚙︎ → Reload Config**
 
-### Kiểm tra encoding file
+### Kiểm tra bảng mã của file
 
-Đảm bảo file `.keyly` được lưu dạng **UTF-8** không có BOM.
+Đảm bảo file `.keyly` được lưu với bảng mã **UTF-8** không có BOM.
 
-## Icon menu bar bị mất
+## Mất biểu tượng trên thanh menu
 
-### Kiểm tra không gian menu bar
+### Kiểm tra chỗ trống trên thanh menu
 
-Nếu có nhiều icon ở menu bar, icon Keyly có thể bị ẩn. Thử:
-- Giữ ⌘ và kéo các icon để sắp xếp lại
-- Dùng app như Bartender hoặc Hidden Bar để quản lý menu bar
+Nếu thanh menu có quá nhiều biểu tượng, biểu tượng Keyly có thể bị che. Thử:
+- Giữ ⌘ và kéo các biểu tượng để sắp xếp lại
+- Dùng ứng dụng như Bartender hoặc Hidden Bar để quản lý thanh menu
 
 ### Kiểm tra Keyly có đang chạy không
 
-Mở Activity Monitor và tìm "Keyly". Nếu không chạy, mở lại từ Applications.
+Mở **Giám sát Hoạt động** (Activity Monitor) và tìm "Keyly". Nếu không thấy, mở lại Keyly từ thư mục Ứng dụng.
 
-## App crash hoặc đơ
+## Ứng dụng bị thoát đột ngột hoặc đơ
 
 ### Kiểm tra phiên bản macOS
 
-Keyly yêu cầu **macOS 12.0 trở lên**. Kiểm tra:
-1. Click  → About This Mac
+Keyly yêu cầu **macOS 12.0 trở lên**. Cách kiểm tra:
+1. Click  → **Giới thiệu về máy Mac này** (About This Mac)
 2. Xem phiên bản macOS
 
-### Reset Keyly
+### Đặt lại Keyly
 
-Xóa config và khởi động lại:
+Xóa cấu hình và khởi động lại:
 ```bash
 rm -rf ~/.config/keyly
 ```
@@ -160,7 +160,7 @@ Sau đó mở lại Keyly.
 
 ## Cập nhật
 
-Keyly tự kiểm tra bản mới mỗi 6 tiếng. Khi có bản mới, icon menu bar hiện chấm đỏ và menu có thêm mục **Update to x.y.z…**. Bạn cũng có thể bấm **Check for Updates…** bất cứ lúc nào.
+Keyly tự kiểm tra bản mới mỗi 6 tiếng. Khi có bản mới, biểu tượng trên thanh menu hiện chấm đỏ và menu có thêm mục **Update to x.y.z…**. Bạn cũng có thể bấm **Check for Updates…** bất cứ lúc nào.
 
 ### Nâng cấp từ 1.7.3 trở về trước
 
@@ -168,13 +168,13 @@ Các bản đến 1.7.3 chưa có bộ cập nhật. Cần nâng cấp thủ cô
 
 <Steps>
 1. Chạy lại lệnh cài đặt ở [Bắt đầu](/vi/getting-started/)
-2. Cấp lại quyền **Accessibility** (vì chữ ký của app đã đổi)
+2. Cấp lại quyền **Trợ năng** (vì chữ ký của ứng dụng đã đổi)
 3. Từ đó trở đi, bản cập nhật tự cài và giữ nguyên quyền
 </Steps>
 
-### "Keyly cannot be opened" khi mở lần đầu
+### Lỗi "Keyly cannot be opened" khi mở lần đầu
 
-Keyly chưa được Apple notarize. Mở **System Settings → Privacy & Security**, kéo xuống và bấm **Open Anyway**. Chỉ cần làm một lần; các bản cập nhật không bị ảnh hưởng.
+Keyly chưa được Apple xác thực (notarize). Mở **Cài đặt hệ thống → Quyền riêng tư & Bảo mật** (System Settings → Privacy & Security), kéo xuống và bấm **Vẫn mở** (Open Anyway). Chỉ cần làm một lần; các bản cập nhật sau không bị ảnh hưởng.
 
 ## Vẫn còn vấn đề?
 
@@ -185,6 +185,5 @@ Keyly chưa được Apple notarize. Mở **System Settings → Privacy & Securi
 
 - [Bắt đầu](/vi/getting-started/) — Hướng dẫn cài đặt
 - [Cấu hình](/vi/configuration/) — Tùy chỉnh Keyly
-- [FAQ](/vi/faq/) — Câu hỏi thường gặp
+- [Câu hỏi thường gặp](/vi/faq/) — Giải đáp nhanh
 - [Tại sao một số phím tắt không được phát hiện](/vi/resources/detection-limits/) — Giới hạn phát hiện
-
