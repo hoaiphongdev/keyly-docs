@@ -111,7 +111,28 @@ const webSiteSchema = {
 		"@type": "Person",
 		"name": "Nguyễn Hoài Phong",
 		"url": "https://github.com/hoaiphongdev"
-	}
+	},
+	"sameAs": ["https://github.com/hoaiphongdev/keyly"]
+};
+
+// Tells search engines and AI answers what Keyly is: a free macOS app, not just a docs site
+const softwareAppSchema = {
+	"@context": "https://schema.org",
+	"@type": "SoftwareApplication",
+	"name": "Keyly",
+	"applicationCategory": "UtilitiesApplication",
+	"applicationSubCategory": "Keyboard shortcut viewer",
+	"operatingSystem": "macOS 12+",
+	"description": webSiteSchema.description,
+	"url": Astro.site?.href || "https://keyly-docs.com",
+	"downloadUrl": "https://github.com/hoaiphongdev/keyly",
+	"installUrl": new URL('/getting-started/', Astro.site).href,
+	"image": new URL('/og-home.png', Astro.site).href,
+	"isAccessibleForFree": true,
+	"license": "https://opensource.org/licenses/MIT",
+	"offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+	"author": webSiteSchema.publisher,
+	"sameAs": ["https://github.com/hoaiphongdev/keyly"]
 };
 ---
 <Default><slot /></Default>
@@ -131,3 +152,4 @@ const webSiteSchema = {
 <script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
 <script is:inline type="application/ld+json" set:html={JSON.stringify(webPageSchema)} />
 {isHomepage && <script is:inline type="application/ld+json" set:html={JSON.stringify(webSiteSchema)} />}
+{isHomepage && <script is:inline type="application/ld+json" set:html={JSON.stringify(softwareAppSchema)} />}
