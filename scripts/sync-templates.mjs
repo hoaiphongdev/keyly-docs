@@ -29,24 +29,29 @@ function parseTemplate(content) {
 	for (const raw of content.split(/\r?\n/)) {
 		const line = raw.trim();
 		if (!line) continue;
-		if (line.startsWith('# Sheet Name:')) sheet.name = line.slice('# Sheet Name:'.length).trim();
-		else if (line.startsWith('# App:')) sheet.appPath = line.slice('# App:'.length).trim();
+		const directive = line.match(/^#+\s*(sheet name|app)\s*:(.*)$/i);
+		const escaped = /^\\[#[>\\]/.test(line);
+		if (directive?.[1].toLowerCase() === 'sheet name') sheet.name = directive[2].trim();
+		else if (directive) sheet.appPath = directive[2].trim();
+		else if (escaped) addRow(line.slice(1));
 		else if (line.startsWith('#')) continue;
 		else if (line.startsWith('[') && line.endsWith(']')) {
 			section = { title: line.slice(1, -1).trim(), hints: [], rows: [] };
 			sheet.sections.push(section);
 		} else if (line.startsWith('>')) section?.hints.push(line.slice(1).trim());
-		else {
-			const pair = splitLine(line);
-			if (!pair) continue;
-			if (!section) {
-				section = { title: 'General', hints: [], rows: [] };
-				sheet.sections.push(section);
-			}
-			section.rows.push(pair);
-		}
+		else addRow(line);
 	}
 	return sheet;
+
+	function addRow(line) {
+		const pair = splitLine(line);
+		if (!pair) return;
+		if (!section) {
+			section = { title: 'General', hints: [], rows: [] };
+			sheet.sections.push(section);
+		}
+		section.rows.push(pair);
+	}
 }
 
 const escapeText = (text) => text.replace(/[\\`*_{}[\]<>|~]/g, '\\$&');
