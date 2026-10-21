@@ -1,0 +1,103 @@
+---
+// A fair "which one is for you": where Keyly fits better, and where the other app does.
+import { apps, pages, ui, type Lang, type Rival } from './data';
+
+interface Props {
+	lang: Lang;
+	against: Rival;
+}
+
+const { lang, against } = Astro.props;
+const page = pages[against];
+const columns = [
+	{ id: 'keyly', name: apps.keyly.name, items: page.keylyWins?.[lang] ?? [] },
+	{ id: against, name: apps[against].name, items: page.rivalWins?.[lang] ?? [] },
+];
+---
+
+<div class="kc-strengths not-content" data-reveal>
+	{
+		columns.map((col, i) => (
+			<section class:list={['col', { mine: col.id === 'keyly' }]}>
+				<span class="letter kc-label">{String.fromCharCode(65 + i)}</span>
+				<h3>{ui[lang].choose.replace('{app}', col.name)}</h3>
+				<ul>
+					{col.items.map((item) => (
+						<li>{item}</li>
+					))}
+				</ul>
+			</section>
+		))
+	}
+</div>
+
+<style>
+	.kc-strengths {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1px;
+		margin-top: 2rem;
+		border: 1px solid var(--kc-line);
+		background: var(--kc-line);
+	}
+	.col {
+		position: relative;
+		padding: clamp(1.25rem, 2.5vw, 2rem);
+		background: var(--kc-bg);
+	}
+	.col.mine {
+		background: color-mix(in srgb, var(--sl-color-accent) 5%, var(--kc-bg));
+		box-shadow: inset 0 2px 0 var(--sl-color-accent);
+	}
+	.letter {
+		position: absolute;
+		top: 1rem;
+		right: 1rem;
+		color: var(--kc-faint);
+	}
+	h3 {
+		margin: 0.5rem 0 1.25rem;
+		font-family: var(--kc-font-display);
+		font-size: clamp(1.25rem, 1rem + 0.8vw, 1.625rem);
+		font-weight: 620;
+		letter-spacing: -0.02em;
+		color: var(--kc-ink-strong);
+	}
+	ul {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	li {
+		position: relative;
+		margin: 0;
+		padding: 0.75rem 0 0.75rem 1.5rem;
+		border-top: 1px solid var(--kc-line);
+		line-height: 1.55;
+		color: var(--kc-muted);
+	}
+	li::before {
+		content: '';
+		position: absolute;
+		left: 0.125rem;
+		top: 1.3rem;
+		width: 0.5rem;
+		height: 0.5rem;
+		border: 1.5px solid var(--kc-faint);
+		border-radius: 50%;
+	}
+	.mine li {
+		color: var(--kc-ink);
+	}
+	.mine li::before {
+		border-color: var(--sl-color-accent);
+		background: var(--sl-color-accent);
+		box-shadow: 0 0 10px var(--kc-glow);
+	}
+
+	@media (max-width: 50rem) {
+		.kc-strengths {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

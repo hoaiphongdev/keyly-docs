@@ -1,0 +1,83 @@
+---
+// One quiet line on where the facts come from, with each developer's site.
+import { apps, CHECKED_ON, RIVALS, ui, type Lang, type Rival } from './data';
+
+interface Props {
+	lang: Lang;
+	against?: Rival;
+}
+
+const { lang, against } = Astro.props;
+const t = ui[lang].sources;
+const listed = against ? [against] : RIVALS;
+---
+
+<aside class="kc-sources not-content" aria-label={t.title}>
+	<span class="kc-label title">{t.title}</span>
+	<p>
+		{t.text.replace('{date}', CHECKED_ON[lang])}{' '}
+		<a href="https://github.com/hoaiphongdev/keyly/issues">{t.issue} →</a>
+	</p>
+	<ul>
+		{
+			listed.map((id) => (
+				<li>
+					<a href={apps[id].url} rel="noopener" class="kc-label">
+						{apps[id].name} ↗
+					</a>
+				</li>
+			))
+		}
+		<li>
+			<a href={apps.keyly.url} rel="noopener" class="kc-label">Keyly ↗</a>
+		</li>
+	</ul>
+</aside>
+
+<style>
+	.kc-sources {
+		display: grid;
+		grid-template-columns: auto 1fr auto;
+		align-items: baseline;
+		gap: 0.75rem 2rem;
+		margin-top: clamp(4rem, 8vw, 6rem);
+		padding-top: 1.25rem;
+		border-top: 1px solid var(--kc-line);
+	}
+	.title {
+		color: var(--kc-faint);
+	}
+	p {
+		margin: 0;
+		font-size: 0.875rem;
+		line-height: 1.6;
+		color: var(--kc-faint);
+	}
+	a {
+		color: var(--kc-muted);
+	}
+	a:hover,
+	a:focus-visible {
+		color: var(--sl-color-text-accent);
+	}
+	ul {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem 1.25rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	li {
+		margin: 0;
+	}
+	ul a {
+		text-decoration: none;
+	}
+
+	@media (max-width: 50rem) {
+		.kc-sources {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

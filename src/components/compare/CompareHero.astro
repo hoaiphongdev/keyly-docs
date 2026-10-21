@@ -1,0 +1,379 @@
+---
+// Hero for /compare/ pages. Each app is drawn as the key you press to open it: Keyly's ⇪ gets
+// double-tapped, the others' ⌘ is held down. Quieter than the homepage hero: no canvas, CSS only.
+import { apps, CHECKED_ON, pageFor, pages, RIVALS, rows, ui, type AppId } from './data';
+
+const route = Astro.locals.starlightRoute;
+const lang = route.locale === 'vi' ? 'vi' : 'en';
+const t = ui[lang];
+const pageId = pageFor(route.id);
+const page = pages[pageId];
+const shown: AppId[] = pageId === 'hub' ? ['keyly', ...RIVALS] : ['keyly', pageId];
+
+// Instrument Serif has no Vietnamese glyphs, so the VI accent word uses Archivo italic
+const vs = `<em class="${lang === 'vi' ? 'kc-italic' : 'kc-serif'}">${page.vs[lang]}</em>`;
+const titleHtml = page.title[lang].replace('{vs}', vs);
+
+const spec = pageId === 'hub' ? undefined : (['price', 'open'] as const).map((id) => rows.find((row) => row.id === id)!);
+const start = lang === 'vi' ? '/vi/getting-started/' : '/getting-started/';
+// The first section heading on every compare page
+const firstSection = lang === 'vi' ? '#tóm-tắt-nhanh' : '#at-a-glance';
+---
+
+<section class="kc-cmp-hero not-content">
+	<div class="backdrop" aria-hidden="true"><div class="glow"></div></div>
+
+	<div class="bar kc-label">
+		<span>{t.bar[0]}</span>
+		<span class="bar-right">{t.bar[1]} · {CHECKED_ON[lang]}</span>
+	</div>
+
+	<div class="body">
+		<ul class:list={['caps', { four: shown.length > 2 }]} aria-hidden="true">
+			{
+				shown.map((id, i) => (
+					<>
+						{i === 1 && <li class="versus kc-label">vs</li>}
+						<li class:list={['cap', id === 'keyly' ? 'is-keyly' : 'is-rival']}>
+							<span class="face">
+								<span class="glyph">{apps[id].key}</span>
+							</span>
+							<span class="name kc-label">{apps[id].name}</span>
+						</li>
+					</>
+				))
+			}
+		</ul>
+
+		<h1 id="_top" tabindex="-1" data-page-title set:html={titleHtml} />
+		<p class="tagline">{page.tagline[lang]}</p>
+
+		{
+			spec && (
+				<dl class="spec">
+					<div class="spec-head" aria-hidden="true">
+						<span />
+						{shown.map((id) => (
+							<span class:list={['kc-label', { mine: id === 'keyly' }]}>{apps[id].name}</span>
+						))}
+					</div>
+					{spec.map((row) => (
+						<div class="spec-row">
+							<dt class="kc-label">{t.spec[row.id as 'price' | 'open']}</dt>
+							{shown.map((id) => (
+								<dd class:list={{ mine: id === 'keyly' }}>
+									<span class="sr-only">{apps[id].name}: </span>
+									{id === 'keyly' && row.id === 'open' ? t.spec.yourKey : row.cells[id].text[lang]}
+								</dd>
+							))}
+						</div>
+					))}
+				</dl>
+			)
+		}
+
+		<div class="actions">
+			<a class="sl-link-button primary" href={start}>{t.start} →</a>
+			<a class="sl-link-button secondary" href={firstSection}>{t.compare} ↓</a>
+		</div>
+	</div>
+</section>
+
+<style>
+	.kc-cmp-hero {
+		position: relative;
+		display: grid;
+		grid-template-rows: auto 1fr;
+		min-height: min(54rem, calc(88svh - var(--sl-nav-height)));
+		margin-inline: calc(-1 * clamp(1rem, 4vw, 2.5rem));
+		overflow: hidden;
+		isolation: isolate;
+		border-bottom: 1px solid var(--kc-line);
+	}
+
+	/* A flat keyboard grid fading out from the middle, with one soft pink light behind Keyly */
+	.backdrop {
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		background:
+			repeating-linear-gradient(90deg, var(--kc-line) 0 1px, transparent 1px 60px),
+			repeating-linear-gradient(0deg, var(--kc-line) 0 1px, transparent 1px 60px);
+		background-position: center;
+		mask-image: radial-gradient(ellipse 70% 60% at 50% 38%, #000 0%, transparent 72%);
+		opacity: 0.55;
+	}
+	.glow {
+		position: absolute;
+		left: 50%;
+		top: 30%;
+		width: min(48rem, 110vw);
+		aspect-ratio: 2;
+		translate: -50% -50%;
+		background: radial-gradient(closest-side, var(--kc-glow), transparent);
+		filter: blur(24px);
+	}
+
+	.bar {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 0.75rem clamp(1rem, 4vw, 2.5rem);
+		border-bottom: 1px solid var(--kc-line);
+		color: var(--kc-muted);
+		background: color-mix(in srgb, var(--kc-bg) 60%, transparent);
+	}
+
+	.body {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 1.5rem;
+		padding: clamp(3rem, 7vw, 5rem) clamp(1rem, 4vw, 2.5rem) clamp(3rem, 6vw, 4.5rem);
+		text-align: center;
+	}
+
+	/* ---------- Keycaps ---------- */
+
+	.caps {
+		display: flex;
+		align-items: flex-start;
+		justify-content: center;
+		gap: clamp(1rem, 3vw, 2rem);
+		margin: 0 0 0.5rem;
+		padding: 0;
+		list-style: none;
+		animation: kc-cmp-rise 800ms var(--kc-ease) both;
+	}
+	.cap {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.875rem;
+		margin: 0;
+	}
+	.face {
+		display: grid;
+		place-items: center;
+		width: clamp(5rem, 4rem + 4vw, 7rem);
+		aspect-ratio: 1;
+		border: 1px solid var(--kc-line-strong);
+		border-radius: 16px;
+		background: linear-gradient(to bottom, var(--kc-raised), var(--kc-sunken));
+		box-shadow:
+			0 7px 0 -1px var(--kc-line),
+			inset 0 1px 0 rgb(255 255 255 / 0.05);
+		color: var(--kc-muted);
+	}
+	.glyph {
+		font-family: var(--kc-font-display);
+		font-size: clamp(1.75rem, 1.4rem + 1.4vw, 2.5rem);
+		font-weight: 500;
+		line-height: 1;
+	}
+	.name {
+		color: var(--kc-faint);
+	}
+	.is-keyly .face {
+		border-color: var(--sl-color-accent);
+		color: var(--sl-color-text-accent);
+		box-shadow:
+			0 7px 0 -1px color-mix(in srgb, var(--sl-color-accent) 45%, transparent),
+			0 0 48px var(--kc-glow),
+			inset 0 1px 0 rgb(255 255 255 / 0.06);
+	}
+	.is-keyly .name {
+		color: var(--kc-ink);
+	}
+	.versus {
+		align-self: center;
+		margin-top: -1.75rem;
+		color: var(--kc-faint);
+	}
+	.four .versus {
+		display: none;
+	}
+	.four .face {
+		width: clamp(4rem, 3rem + 3.5vw, 6rem);
+	}
+
+	/* Keyly: two quick taps; the others: ⌘ goes down and stays down a couple of seconds */
+	@media (prefers-reduced-motion: no-preference) {
+		.is-keyly .face {
+			animation: kc-cmp-tap 4.2s 1s var(--kc-ease) infinite;
+		}
+		.is-rival .face {
+			animation: kc-cmp-hold 4.2s 1s var(--kc-ease) infinite;
+		}
+	}
+	@keyframes kc-cmp-tap {
+		0%,
+		12%,
+		100% {
+			transform: none;
+		}
+		3%,
+		9% {
+			transform: translateY(5px);
+			box-shadow:
+				0 2px 0 -1px color-mix(in srgb, var(--sl-color-accent) 45%, transparent),
+				0 0 64px var(--kc-glow);
+		}
+		6% {
+			transform: translateY(1px);
+		}
+	}
+	@keyframes kc-cmp-hold {
+		0%,
+		4%,
+		64%,
+		100% {
+			transform: none;
+		}
+		8%,
+		58% {
+			transform: translateY(5px);
+			box-shadow: 0 2px 0 -1px var(--kc-line);
+			border-color: var(--kc-line-strong);
+			color: var(--kc-ink);
+		}
+	}
+
+	/* ---------- Copy ---------- */
+
+	h1 {
+		margin: 0;
+		max-width: 18ch;
+		font-family: var(--kc-font-display);
+		font-size: clamp(2.5rem, 1.4rem + 4.6vw, 5.25rem);
+		font-weight: 650;
+		letter-spacing: -0.04em;
+		line-height: 1;
+		color: var(--kc-ink-strong);
+		text-wrap: balance;
+		animation: kc-cmp-rise 800ms 80ms var(--kc-ease) both;
+	}
+	h1 :global(em) {
+		font-style: italic;
+	}
+	h1 :global(.kc-serif) {
+		padding-inline: 0.06em;
+		font-size: 1.1em;
+		font-weight: 400;
+		letter-spacing: -0.01em;
+		color: var(--sl-color-text-accent);
+	}
+	h1 :global(.kc-italic) {
+		font-weight: 520;
+		color: var(--sl-color-text-accent);
+	}
+	.tagline {
+		margin: 0;
+		max-width: 46ch;
+		font-size: clamp(1rem, 0.9rem + 0.45vw, 1.25rem);
+		line-height: 1.6;
+		color: var(--sl-color-gray-2);
+		text-wrap: pretty;
+		animation: kc-cmp-rise 800ms 160ms var(--kc-ease) both;
+	}
+
+	/* ---------- Spec ---------- */
+
+	.spec {
+		display: grid;
+		grid-template-columns: auto 1fr 1fr;
+		width: min(40rem, 100%);
+		margin: 0.5rem 0 0;
+		border: 1px solid var(--kc-line);
+		background: color-mix(in srgb, var(--kc-bg) 80%, transparent);
+		-webkit-backdrop-filter: blur(6px);
+		backdrop-filter: blur(6px);
+		text-align: left;
+		animation: kc-cmp-rise 800ms 240ms var(--kc-ease) both;
+	}
+	.spec-head,
+	.spec-row {
+		display: grid;
+		grid-column: 1 / -1;
+		grid-template-columns: subgrid;
+	}
+	.spec-row {
+		border-top: 1px solid var(--kc-line);
+	}
+	.spec-head > *,
+	.spec dt,
+	.spec dd {
+		margin: 0;
+		padding: 0.7rem 1rem;
+	}
+	.spec-head .kc-label,
+	.spec dt {
+		color: var(--kc-faint);
+	}
+	.spec-head .mine {
+		color: var(--sl-color-text-accent);
+	}
+	.spec dd {
+		border-left: 1px solid var(--kc-line);
+		font-size: 0.9375rem;
+		line-height: 1.45;
+		color: var(--kc-muted);
+	}
+	.spec dd.mine {
+		color: var(--kc-ink-strong);
+		background: color-mix(in srgb, var(--sl-color-accent) 6%, transparent);
+	}
+	.spec-head .mine {
+		border-left: 1px solid var(--kc-line);
+		background: color-mix(in srgb, var(--sl-color-accent) 6%, transparent);
+		box-shadow: inset 0 2px 0 var(--sl-color-accent);
+	}
+	.spec-head > :last-child {
+		border-left: 1px solid var(--kc-line);
+	}
+	.sr-only {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip-path: inset(50%);
+		white-space: nowrap;
+	}
+
+	.actions {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.75rem;
+		margin-top: 0.5rem;
+		animation: kc-cmp-rise 800ms 320ms var(--kc-ease) both;
+	}
+
+	@keyframes kc-cmp-rise {
+		from {
+			opacity: 0;
+			transform: translateY(16px);
+		}
+	}
+
+	@media (max-width: 40rem) {
+		.bar-right {
+			display: none;
+		}
+		.spec {
+			grid-template-columns: 5.5rem 1fr 1fr;
+		}
+		.spec-head > *,
+		.spec dt,
+		.spec dd {
+			padding: 0.6rem 0.625rem;
+		}
+		.spec dd {
+			font-size: 0.875rem;
+		}
+		.four {
+			gap: 0.75rem;
+		}
+	}
+</style>

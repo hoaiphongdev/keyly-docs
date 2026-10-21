@@ -1,0 +1,210 @@
+---
+// What you can tailor in Keyly: shortcut sheets as plain text, and the key that opens it.
+import { Code } from '@astrojs/starlight/components';
+import { ui, type Lang } from './data';
+
+interface Props {
+	lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = ui[lang].yours;
+
+const sheet = `# Sheet Name: Figma
+# App: /Applications/Figma.app
+
+[Canvas]
+> ${lang === 'vi' ? 'Di chuyển trên canvas' : 'Getting around the canvas'}
+⇧1              Zoom to fit
+⇧2              Zoom to selection
+⌘\\              Show / hide UI`;
+
+// The trigger cycles through a few of the setups Keyly accepts
+const triggers = [
+	{ keys: ['⇪', '⇪'], note: lang === 'vi' ? 'nhấn đúp' : 'double-tap' },
+	{ keys: ['⌃', '⌥', 'K'], note: lang === 'vi' ? 'nhấn' : 'press' },
+	{ keys: ['⌘'], note: t.hold },
+];
+---
+
+<div class="kc-yours not-content" data-reveal>
+	<article class="cell">
+		<span class="letter kc-label">A</span>
+		<h3>{t.template}</h3>
+		<p>{t.templateText}</p>
+		<div class="code">
+			<Code code={sheet} lang="keyly" title="~/.config/keyly/templates/figma.keyly" />
+		</div>
+		<p class="links">
+			{
+				t.templateLinks.map(([text, href]) => (
+					<a href={href} class="kc-label">
+						{text} →
+					</a>
+				))
+			}
+		</p>
+	</article>
+
+	<article class="cell">
+		<span class="letter kc-label">B</span>
+		<h3>{t.trigger}</h3>
+		<p>{t.triggerText}</p>
+		<div class="stage" aria-hidden="true">
+			{
+				triggers.map((trigger, i) => (
+					<div class="combo" style={`--i: ${i}`}>
+						<span class="keys">
+							{trigger.keys.map((key) => (
+								<kbd>{key}</kbd>
+							))}
+						</span>
+						<span class="note kc-label">{trigger.note}</span>
+					</div>
+				))
+			}
+		</div>
+		<p class="links">
+			<a href={t.triggerLink[1]} class="kc-label">{t.triggerLink[0]} →</a>
+		</p>
+	</article>
+</div>
+
+<style>
+	.kc-yours {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1px;
+		margin-top: 2rem;
+		border: 1px solid var(--kc-line);
+		background: var(--kc-line);
+	}
+	.cell {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		gap: 0.875rem;
+		min-width: 0;
+		padding: clamp(1.25rem, 2.5vw, 2rem);
+		background: var(--kc-bg);
+		transition: background-color 250ms ease;
+	}
+	.cell:hover {
+		background: var(--kc-raised);
+	}
+	.letter {
+		position: absolute;
+		top: 1rem;
+		right: 1rem;
+		color: var(--kc-faint);
+	}
+	h3 {
+		margin: 0.5rem 0 0;
+		font-family: var(--kc-font-display);
+		font-size: clamp(1.25rem, 1rem + 0.8vw, 1.625rem);
+		font-weight: 620;
+		letter-spacing: -0.02em;
+		color: var(--kc-ink-strong);
+	}
+	.cell > p {
+		margin: 0;
+		max-width: 46ch;
+		line-height: 1.6;
+		color: var(--kc-muted);
+	}
+	.code {
+		margin-top: auto;
+	}
+	.code :global(.expressive-code) {
+		margin: 0;
+	}
+	.links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem 1.5rem;
+	}
+	.links a {
+		color: var(--sl-color-text-accent);
+		text-decoration: none;
+	}
+	.links a:hover,
+	.links a:focus-visible {
+		text-decoration: underline;
+		text-underline-offset: 0.3em;
+	}
+
+	/* ---------- Trigger stage: one combination at a time, crossfading ---------- */
+	.stage {
+		position: relative;
+		display: grid;
+		place-items: center;
+		min-height: 12rem;
+		margin-top: auto;
+		border: 1px solid var(--kc-line);
+		background:
+			radial-gradient(circle at 50% 120%, var(--kc-glow), transparent 60%),
+			repeating-linear-gradient(90deg, var(--kc-line) 0 1px, transparent 1px 2rem),
+			var(--kc-sunken);
+	}
+	.combo {
+		grid-area: 1 / 1;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.875rem;
+	}
+	.keys {
+		display: flex;
+		gap: 0.5rem;
+	}
+	kbd {
+		display: grid;
+		place-items: center;
+		min-width: 3.25rem;
+		height: 3.25rem;
+		padding: 0 0.5rem;
+		border: 1px solid var(--sl-color-accent);
+		border-bottom-width: 3px;
+		border-radius: 9px;
+		background: linear-gradient(to bottom, var(--kc-raised), var(--kc-sunken));
+		box-shadow: 0 0 26px var(--kc-glow);
+		font: 500 1.375rem var(--kc-font-display);
+		color: var(--sl-color-text-accent);
+	}
+	.note {
+		color: var(--kc-faint);
+	}
+	.combo:not(:first-child) {
+		opacity: 0;
+	}
+	@media (prefers-reduced-motion: no-preference) {
+		.combo {
+			animation: kc-yours-cycle 7.5s calc(var(--i) * 2.5s) var(--kc-ease) infinite both;
+		}
+		.combo:not(:first-child) {
+			opacity: 1;
+		}
+	}
+	@keyframes kc-yours-cycle {
+		0% {
+			opacity: 0;
+			transform: translateY(8px);
+		}
+		6%,
+		28% {
+			opacity: 1;
+			transform: none;
+		}
+		34%,
+		100% {
+			opacity: 0;
+			transform: translateY(-8px);
+		}
+	}
+
+	@media (max-width: 50rem) {
+		.kc-yours {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

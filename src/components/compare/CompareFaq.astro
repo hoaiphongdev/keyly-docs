@@ -1,0 +1,38 @@
+---
+// FAQ for a comparison page: plain doc typography, plus the same answers as FAQPage structured data.
+import { pages, type Lang, type Rival } from './data';
+
+interface Props {
+	lang: Lang;
+	page: 'hub' | Rival;
+}
+
+const { lang, page } = Astro.props;
+const items = pages[page].faq[lang];
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'FAQPage',
+	mainEntity: items.map(([name, text]) => ({ '@type': 'Question', name, acceptedAnswer: { '@type': 'Answer', text } })),
+};
+---
+
+<div class="kc-cmp-faq">
+	{
+		items.map(([question, answer]) => (
+			<>
+				<h3>{question}</h3>
+				<p>{answer}</p>
+			</>
+		))
+	}
+</div>
+<script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+<style>
+	.kc-cmp-faq {
+		max-width: 46rem;
+	}
+	.kc-cmp-faq p {
+		color: var(--kc-muted);
+	}
+</style>

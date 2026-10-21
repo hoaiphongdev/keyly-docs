@@ -1,0 +1,144 @@
+---
+// Hub: one card per head-to-head page, with its one-line verdict.
+import { apps, pages, RIVALS, ui, type Lang } from './data';
+
+interface Props {
+	lang: Lang;
+}
+
+const { lang } = Astro.props;
+const base = lang === 'vi' ? '/vi/compare/' : '/compare/';
+---
+
+<ul class="kc-cmp-cards not-content" data-reveal>
+	{
+		RIVALS.map((id, i) => (
+			<li>
+				<a href={`${base}${id}/`} class="card">
+					<span class="top">
+						<span class="index kc-label">{String(i + 1).padStart(2, '0')}</span>
+						<span class="caps" aria-hidden="true">
+							<kbd class="mine">{apps.keyly.key}</kbd>
+							<span class="kc-label">vs</span>
+							<kbd>{apps[id].key}</kbd>
+						</span>
+					</span>
+					<span class="title">Keyly vs {apps[id].name}</span>
+					<span class="verdict">{pages[id].verdict?.[lang]}</span>
+					<span class="more kc-label">{ui[lang].cards.more} →</span>
+				</a>
+			</li>
+		))
+	}
+</ul>
+
+<style>
+	.kc-cmp-cards {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 1px;
+		margin: 2rem 0 0;
+		padding: 0;
+		border: 1px solid var(--kc-line);
+		background: var(--kc-line);
+		list-style: none;
+	}
+	li {
+		margin: 0;
+	}
+	.card {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		gap: 0.875rem;
+		height: 100%;
+		padding: clamp(1.25rem, 2.5vw, 2rem);
+		background: var(--kc-bg);
+		color: inherit;
+		text-decoration: none;
+		transition: background-color 250ms ease;
+	}
+	.card::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 2px;
+		transform: scaleX(0);
+		transform-origin: left;
+		background: var(--sl-color-accent);
+		transition: transform 400ms var(--kc-ease);
+	}
+	.card:hover,
+	.card:focus-visible {
+		background: var(--kc-raised);
+	}
+	.card:hover::after,
+	.card:focus-visible::after {
+		transform: scaleX(1);
+	}
+	.card:focus-visible {
+		outline: 2px solid var(--sl-color-accent);
+		outline-offset: -2px;
+	}
+	.top {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+	.index {
+		color: var(--kc-faint);
+	}
+	.caps {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		color: var(--kc-faint);
+	}
+	kbd {
+		display: grid;
+		place-items: center;
+		width: 2rem;
+		height: 2rem;
+		border: 1px solid var(--kc-line-strong);
+		border-bottom-width: 3px;
+		border-radius: 6px;
+		background: linear-gradient(to bottom, var(--kc-raised), var(--kc-sunken));
+		font: 500 0.9375rem var(--kc-font-display);
+		color: var(--kc-muted);
+		transition: transform 160ms var(--kc-ease);
+	}
+	kbd.mine {
+		border-color: var(--sl-color-accent);
+		color: var(--sl-color-text-accent);
+	}
+	.card:hover kbd.mine {
+		transform: translateY(2px);
+		box-shadow: 0 0 18px var(--kc-glow);
+	}
+	.title {
+		margin-top: 1.25rem;
+		font-family: var(--kc-font-display);
+		font-size: clamp(1.375rem, 1.1rem + 0.9vw, 1.875rem);
+		font-weight: 620;
+		letter-spacing: -0.03em;
+		line-height: 1.1;
+		color: var(--kc-ink-strong);
+	}
+	.verdict {
+		line-height: 1.6;
+		color: var(--kc-muted);
+	}
+	.more {
+		margin-top: auto;
+		padding-top: 0.5rem;
+		color: var(--sl-color-text-accent);
+	}
+
+	@media (max-width: 56rem) {
+		.kc-cmp-cards {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

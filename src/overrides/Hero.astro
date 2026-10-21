@@ -2,6 +2,9 @@
 // Starlight renders this for every page with `hero:` frontmatter. Hero pages get the full-bleed
 // layout (global.css keys it off data-has-hero), so each kind of hero page brings its own hero.
 import HomeHero from '../components/home/HomeHero.astro';
+import CompareHero from '../components/compare/CompareHero.astro';
+
+const isCompare = /^(vi\/)?compare(\/|$)/.test(Astro.locals.starlightRoute.id);
 ---
 
-<HomeHero />
+{isCompare ? <CompareHero /> : <HomeHero />}

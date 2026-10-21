@@ -1,0 +1,302 @@
+---
+// The comparison table: a real <table> so screen readers, search engines and AI answers can read it.
+// Keyly's column carries the accent; hovering a cell lights its row and column.
+import { apps, RIVALS, rows, ui, type AppId, type Lang, type Rival } from './data';
+
+interface Props {
+	lang: Lang;
+	/** Compare Keyly against one app; all four when omitted */
+	against?: Rival;
+}
+
+const { lang, against } = Astro.props;
+const t = ui[lang].matrix;
+const shown: AppId[] = against ? ['keyly', against] : ['keyly', ...RIVALS];
+const hub = lang === 'vi' ? '/vi/compare/' : '/compare/';
+---
+
+<div class="kc-matrix not-content" data-reveal>
+	<div class="kh-meta">
+		<span class="kc-label kh-caption">{t.caption}</span>
+	</div>
+
+	<div class:list={['scroller', { wide: !against }]} tabindex="0" role="region" aria-label={t.caption}>
+		<table>
+			<thead>
+				<tr>
+					<th scope="col" class="kc-label corner">{t.feature}</th>
+					{
+						shown.map((id, col) => (
+							<th scope="col" class:list={['app', { mine: id === 'keyly' }]} data-col={col + 1}>
+								<span class="app-key" aria-hidden="true">{apps[id].key}</span>
+								<span class="app-name">{apps[id].name}</span>
+							</th>
+						))
+					}
+				</tr>
+			</thead>
+			<tbody>
+				{
+					rows.map((row) => (
+						<tr>
+							<th scope="row">
+								<span class="row-label">{row.label[lang]}</span>
+								<span class="row-hint kc-label">{row.hint[lang]}</span>
+							</th>
+							{shown.map((id, col) => {
+								const cell = row.cells[id];
+								return (
+									<td class:list={[cell.kind, { mine: id === 'keyly' }]} data-col={col + 1}>
+										{(cell.kind === 'yes' || cell.kind === 'no') && <span class="dot" aria-hidden="true" />}
+										<span>{cell.text[lang]}</span>
+									</td>
+								);
+							})}
+						</tr>
+					))
+				}
+			</tbody>
+		</table>
+	</div>
+
+	{
+		against && (
+			<p class="all">
+				<a href={hub} class="kc-label">
+					{t.all} →
+				</a>
+			</p>
+		)
+	}
+</div>
+
+<script>
+	// Mark scrollers that still hide columns to the right, so CSS can fade that edge
+	document.querySelectorAll<HTMLElement>('.kc-matrix .scroller').forEach((scroller) => {
+		const update = () =>
+			scroller.classList.toggle('more', scroller.scrollLeft + scroller.clientWidth < scroller.scrollWidth - 4);
+		scroller.addEventListener('scroll', update, { passive: true });
+		new ResizeObserver(update).observe(scroller);
+	});
+
+	// Light up the hovered cell's column; the row is handled in CSS
+	document.querySelectorAll<HTMLTableElement>('.kc-matrix table').forEach((table) => {
+		table.addEventListener('pointerover', (event) => {
+			const col = (event.target as Element).closest<HTMLElement>('[data-col]')?.dataset.col ?? '';
+			table.dataset.hoverCol = col;
+		});
+		table.addEventListener('pointerleave', () => delete table.dataset.hoverCol);
+	});
+</script>
+
+<style>
+	.kc-matrix {
+		margin-top: 2rem;
+	}
+	.scroller {
+		position: relative;
+		margin-top: 1.25rem;
+		overflow-x: auto;
+		border: 1px solid var(--kc-line);
+		background: var(--kc-bg);
+		scrollbar-width: thin;
+	}
+	.scroller:focus-visible {
+		outline: 2px solid var(--sl-color-accent);
+		outline-offset: 2px;
+	}
+	table {
+		width: 100%;
+		min-width: 34rem;
+		margin: 0;
+		border-collapse: collapse;
+		table-layout: fixed;
+	}
+	.wide table {
+		min-width: 52rem;
+	}
+	th,
+	td {
+		padding: 1.25rem clamp(1rem, 2vw, 1.5rem);
+		border: 0;
+		border-bottom: 1px solid var(--kc-line);
+		text-align: left;
+		vertical-align: top;
+		transition: background-color 200ms ease;
+	}
+	tbody tr:last-child > * {
+		border-bottom: 0;
+	}
+	td,
+	thead th + th {
+		border-left: 1px solid var(--kc-line);
+	}
+
+	/* First column stays put while the others scroll on narrow screens */
+	thead th:first-child,
+	tbody th {
+		position: sticky;
+		left: 0;
+		z-index: 1;
+		width: 30%;
+		background: var(--kc-bg);
+	}
+	.wide :is(thead th:first-child, tbody th) {
+		width: 22%;
+	}
+
+	/* ---------- Header ---------- */
+	.corner {
+		vertical-align: bottom;
+		color: var(--kc-faint);
+	}
+	.app {
+		vertical-align: bottom;
+	}
+	.app-key {
+		display: grid;
+		place-items: center;
+		width: 2.25rem;
+		height: 2.25rem;
+		margin-bottom: 0.875rem;
+		border: 1px solid var(--kc-line-strong);
+		border-bottom-width: 3px;
+		border-radius: 7px;
+		background: linear-gradient(to bottom, var(--kc-raised), var(--kc-sunken));
+		font-family: var(--kc-font-display);
+		font-size: 1.05rem;
+		font-weight: 500;
+		color: var(--kc-muted);
+	}
+	.app-name {
+		display: block;
+		font-family: var(--kc-font-display);
+		font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
+		font-weight: 620;
+		letter-spacing: -0.02em;
+		color: var(--kc-ink);
+	}
+
+	/* ---------- Keyly column ---------- */
+	.mine {
+		background: color-mix(in srgb, var(--sl-color-accent) 5%, var(--kc-bg));
+	}
+	thead .mine {
+		box-shadow: inset 0 2px 0 var(--sl-color-accent);
+	}
+	.mine .app-key {
+		border-color: var(--sl-color-accent);
+		color: var(--sl-color-text-accent);
+		box-shadow: 0 0 22px var(--kc-glow);
+	}
+	.mine .app-name {
+		color: var(--kc-ink-strong);
+	}
+
+	/* ---------- Rows ---------- */
+	.row-label {
+		display: block;
+		font-family: var(--kc-font-display);
+		font-size: 1.0625rem;
+		font-weight: 600;
+		letter-spacing: -0.01em;
+		line-height: 1.3;
+		color: var(--kc-ink-strong);
+	}
+	.row-hint {
+		display: block;
+		margin-top: 0.4rem;
+		color: var(--kc-faint);
+	}
+	td {
+		font-size: 0.9375rem;
+		line-height: 1.55;
+		color: var(--kc-muted);
+	}
+	td.mine {
+		color: var(--kc-ink);
+	}
+	td.unknown {
+		color: var(--kc-faint);
+	}
+	.dot {
+		display: inline-block;
+		width: 0.5rem;
+		height: 0.5rem;
+		margin-right: 0.6rem;
+		border-radius: 50%;
+		vertical-align: 0.08em;
+	}
+	.yes .dot {
+		background: var(--sl-color-accent);
+		box-shadow: 0 0 10px var(--kc-glow);
+	}
+	.no .dot {
+		border: 1.5px solid var(--kc-faint);
+	}
+
+	/* ---------- Hover crosshair ---------- */
+	@media (hover: hover) {
+		tbody tr:hover > * {
+			background-color: var(--kc-raised);
+		}
+		tbody tr:hover > .mine {
+			background-color: color-mix(in srgb, var(--sl-color-accent) 9%, var(--kc-raised));
+		}
+		table[data-hover-col='1'] [data-col='1'],
+		table[data-hover-col='2'] [data-col='2'],
+		table[data-hover-col='3'] [data-col='3'],
+		table[data-hover-col='4'] [data-col='4'] {
+			background-color: var(--kc-raised);
+		}
+		table[data-hover-col='1'] .mine {
+			background-color: color-mix(in srgb, var(--sl-color-accent) 9%, var(--kc-raised));
+		}
+	}
+
+	/* Fade the right edge while more columns sit off-screen */
+	.scroller.more {
+		mask-image: linear-gradient(90deg, #000 calc(100% - 3rem), transparent);
+	}
+
+	@media (max-width: 40rem) {
+		table,
+		.wide table {
+			min-width: 0;
+		}
+		.wide table {
+			width: 46rem;
+		}
+		thead th:first-child,
+		tbody th,
+		.wide :is(thead th:first-child, tbody th) {
+			width: 7.25rem;
+		}
+		th,
+		td {
+			padding: 1rem 0.75rem;
+		}
+		.row-label {
+			font-size: 0.9375rem;
+		}
+		.row-hint {
+			display: none;
+		}
+		td {
+			font-size: 0.875rem;
+		}
+	}
+
+	.all {
+		margin: 1rem 0 0;
+		text-align: right;
+	}
+	.all a {
+		color: var(--sl-color-text-accent);
+		text-decoration: none;
+	}
+	.all a:hover {
+		text-decoration: underline;
+		text-underline-offset: 0.3em;
+	}
+</style>

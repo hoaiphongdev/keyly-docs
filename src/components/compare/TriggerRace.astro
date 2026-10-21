@@ -1,0 +1,318 @@
+---
+// How long you wait for the list, played in real time: Keyly opens on a double-tap (two taps within
+// half a second), CheatSheet after holding ⌘ "a couple seconds" (MacStories). Only documented timings.
+import { ui, type Lang } from './data';
+
+interface Props {
+	lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = ui[lang].race;
+const SPAN = 2.5; // seconds shown on the axis
+const racers = [
+	{ id: 'keyly', name: 'Keyly', keys: ['⇪', '⇪'], how: t.keyly, at: 0.4, label: '< 0.5' },
+	{ id: 'cheatsheet', name: 'CheatSheet', keys: ['⌘'], how: t.cheatsheet, at: 2, label: '~2' },
+];
+---
+
+<div class="kc-race not-content" data-reveal>
+	<div class="kh-meta">
+		<p class="kh-lead">{t.lead}</p>
+		<button type="button" class="replay kc-label">↻ {t.replay}</button>
+	</div>
+
+	<div class="board" style={`--span: ${SPAN}`}>
+		<div class="axis kc-label" aria-hidden="true">
+			{[0, 0.5, 1, 1.5, 2, 2.5].map((s) => <span style={`--at: ${s}`}>{`${s}${t.seconds}`}</span>)}
+		</div>
+
+		{
+			racers.map((r) => (
+				<div class:list={['lane', r.id]} style={`--at: ${r.at}`}>
+					<div class="who">
+						<span class="name">{r.name}</span>
+						<span class="how">
+							{r.keys.map((key, i) => (
+								<kbd style={`--i: ${i}`}>{key}</kbd>
+							))}
+							<span class="how-text">{r.how}</span>
+						</span>
+					</div>
+					<div class="track">
+						<span class="fill" />
+						<span class="mark">
+							<span class="kc-label">{`${t.open} · ${r.label}${t.seconds}`}</span>
+						</span>
+					</div>
+				</div>
+			))
+		}
+	</div>
+
+	<p class="pick">
+		{t.pick} <a href={t.pickLink[1]}>{t.pickLink[0]} →</a>
+	</p>
+</div>
+
+<script>
+	// Run once when the board scrolls into view; Replay restarts it
+	document.querySelectorAll<HTMLElement>('.kc-race').forEach((race) => {
+		const play = () => {
+			race.classList.remove('playing');
+			void race.offsetWidth;
+			race.classList.add('playing');
+		};
+		new IntersectionObserver(
+			([entry], observer) => {
+				if (!entry?.isIntersecting) return;
+				play();
+				observer.disconnect();
+			},
+			{ threshold: 0.5 }
+		).observe(race.querySelector('.board')!);
+		race.querySelector('.replay')?.addEventListener('click', play);
+	});
+</script>
+
+<style>
+	.kc-race {
+		margin-top: 2rem;
+	}
+	.kh-meta {
+		align-items: flex-end;
+	}
+	.replay {
+		margin-left: auto;
+		padding: 0.5rem 0.75rem;
+		border: 1px solid var(--kc-line);
+		background: transparent;
+		color: var(--kc-muted);
+		cursor: pointer;
+		transition:
+			color 160ms ease,
+			border-color 160ms ease;
+	}
+	.replay:hover,
+	.replay:focus-visible {
+		border-color: var(--sl-color-accent);
+		color: var(--sl-color-text-accent);
+	}
+
+	.board {
+		--who: clamp(10rem, 28%, 17rem);
+		margin-top: 1.5rem;
+		border: 1px solid var(--kc-line);
+		background: var(--kc-bg);
+	}
+	.axis {
+		position: relative;
+		height: 2.25rem;
+		margin-left: var(--who);
+		border-bottom: 1px solid var(--kc-line);
+		color: var(--kc-faint);
+		text-transform: none;
+	}
+	.axis span {
+		position: absolute;
+		left: calc(var(--at) / var(--span) * 100%);
+		bottom: 0.6rem;
+		translate: -50% 0;
+		white-space: nowrap;
+	}
+	.axis span:first-child {
+		translate: 0.5rem 0;
+	}
+	.axis span:last-child {
+		translate: calc(-100% - 0.5rem) 0;
+	}
+
+	.lane {
+		display: grid;
+		grid-template-columns: var(--who) 1fr;
+		min-height: 5.5rem;
+	}
+	.lane + .lane {
+		border-top: 1px solid var(--kc-line);
+	}
+	.who {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: 0.5rem;
+		padding: 1rem clamp(1rem, 2vw, 1.5rem);
+		border-right: 1px solid var(--kc-line);
+		background: var(--kc-bg);
+	}
+	.name {
+		font-family: var(--kc-font-display);
+		font-size: 1.125rem;
+		font-weight: 620;
+		letter-spacing: -0.02em;
+		color: var(--kc-ink-strong);
+	}
+	.how {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.3rem;
+		font-size: 0.8125rem;
+		color: var(--kc-muted);
+	}
+	.how-text {
+		margin-left: 0.25rem;
+	}
+	kbd {
+		display: inline-grid;
+		place-items: center;
+		min-width: 1.5rem;
+		height: 1.5rem;
+		padding: 0 0.25rem;
+		border: 1px solid var(--kc-line-strong);
+		border-bottom-width: 2px;
+		border-radius: 4px;
+		background: var(--kc-raised);
+		font: 500 0.8125rem var(--kc-font-display);
+		color: var(--kc-ink);
+	}
+	.keyly kbd {
+		border-color: var(--sl-color-accent);
+		color: var(--sl-color-text-accent);
+	}
+
+	/* Half-second grid lines behind the bars */
+	.track {
+		position: relative;
+		height: 100%;
+		background: repeating-linear-gradient(90deg, var(--kc-line) 0 1px, transparent 1px calc(100% / (var(--span) * 2)));
+		background-position: -1px 0;
+	}
+	.fill {
+		position: absolute;
+		left: 0;
+		top: 50%;
+		width: calc(var(--at) / var(--span) * 100%);
+		height: 2px;
+		translate: 0 -50%;
+		transform-origin: left;
+		background: var(--kc-line-strong);
+	}
+	.keyly .fill {
+		height: 3px;
+		background: var(--sl-color-accent);
+		box-shadow: 0 0 14px var(--kc-glow);
+	}
+	.mark {
+		position: absolute;
+		left: calc(var(--at) / var(--span) * 100%);
+		top: 50%;
+		display: flex;
+		align-items: center;
+		translate: -0.375rem -50%;
+	}
+	.mark::before {
+		content: '';
+		width: 0.75rem;
+		height: 0.75rem;
+		border: 2px solid var(--kc-line-strong);
+		border-radius: 50%;
+		background: var(--kc-bg);
+	}
+	.keyly .mark::before {
+		border-color: var(--sl-color-accent);
+		background: var(--sl-color-accent);
+		box-shadow: 0 0 0 5px color-mix(in srgb, var(--sl-color-accent) 18%, transparent);
+	}
+	.mark .kc-label {
+		margin-left: 0.375rem;
+		padding: 0.2rem 0.375rem;
+		background: var(--kc-bg);
+		white-space: nowrap;
+		text-transform: none;
+		color: var(--kc-muted);
+	}
+	.keyly .mark .kc-label {
+		color: var(--sl-color-text-accent);
+	}
+	/* Late finishers put their label on the left so it stays inside the board */
+	.cheatsheet .mark {
+		flex-direction: row-reverse;
+		translate: calc(-100% + 0.375rem) -50%;
+	}
+	.cheatsheet .mark .kc-label {
+		margin: 0 0.375rem 0 0;
+	}
+
+	/* Real time: each bar takes exactly as long as the app makes you wait */
+	@media (prefers-reduced-motion: no-preference) {
+		.fill {
+			transform: scaleX(0);
+		}
+		.mark {
+			opacity: 0;
+		}
+		.playing .fill {
+			animation: kc-race-fill calc(var(--at) * 1s) linear forwards;
+		}
+		.playing .mark {
+			animation: kc-race-mark 360ms calc(var(--at) * 1s) var(--kc-ease) forwards;
+		}
+		.playing .keyly kbd {
+			animation: kc-race-tap 160ms calc(var(--i) * 0.22s) ease-out;
+		}
+		.playing .cheatsheet kbd {
+			animation: kc-race-hold 2s linear;
+		}
+	}
+	@keyframes kc-race-fill {
+		to {
+			transform: scaleX(1);
+		}
+	}
+	@keyframes kc-race-mark {
+		from {
+			opacity: 0;
+			scale: 0.6;
+		}
+		to {
+			opacity: 1;
+			scale: 1;
+		}
+	}
+	@keyframes kc-race-tap {
+		50% {
+			transform: translateY(2px);
+			border-bottom-width: 1px;
+			box-shadow: 0 0 14px var(--kc-glow);
+		}
+	}
+	@keyframes kc-race-hold {
+		0%,
+		100% {
+			transform: translateY(2px);
+			border-bottom-width: 1px;
+			color: var(--kc-ink-strong);
+		}
+	}
+
+	.pick {
+		margin: 1rem 0 0;
+		font-size: 0.9375rem;
+		color: var(--kc-muted);
+	}
+	.pick a {
+		color: var(--sl-color-text-accent);
+	}
+
+	@media (max-width: 40rem) {
+		.board {
+			--who: 7.5rem;
+		}
+		.how-text {
+			display: none;
+		}
+		.axis span:nth-child(even) {
+			display: none;
+		}
+	}
+</style>

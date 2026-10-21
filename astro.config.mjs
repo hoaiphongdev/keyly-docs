@@ -98,6 +98,11 @@ export default defineConfig({
             { label: "FAQ", translations: { vi: "Câu hỏi thường gặp" }, slug: "faq" },
           ],
         },
+        {
+          label: "Compare",
+          translations: { vi: "So sánh" },
+          autogenerate: { directory: "compare" },
+        },
       ],
       components: {
         Head: "./src/overrides/Head.astro",

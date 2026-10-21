@@ -17,6 +17,7 @@ export const GET: APIRoute = async ({ site }) => {
 	};
 	const isTemplate = (id: string) => id === 'templates' || id.startsWith('templates/');
 	const isResource = (id: string) => id.startsWith('resources/');
+	const isCompare = (id: string) => id === 'compare' || id.startsWith('compare/');
 
 	const body = [
 		'# Keyly',
@@ -29,7 +30,8 @@ export const GET: APIRoute = async ({ site }) => {
 		'- Source: https://github.com/hoaiphongdev/keyly',
 		'- Docs: https://keyly-docs.com (English and Vietnamese)',
 		'',
-		...section('Docs', (id) => !isTemplate(id) && !isResource(id)),
+		...section('Docs', (id) => !isTemplate(id) && !isResource(id) && !isCompare(id)),
+		...section('Compare', isCompare),
 		...section('Templates', isTemplate),
 		...section('Optional', isResource),
 	].join('\n');
