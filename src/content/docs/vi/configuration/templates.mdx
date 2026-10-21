@@ -27,34 +27,23 @@ Mỗi mẫu có một trang riêng với đầy đủ phím tắt và lệnh cà
 Muốn đóng góp mẫu? Xem [Tạo mẫu mới](#tạo-mẫu-mới) bên dưới.
 </Aside>
 
-<Aside type="caution" title="Mẫu có thể chưa chạy ngay">
-Một số mẫu có thể chưa chạy ngay vì **đường dẫn ứng dụng** trên máy Mac của bạn có thể khác.
+<Aside type="caution" title="Nếu mẫu không hiện">
+Keyly khớp mẫu với ứng dụng theo đường dẫn, và theo tên ứng dụng khi đường dẫn trên máy bạn khác. Nhờ vậy ứng dụng nằm trong `~/Applications`, cài qua Setapp hay bản năm mới hơn (mẫu Photoshop 2024 cũng hiện trong Photoshop 2025) đều được nhận.
 
-Vị trí ứng dụng có thể khác do:
-- Cách cài khác nhau (App Store hay tải trực tiếp)
-- Phiên bản mới đổi tên file `.app`
-- Ứng dụng được cài ở thư mục khác
-
-**Nếu mẫu không chạy sau khi cài:**
+Nếu ứng dụng của bạn có tên khác, ví dụ `Cursor - Nightly`:
 1. Mở file `.keyly` trong `~/.config/keyly/templates/`
 2. Tìm dòng `# App:` ở đầu file
-3. Sửa lại đường dẫn cho đúng vị trí thật của ứng dụng
+3. Đổi thành tên hoặc bundle id của ứng dụng
 
-```bash
-# Tìm đường dẫn đúng của ứng dụng
-ls /Applications/*.app
-# Hoặc với ứng dụng cài riêng cho người dùng
-ls ~/Applications/*.app
-```
-
-Ví dụ sửa:
 ```keyly
 # Trước (mặc định của mẫu)
 # App: /Applications/Cursor.app
 
-# Sau (đường dẫn thật trên máy bạn)
-# App: /Applications/Cursor - Nightly.app
+# Sau (tên ứng dụng của bạn)
+# App: Cursor - Nightly
 ```
+
+Những gì Keyly không đọc được trong file sẽ hiện ở **nút ⚙︎ → ⚠︎ config problems** trong cửa sổ phím tắt.
 </Aside>
 
 ## Tùy chọn cài đặt
@@ -111,7 +100,7 @@ Mẫu dùng định dạng `.keyly` chuẩn, có thêm **mô tả danh mục**.
 
 ```keyly
 # Sheet Name: Cursor IDE
-# App: /Applications/Cursor.app
+# App: Cursor
 
 [Chat]
 > Đặt con trỏ vào khung chat trước.

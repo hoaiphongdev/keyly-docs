@@ -19,7 +19,7 @@ Create `.keyly` files in `~/.config/keyly/templates/` to add custom shortcuts fo
     └── ...
 ```
 
-`.keyly` files placed directly in `~/.config/keyly/` (the old location) are still loaded, for backward compatibility.
+`.keyly` files placed directly in `~/.config/keyly/` (the old location) are still loaded, for backward compatibility. If the same file name is in both places, Keyly uses the one you saved last.
 
 <Aside type="tip">
 Open the config folder quickly: click the **⚙︎ button** in the shortcuts window → **Open Config Folder** (it opens `~/.config/keyly/`; your `.keyly` files go in `templates/`)
@@ -29,7 +29,7 @@ Open the config folder quickly: click the **⚙︎ button** in the shortcuts win
 
 ```keyly
 # Sheet Name: My Shortcuts
-# App: /Applications/Safari.app
+# App: Safari
 
 [Category Name]
 > Optional description for this category
@@ -42,8 +42,10 @@ KEY+COMBO   Another shortcut
 | Field | Required | Description |
 |-------|----------|-------------|
 | `# Sheet Name:` | Optional | Internal label for the file (not shown in the window; the window title shows the app's name) |
-| `# App:` | **Required** (except in `global.keyly`) | Full path to the application bundle |
+| `# App:` | **Required** (except in `global.keyly`) | The app: its name (`Figma`), its bundle id (`com.figma.Desktop`) or its full path (`/Applications/Figma.app`) |
 | `# Hide Default:` | Optional | `true` hides the app's own menu shortcuts, so only the ones in your file are shown |
+
+Field names ignore upper and lower case. Keyly also matches a sheet by the app's name, so it keeps working when the app lives in `~/Applications`, comes from Setapp, or is a newer yearly version (a sheet for Adobe Photoshop 2024 also shows in Photoshop 2025).
 
 ### Other Directives
 
@@ -53,6 +55,7 @@ KEY+COMBO   Another shortcut
 | `> description` | Sub-title for the current category (see [Category Descriptions](#category-descriptions)) |
 | `# Group: Name - Description` | Groups the following categories into one card, with an optional description after ` - ` |
 | `# Group: none` | Ends the current group |
+| `\#`, `\[`, `\>` | A shortcut whose key starts with `#`, `[` or `>` (see [Keys that look like syntax](#keys-that-look-like-syntax)) |
 
 ### Shortcut Lines
 
@@ -81,11 +84,27 @@ Combine modifiers with `+`. They are shown in the macOS order (⌃⌥⇧⌘), wh
 - `CMD+SHIFT+T` → ⇧⌘T
 - `CMD+OPT+ESC` → ⌥⌘esc
 
-Named keys are converted too: `ENTER`/`RETURN` → ⏎, `TAB` → ⇥, `DELETE`/`BACKSPACE` → ⌫, `UP`/`DOWN`/`LEFT`/`RIGHT` → ↑↓←→, plus `ESC`/`ESCAPE` and `SPACE`.
+Named keys are converted too: `ENTER`/`RETURN` → ⏎, `TAB` → ⇥, `DELETE`/`BACKSPACE` → ⌫, `FWDDEL` → ⌦, `UP`/`DOWN`/`LEFT`/`RIGHT` → ↑↓←→, `HOME` → ↖, `END` → ↘, `PGUP` → ⇞, `PGDN` → ⇟, `F1`–`F20`, plus `ESC`/`ESCAPE` and `SPACE`.
+
+Mouse actions keep their `+` so they still read as a combination: `⌘+click`, `⌥+drag`.
+
+### Keys that look like syntax
+
+Lines starting with `#`, `[` or `>` are comments, categories and descriptions. To list a shortcut whose key starts with one of those characters, put a `\` in front of it:
+
+```keyly
+[Markdown]
+\#              Heading 1
+\##             Heading 2
+\>              Quote block
+\[x]            Checked box
+```
+
+A `\` on its own, followed by spaces, is simply the backslash key.
 
 ## Global Shortcuts
 
-Shortcuts in `~/.config/keyly/templates/global.keyly` are shown for every app. This is the place for system shortcuts such as `⌘Tab` or `⌘Space`, which are not in any app's menu bar. It uses the same `[Category]`, `# Group:` and shortcut-line syntax, without an `# App:` line.
+Shortcuts in `~/.config/keyly/templates/global.keyly` are shown for every app. This is the place for system shortcuts such as `⌘Tab` or `⌘Space`, which are not in any app's menu bar. It uses the same `[Category]`, `# Group:` and shortcut-line syntax, without an `# App:` line. `> description` lines in `global.keyly` are not shown, so they never label an app's own menu categories.
 
 ## Category Descriptions
 
@@ -104,7 +123,7 @@ The description appears as a sub-title below the category name in the shortcuts 
 
 ```keyly
 # Sheet Name: My Shortcuts
-# App: /Applications/Safari.app
+# App: Safari
 
 [Navigation]
 > Essential navigation shortcuts
@@ -151,26 +170,30 @@ CMD+SHIFT+W Close Window
 
 - **One file per app** keeps things organized, but you can use any naming convention
 - **Categories** help group related shortcuts (use `[Category Name]` syntax)
-- **Comments** start with `#` and are ignored (except the directives above)
+- **Comments** start with `#` and are ignored (except the directives above). A line starting with `##` is always a comment, so `## App: …` turns a directive off
 - **Separate** the key combo and description with a tab or two or more spaces, or use `|` when the shortcut contains spaces
 - **Changes apply automatically** when you save a file; **⚙︎ → Reload Config** reloads manually
+
+## When Something Is Wrong
+
+A line Keyly can't read is skipped, and the rest of the file keeps working. Keyly never stops because of a mistake in a file.
+
+Problems are listed in the shortcuts window under **⚙︎ → ⚠︎ config problems**, for example `figma.keyly line 12: …`. Click one to open the file at that line (VS Code jumps straight to it). The same messages appear in the Console app if you search for `com.keyly`.
 
 ## Troubleshooting
 
 ### Shortcuts not appearing?
 
-1. Check the `# App:` path is correct
-2. Make sure the app bundle exists at that path
+1. Open **⚙︎ → ⚠︎ config problems** in the shortcuts window and fix anything listed for your file
+2. Check the `# App:` line. The simplest form is the app's name as Finder shows it, such as `# App: Safari`
 3. Reload with **⚙︎ → Reload Config** in the shortcuts window
-4. Verify file encoding is UTF-8
 
-### Wrong app bundle path?
+### Not sure what to write in `# App:`?
 
-Find the correct path:
+Use the app's name, or its bundle id, which never changes when the app moves or is renamed:
 ```bash
-ls /Applications/*.app
-# or for user-installed apps
-ls ~/Applications/*.app
+osascript -e 'id of app "Safari"'
+# com.apple.Safari
 ```
 
 ## Using Templates

@@ -19,7 +19,7 @@ Tạo file `.keyly` trong `~/.config/keyly/templates/` để thêm phím tắt t
     └── ...
 ```
 
-Các file `.keyly` đặt thẳng trong `~/.config/keyly/` (vị trí cũ) vẫn được nạp để tương thích ngược.
+Các file `.keyly` đặt thẳng trong `~/.config/keyly/` (vị trí cũ) vẫn được nạp để tương thích ngược. Nếu cùng một tên file có ở cả hai nơi, Keyly dùng file bạn lưu sau cùng.
 
 <Aside type="tip">
 Mở nhanh thư mục cấu hình: click **nút ⚙︎** trong cửa sổ phím tắt → **Open Config Folder** (mở `~/.config/keyly/`; các file `.keyly` của bạn nằm trong `templates/`)
@@ -29,7 +29,7 @@ Mở nhanh thư mục cấu hình: click **nút ⚙︎** trong cửa sổ phím 
 
 ```keyly
 # Sheet Name: Phím tắt của tôi
-# App: /Applications/Safari.app
+# App: Safari
 
 [Tên danh mục]
 > Mô tả tùy chọn cho danh mục này
@@ -42,8 +42,10 @@ KEY+COMBO   Một phím tắt khác
 | Trường | Bắt buộc | Mô tả |
 |--------|----------|-------|
 | `# Sheet Name:` | Không | Nhãn nội bộ của file (không hiển thị trong cửa sổ; tiêu đề cửa sổ là tên ứng dụng) |
-| `# App:` | **Có** (trừ `global.keyly`) | Đường dẫn đầy đủ tới ứng dụng (file `.app`) |
+| `# App:` | **Có** (trừ `global.keyly`) | Ứng dụng: tên (`Figma`), bundle id (`com.figma.Desktop`) hoặc đường dẫn đầy đủ (`/Applications/Figma.app`) |
 | `# Hide Default:` | Không | `true` ẩn phím tắt gốc trong menu của ứng dụng, chỉ hiện các phím tắt trong file của bạn |
+
+Tên trường không phân biệt chữ hoa chữ thường. Keyly còn khớp file theo tên ứng dụng, nên vẫn chạy khi ứng dụng nằm trong `~/Applications`, cài qua Setapp, hoặc là bản năm mới hơn (file cho Adobe Photoshop 2024 cũng hiện trong Photoshop 2025).
 
 ### Các chỉ thị khác
 
@@ -53,6 +55,7 @@ KEY+COMBO   Một phím tắt khác
 | `> description` | Tiêu đề phụ cho danh mục hiện tại (xem [Mô tả danh mục](#mô-tả-danh-mục)) |
 | `# Group: Name - Description` | Gom các danh mục phía sau vào một thẻ, có thể kèm mô tả sau ` - ` |
 | `# Group: none` | Kết thúc nhóm hiện tại |
+| `\#`, `\[`, `\>` | Phím tắt có phím bắt đầu bằng `#`, `[` hoặc `>` (xem [Phím trùng với cú pháp](#phím-trùng-với-cú-pháp)) |
 
 ### Dòng phím tắt
 
@@ -81,11 +84,27 @@ Nối các phím bổ trợ bằng dấu `+`. Chúng luôn hiển thị theo th�
 - `CMD+SHIFT+T` → ⇧⌘T
 - `CMD+OPT+ESC` → ⌥⌘esc
 
-Tên phím cũng được chuyển đổi: `ENTER`/`RETURN` → ⏎, `TAB` → ⇥, `DELETE`/`BACKSPACE` → ⌫, `UP`/`DOWN`/`LEFT`/`RIGHT` → ↑↓←→, cùng với `ESC`/`ESCAPE` và `SPACE`.
+Tên phím cũng được chuyển đổi: `ENTER`/`RETURN` → ⏎, `TAB` → ⇥, `DELETE`/`BACKSPACE` → ⌫, `FWDDEL` → ⌦, `UP`/`DOWN`/`LEFT`/`RIGHT` → ↑↓←→, `HOME` → ↖, `END` → ↘, `PGUP` → ⇞, `PGDN` → ⇟, `F1`–`F20`, cùng với `ESC`/`ESCAPE` và `SPACE`.
+
+Thao tác chuột giữ nguyên dấu `+` để vẫn đọc ra là tổ hợp: `⌘+click`, `⌥+drag`.
+
+### Phím trùng với cú pháp
+
+Dòng bắt đầu bằng `#`, `[` hoặc `>` là chú thích, danh mục và mô tả. Muốn ghi phím tắt có phím bắt đầu bằng một trong các ký tự đó, thêm dấu `\` ở trước:
+
+```keyly
+[Markdown]
+\#              Tiêu đề 1
+\##             Tiêu đề 2
+\>              Trích dẫn
+\[x]            Ô đã đánh dấu
+```
+
+Một dấu `\` đứng riêng, theo sau là khoảng trắng, chính là phím gạch chéo ngược.
 
 ## Phím tắt dùng chung
 
-Phím tắt trong `~/.config/keyly/templates/global.keyly` hiển thị cho mọi ứng dụng. Đây là nơi dành cho phím tắt hệ thống như `⌘Tab` hay `⌘Space`, vốn không nằm trong thanh menu của ứng dụng nào. File này dùng cùng cú pháp `[Category]`, `# Group:` và dòng phím tắt, không cần dòng `# App:`.
+Phím tắt trong `~/.config/keyly/templates/global.keyly` hiển thị cho mọi ứng dụng. Đây là nơi dành cho phím tắt hệ thống như `⌘Tab` hay `⌘Space`, vốn không nằm trong thanh menu của ứng dụng nào. File này dùng cùng cú pháp `[Category]`, `# Group:` và dòng phím tắt, không cần dòng `# App:`. Các dòng mô tả `>` trong `global.keyly` không được hiển thị, nên không bao giờ gắn lên danh mục menu của ứng dụng.
 
 ## Mô tả danh mục
 
@@ -104,7 +123,7 @@ Mô tả hiển thị như tiêu đề phụ dưới tên danh mục trong cửa
 
 ```keyly
 # Sheet Name: Phím tắt của tôi
-# App: /Applications/Safari.app
+# App: Safari
 
 [Điều hướng]
 > Các phím tắt điều hướng cơ bản
@@ -151,26 +170,30 @@ CMD+SHIFT+W Đóng cửa sổ
 
 - **Mỗi file cho một ứng dụng** giúp gọn gàng hơn, còn tên file thì đặt tùy ý
 - **Danh mục** giúp nhóm các phím tắt liên quan (dùng cú pháp `[Tên danh mục]`)
-- **Chú thích** bắt đầu bằng `#` và sẽ bị bỏ qua (trừ các chỉ thị ở trên)
+- **Chú thích** bắt đầu bằng `#` và sẽ bị bỏ qua (trừ các chỉ thị ở trên). Dòng bắt đầu bằng `##` luôn là chú thích, nên `## App: …` là cách tắt một chỉ thị
 - **Ngăn cách** tổ hợp phím và mô tả bằng một tab hoặc từ hai dấu cách trở lên, hoặc dùng `|` khi phím tắt có chứa dấu cách
 - **Thay đổi tự áp dụng** khi bạn lưu file; **nút ⚙︎ → Reload Config** để tải lại thủ công
+
+## Khi có lỗi
+
+Dòng nào Keyly không đọc được sẽ bị bỏ qua, phần còn lại của file vẫn chạy. Keyly không bao giờ ngừng chạy vì một lỗi trong file.
+
+Các lỗi được liệt kê trong cửa sổ phím tắt ở **nút ⚙︎ → ⚠︎ config problems**, ví dụ `figma.keyly line 12: …`. Click vào một lỗi để mở file ngay dòng đó (VS Code nhảy thẳng tới dòng). Các thông báo này cũng có trong ứng dụng Console nếu bạn tìm `com.keyly`.
 
 ## Xử lý sự cố
 
 ### Phím tắt không xuất hiện?
 
-1. Kiểm tra đường dẫn `# App:` có đúng không
-2. Đảm bảo ứng dụng thật sự nằm ở đường dẫn đó
+1. Mở **nút ⚙︎ → ⚠︎ config problems** trong cửa sổ phím tắt và sửa các lỗi của file bạn
+2. Kiểm tra dòng `# App:`. Cách đơn giản nhất là ghi tên ứng dụng như Finder hiển thị, ví dụ `# App: Safari`
 3. Tải lại bằng **nút ⚙︎ → Reload Config** trong cửa sổ phím tắt
-4. Kiểm tra file được lưu với bảng mã UTF-8
 
-### Đường dẫn ứng dụng bị sai?
+### Không biết ghi gì vào `# App:`?
 
-Tìm đường dẫn đúng:
+Dùng tên ứng dụng, hoặc bundle id, thứ không đổi khi ứng dụng bị chuyển chỗ hay đổi tên:
 ```bash
-ls /Applications/*.app
-# hoặc ứng dụng cài riêng cho người dùng
-ls ~/Applications/*.app
+osascript -e 'id of app "Safari"'
+# com.apple.Safari
 ```
 
 ## Dùng mẫu có sẵn

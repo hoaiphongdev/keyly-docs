@@ -32,7 +32,7 @@ After enabling permissions, you may need to restart Keyly for changes to take ef
 
 ### Double-Tap Caps Lock Quickly
 
-Tap Caps Lock **twice within half a second**. macOS ignores very short Caps Lock taps, so press each tap fully. If you remapped Caps Lock in **System Settings → Keyboard → Modifier Keys**, set a different `super_key` in `~/.config/keyly/setting.conf`. If `super_key` is set to a name Keyly doesn't recognize, it falls back to the default (Caps Lock).
+Tap Caps Lock **twice within half a second**. macOS ignores very short Caps Lock taps, so press each tap fully. If you remapped Caps Lock in **System Settings → Keyboard → Modifier Keys**, set a different `super_key` in `~/.config/keyly/setting.conf`. If `super_key` is set to something Keyly can't read, it falls back to the default (Caps Lock) and lists the problem under **⚙︎ → ⚠︎ config problems** in the shortcuts window.
 
 ### Caps Lock Switches Input Source
 
@@ -70,57 +70,48 @@ Make sure your `.keyly` file is in:
 ~/.config/keyly/templates/
 ```
 
-### Check App Path
+### Check the Problems List
 
-The `# App:` header must point to the correct application bundle:
+Open the shortcuts window and click **⚙︎ → ⚠︎ config problems**. Every line Keyly couldn't read is listed with its file and line number; click one to open it.
+
+### Check the App Line
+
+The `# App:` header can be the app's name, its bundle id or its full path:
 
 ```keyly
-# App: /Applications/Safari.app
+# App: Safari
 ```
 
-Find the correct path:
+Find an app's bundle id:
 ```bash
-ls /Applications/*.app
+osascript -e 'id of app "Safari"'
 ```
 
 ## Template Not Working After Installation
 
 <Aside type="caution">
-Templates from the community use default app paths that may not match your system.
+Templates point to the app's usual location. Keyly also matches them by the app's name, so apps in `~/Applications`, apps from Setapp and newer yearly versions (Photoshop 2025 for a 2024 template) work without changes.
 </Aside>
 
-### App Path Mismatch
+### App Name Mismatch
 
-The most common reason a template doesn't work is that the **app path is different** on your Mac. This happens because:
-
-- **Different installation methods** — App Store apps vs direct downloads may have different bundle names
-- **Version variations** — Some apps include version info in their name (e.g., `Cursor - Nightly.app`)
-- **Custom locations** — Apps installed in `~/Applications/` instead of `/Applications/`
+A template can still miss your app when **its name is different**, for example `Cursor - Nightly` instead of `Cursor`.
 
 ### How to Fix
 
 <Steps>
-1. Open the template file in `~/.config/keyly/templates/`
-2. Find the `# App:` line at the top of the file
-3. Update it to match your app's actual path
+1. Check **⚙︎ → ⚠︎ config problems** in the shortcuts window
+2. Open the template file in `~/.config/keyly/templates/`
+3. Change the `# App:` line to your app's name or bundle id
 </Steps>
-
-Find your app's correct path:
-```bash
-# List apps in /Applications
-ls /Applications/*.app
-
-# List apps in ~/Applications
-ls ~/Applications/*.app
-```
 
 Example:
 ```keyly
-# Template default (might not work)
+# Template default
 # App: /Applications/Cursor.app
 
-# Your actual path (update to this)
-# App: /Applications/Cursor - Nightly.app
+# Your app's name
+# App: Cursor - Nightly
 ```
 
 Keyly reloads the file automatically when you save it. If the change doesn't show, use **⚙︎ → Reload Config** in the shortcuts window
@@ -131,7 +122,7 @@ Config files reload automatically when you save them. To reload manually, use **
 
 ### Check File Encoding
 
-Make sure your `.keyly` file is saved as **UTF-8** without BOM.
+Save your `.keyly` file as **UTF-8** (with or without BOM). Characters Keyly can't decode show as `�`, and the rest of the file still loads.
 
 ## Menu Bar Icon Missing
 

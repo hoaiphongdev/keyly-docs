@@ -27,34 +27,23 @@ Every template has its own page with the full shortcut list and its install comm
 Want to contribute a template? See [Creating Templates](#creating-templates) below.
 </Aside>
 
-<Aside type="caution" title="Template May Not Work Out of the Box">
-Some templates may not work immediately because the **app path might be different** on your Mac.
+<Aside type="caution" title="If a Template Doesn't Show">
+Keyly matches a template to its app by path, and by the app's name when the path is different on your Mac. That covers apps in `~/Applications`, apps from Setapp and newer yearly versions (a Photoshop 2024 template also shows in Photoshop 2025).
 
-App locations can vary due to:
-- Different installation methods (App Store vs direct download)
-- Version updates that change the app bundle name
-- Custom installation paths
-
-**If a template doesn't work after installation:**
+If your copy of the app has a different name, such as `Cursor - Nightly`:
 1. Open the `.keyly` file in `~/.config/keyly/templates/`
 2. Find the `# App:` line at the top
-3. Update it to match your app's actual location
+3. Change it to your app's name or bundle id
 
-```bash
-# Find your app's correct path
-ls /Applications/*.app
-# Or for user-installed apps
-ls ~/Applications/*.app
-```
-
-Example fix:
 ```keyly
 # Before (template default)
 # App: /Applications/Cursor.app
 
-# After (your actual path)
-# App: /Applications/Cursor - Nightly.app
+# After (your app's name)
+# App: Cursor - Nightly
 ```
+
+Anything Keyly can't read in the file is listed under **⚙︎ → ⚠︎ config problems** in the shortcuts window.
 </Aside>
 
 ## Template Installer Options
@@ -111,7 +100,7 @@ Templates use the standard `.keyly` format with an additional feature: **categor
 
 ```keyly
 # Sheet Name: Cursor IDE
-# App: /Applications/Cursor.app
+# App: Cursor
 
 [Chat]
 > Focus on chat panel first.

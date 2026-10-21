@@ -43,7 +43,7 @@ See [Why Some Shortcuts Can't Be Detected](/resources/detection-limits/) for a d
 
 ### Can I change the trigger key or delay?
 
-Yes. Edit `~/.config/keyly/setting.conf` and set `super_key` (e.g. `cmd`, `alt`, `ctrl+alt`) and `trigger_type` (`hold` or `press`), plus `hold_duration` or `press_count`. The default is double-tapping Caps Lock because it rarely clashes with other shortcuts.
+Yes. Edit `~/.config/keyly/setting.conf` (Keyly creates it on first launch, with every option commented out) and set `super_key` (e.g. `cmd`, `ctrl+k`, `Command + Shift + K`) and `trigger_type` (`hold` or `press`), plus `hold_duration` (e.g. `0.5` or `500ms`) or `press_count`. If a value can't be read, Keyly keeps working with the default and lists the problem under **⚙︎ → ⚠︎ config problems**. The default is double-tapping Caps Lock because it rarely clashes with other shortcuts. See [Settings](/configuration/#settings) for every option.
 
 ### Does Keyly work with custom/non-standard apps?
 
@@ -65,12 +65,9 @@ Keyly reloads config files automatically when you save them. To reload manually,
 
 ### Why doesn't the template work after installation?
 
-Templates use default app paths that may not match your system. The app path can differ due to:
-- Different installation methods (App Store vs direct download)
-- Version-specific bundle names (e.g., `Cursor - Nightly.app`)
-- Custom installation locations (`~/Applications/`)
+Keyly matches a template by its app path, and by the app's name when the path is different, so apps in `~/Applications`, apps from Setapp and newer yearly versions are found. A template can still miss an app whose name is different, such as `Cursor - Nightly`.
 
-**Fix:** Open the `.keyly` file in `~/.config/keyly/templates/`, find the `# App:` line, and update it to your app's actual path.
+**Fix:** Check **⚙︎ → ⚠︎ config problems** in the shortcuts window. Then open the `.keyly` file in `~/.config/keyly/templates/` and change the `# App:` line to your app's name (`# App: Cursor - Nightly`) or bundle id.
 
 See [Troubleshooting → Template Not Working](/troubleshooting/#template-not-working-after-installation) for detailed steps.
 
@@ -148,7 +145,7 @@ Please [open an issue on GitHub](https://github.com/hoaiphongdev/keyly/issues).
       "name": "Can I change the trigger key or delay?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes. Edit ~/.config/keyly/setting.conf and set super_key (e.g. cmd, alt, ctrl+alt) and trigger_type (hold or press), plus hold_duration or press_count. The default is double-tapping Caps Lock because it rarely clashes with other shortcuts."
+        "text": "Yes. Edit ~/.config/keyly/setting.conf (Keyly creates it on first launch, with every option commented out) and set super_key (e.g. cmd, ctrl+k, Command + Shift + K) and trigger_type (hold or press), plus hold_duration (e.g. 0.5 or 500ms) or press_count. If a value can't be read, Keyly keeps working with the default and lists the problem under ⚙︎ → ⚠︎ config problems. The default is double-tapping Caps Lock because it rarely clashes with other shortcuts."
       }
     },
     {
@@ -188,7 +185,7 @@ Please [open an issue on GitHub](https://github.com/hoaiphongdev/keyly/issues).
       "name": "Why doesn't the template work after installation?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Templates use default app paths that may not match your system. The app path can differ due to different installation methods, version-specific bundle names, or custom installation locations. Open the .keyly file and update the # App: line to your app's actual path."
+        "text": "Keyly matches a template by its app path, and by the app's name when the path is different, so apps in ~/Applications, apps from Setapp and newer yearly versions are found. A template can still miss an app whose name is different, such as Cursor - Nightly. Check ⚙︎ → ⚠︎ config problems in the shortcuts window, then open the .keyly file and change the # App: line to your app's name or bundle id."
       }
     }
   ]

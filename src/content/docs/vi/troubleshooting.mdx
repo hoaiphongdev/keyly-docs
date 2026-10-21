@@ -32,7 +32,7 @@ Sau khi bật quyền, có thể cần khởi động lại Keyly để thay đ�
 
 ### Nhấn đúp Caps Lock đủ nhanh
 
-Bấm Caps Lock **2 lần trong vòng nửa giây**. macOS bỏ qua những lần chạm Caps Lock quá nhẹ, nên hãy bấm dứt khoát. Nếu bạn đã đổi chức năng Caps Lock trong **Cài đặt hệ thống → Bàn phím → Phím bổ trợ** (System Settings → Keyboard → Modifier Keys), hãy đặt `super_key` khác trong `~/.config/keyly/setting.conf`. Nếu `super_key` là tên phím Keyly không nhận ra, Keyly sẽ dùng lại phím mặc định (Caps Lock).
+Bấm Caps Lock **2 lần trong vòng nửa giây**. macOS bỏ qua những lần chạm Caps Lock quá nhẹ, nên hãy bấm dứt khoát. Nếu bạn đã đổi chức năng Caps Lock trong **Cài đặt hệ thống → Bàn phím → Phím bổ trợ** (System Settings → Keyboard → Modifier Keys), hãy đặt `super_key` khác trong `~/.config/keyly/setting.conf`. Nếu `super_key` có giá trị Keyly không đọc được, Keyly sẽ dùng lại phím mặc định (Caps Lock) và báo lỗi trong **nút ⚙︎ → ⚠︎ config problems** của cửa sổ phím tắt.
 
 ### Caps Lock dùng để chuyển nguồn nhập
 
@@ -70,57 +70,48 @@ Bạn có thể tự thêm các phím tắt bị thiếu:
 ~/.config/keyly/templates/
 ```
 
-### Kiểm tra đường dẫn ứng dụng
+### Xem danh sách lỗi
 
-Dòng `# App:` phải trỏ đúng tới file `.app` của ứng dụng:
+Mở cửa sổ phím tắt và click **nút ⚙︎ → ⚠︎ config problems**. Mọi dòng Keyly không đọc được đều có tên file và số dòng; click vào để mở file.
+
+### Kiểm tra dòng App
+
+Dòng `# App:` có thể là tên ứng dụng, bundle id hoặc đường dẫn đầy đủ:
 
 ```keyly
-# App: /Applications/Safari.app
+# App: Safari
 ```
 
-Tìm đường dẫn đúng:
+Tìm bundle id của ứng dụng:
 ```bash
-ls /Applications/*.app
+osascript -e 'id of app "Safari"'
 ```
 
 ## Mẫu không hoạt động sau khi cài
 
 <Aside type="caution">
-Mẫu từ cộng đồng dùng đường dẫn ứng dụng mặc định, có thể không khớp với máy của bạn.
+Mẫu trỏ tới vị trí cài thông thường của ứng dụng. Keyly còn khớp theo tên ứng dụng, nên ứng dụng trong `~/Applications`, cài qua Setapp hay bản năm mới hơn (Photoshop 2025 với mẫu 2024) đều chạy mà không cần sửa.
 </Aside>
 
-### Đường dẫn ứng dụng không khớp
+### Tên ứng dụng không khớp
 
-Lý do phổ biến nhất khiến mẫu không chạy là **đường dẫn ứng dụng** trên máy Mac của bạn khác với mẫu. Điều này xảy ra vì:
-
-- **Cách cài khác nhau** — Ứng dụng từ App Store và bản tải trực tiếp có thể có tên file `.app` khác nhau
-- **Phiên bản khác nhau** — Một số ứng dụng ghi phiên bản trong tên (ví dụ: `Cursor - Nightly.app`)
-- **Vị trí cài khác** — Ứng dụng nằm trong `~/Applications/` thay vì `/Applications/`
+Mẫu vẫn có thể không nhận ra ứng dụng khi **tên ứng dụng khác**, ví dụ `Cursor - Nightly` thay vì `Cursor`.
 
 ### Cách khắc phục
 
 <Steps>
-1. Mở file mẫu trong `~/.config/keyly/templates/`
-2. Tìm dòng `# App:` ở đầu file
-3. Sửa lại đường dẫn cho đúng vị trí thật của ứng dụng
+1. Xem **nút ⚙︎ → ⚠︎ config problems** trong cửa sổ phím tắt
+2. Mở file mẫu trong `~/.config/keyly/templates/`
+3. Đổi dòng `# App:` thành tên hoặc bundle id của ứng dụng
 </Steps>
-
-Tìm đường dẫn đúng của ứng dụng:
-```bash
-# Liệt kê ứng dụng trong /Applications
-ls /Applications/*.app
-
-# Liệt kê ứng dụng trong ~/Applications
-ls ~/Applications/*.app
-```
 
 Ví dụ:
 ```keyly
-# Mặc định của mẫu (có thể không chạy)
+# Mặc định của mẫu
 # App: /Applications/Cursor.app
 
-# Đường dẫn thật trên máy bạn (sửa thành dòng này)
-# App: /Applications/Cursor - Nightly.app
+# Tên ứng dụng của bạn
+# App: Cursor - Nightly
 ```
 
 Keyly tự tải lại file khi bạn lưu. Nếu chưa thấy thay đổi, dùng **nút ⚙︎ → Reload Config** trong cửa sổ phím tắt
@@ -131,7 +122,7 @@ File cấu hình tự tải lại mỗi khi bạn lưu. Muốn tải lại thủ
 
 ### Kiểm tra bảng mã của file
 
-Đảm bảo file `.keyly` được lưu với bảng mã **UTF-8** không có BOM.
+Lưu file `.keyly` với bảng mã **UTF-8** (có hay không có BOM đều được). Ký tự nào Keyly không giải mã được sẽ hiện thành `�`, phần còn lại của file vẫn được nạp.
 
 ## Mất biểu tượng trên thanh menu
 

@@ -43,7 +43,7 @@ Xem chi tiết tại [Tại sao một số phím tắt không được phát hi�
 
 ### Có thể đổi phím kích hoạt hoặc thời gian giữ không?
 
-Có. Sửa file `~/.config/keyly/setting.conf`: đặt `super_key` (vd `cmd`, `alt`, `ctrl+alt`) và `trigger_type` (`hold` hoặc `press`), kèm `hold_duration` hoặc `press_count`. Mặc định là nhấn đúp Caps Lock vì phím này hầu như không đụng phím tắt nào khác.
+Có. Sửa file `~/.config/keyly/setting.conf` (Keyly tự tạo ở lần mở đầu tiên, mọi tùy chọn đều ghi sẵn và đang tắt bằng `#`): đặt `super_key` (vd `cmd`, `ctrl+k`, `Command + Shift + K`) và `trigger_type` (`hold` hoặc `press`), kèm `hold_duration` (vd `0.5` hoặc `500ms`) hoặc `press_count`. Giá trị nào không đọc được thì Keyly vẫn chạy với giá trị mặc định và báo trong **nút ⚙︎ → ⚠︎ config problems**. Mặc định là nhấn đúp Caps Lock vì phím này hầu như không đụng phím tắt nào khác. Xem mọi tùy chọn tại [Cài đặt](/vi/configuration/#cài-đặt).
 
 ### Keyly có hoạt động với ứng dụng không có thanh menu không?
 
@@ -65,12 +65,9 @@ Keyly tự tải lại file cấu hình mỗi khi bạn lưu. Muốn tải lại
 
 ### Tại sao mẫu không hoạt động sau khi cài?
 
-Mẫu dùng đường dẫn ứng dụng mặc định, có thể không khớp với máy của bạn. Đường dẫn có thể khác do:
-- Cách cài khác nhau (App Store hay tải trực tiếp)
-- Tên file `.app` kèm phiên bản (ví dụ: `Cursor - Nightly.app`)
-- Ứng dụng được cài ở thư mục khác (`~/Applications/`)
+Keyly khớp mẫu theo đường dẫn ứng dụng, và theo tên ứng dụng khi đường dẫn khác, nên ứng dụng trong `~/Applications`, cài qua Setapp hay bản năm mới hơn đều được nhận. Mẫu vẫn có thể không khớp nếu ứng dụng của bạn có tên khác, ví dụ `Cursor - Nightly`.
 
-**Cách sửa:** Mở file `.keyly` trong `~/.config/keyly/templates/`, tìm dòng `# App:`, và sửa lại đường dẫn cho đúng vị trí thật của ứng dụng.
+**Cách sửa:** Xem **nút ⚙︎ → ⚠︎ config problems** trong cửa sổ phím tắt. Sau đó mở file `.keyly` trong `~/.config/keyly/templates/` và đổi dòng `# App:` thành tên ứng dụng (`# App: Cursor - Nightly`) hoặc bundle id.
 
 Xem chi tiết tại [Xử lý sự cố → Mẫu không hoạt động](/vi/troubleshooting/#mẫu-không-hoạt-động-sau-khi-cài).
 
@@ -148,7 +145,7 @@ Vui lòng [mở issue trên GitHub](https://github.com/hoaiphongdev/keyly/issues
       "name": "Có thể đổi phím kích hoạt hoặc thời gian giữ không?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Có. Sửa file ~/.config/keyly/setting.conf: đặt super_key (vd cmd, alt, ctrl+alt) và trigger_type (hold hoặc press), kèm hold_duration hoặc press_count. Mặc định là nhấn đúp Caps Lock vì phím này hầu như không đụng phím tắt nào khác."
+        "text": "Có. Sửa file ~/.config/keyly/setting.conf (Keyly tự tạo ở lần mở đầu tiên, mọi tùy chọn đều ghi sẵn và đang tắt bằng #): đặt super_key (vd cmd, ctrl+k, Command + Shift + K) và trigger_type (hold hoặc press), kèm hold_duration (vd 0.5 hoặc 500ms) hoặc press_count. Giá trị nào không đọc được thì Keyly vẫn chạy với giá trị mặc định và báo trong nút ⚙︎ → ⚠︎ config problems. Mặc định là nhấn đúp Caps Lock vì phím này hầu như không đụng phím tắt nào khác."
       }
     },
     {
@@ -188,7 +185,7 @@ Vui lòng [mở issue trên GitHub](https://github.com/hoaiphongdev/keyly/issues
       "name": "Tại sao mẫu không hoạt động sau khi cài?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Mẫu dùng đường dẫn ứng dụng mặc định, có thể không khớp với máy của bạn. Đường dẫn có thể khác do cách cài, tên file .app kèm phiên bản, hoặc ứng dụng được cài ở thư mục khác. Mở file .keyly và sửa dòng # App: theo đường dẫn thật của ứng dụng."
+        "text": "Keyly khớp mẫu theo đường dẫn ứng dụng, và theo tên ứng dụng khi đường dẫn khác, nên ứng dụng trong ~/Applications, cài qua Setapp hay bản năm mới hơn đều được nhận. Mẫu vẫn có thể không khớp nếu ứng dụng của bạn có tên khác, ví dụ Cursor - Nightly. Xem nút ⚙︎ → ⚠︎ config problems trong cửa sổ phím tắt, rồi mở file .keyly và đổi dòng # App: thành tên hoặc bundle id của ứng dụng."
       }
     }
   ]

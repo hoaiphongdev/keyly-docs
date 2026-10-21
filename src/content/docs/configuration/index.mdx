@@ -3,7 +3,7 @@ title: "Configure Keyly - Custom Shortcuts & Settings Guide"
 description: "Personalize Keyly with .keyly config files. Add your own shortcuts, install community templates, and tailor the app to your workflow. Learn how now."
 ---
 
-import { LinkCard, CardGrid } from '@astrojs/starlight/components';
+import { LinkCard, CardGrid, Aside } from '@astrojs/starlight/components';
 
 Keyly can be customized through `.keyly` configuration files stored in `~/.config/keyly/templates/`.
 
@@ -45,7 +45,7 @@ Create a file `~/.config/keyly/templates/safari.keyly`:
 
 ```keyly
 # Sheet Name: Safari Extras
-# App: /Applications/Safari.app
+# App: Safari
 
 [Navigation]
 CMD+L       Open Location
@@ -54,3 +54,33 @@ CMD+SHIFT+T Reopen Last Tab
 ```
 
 See [Custom Shortcuts](/configuration/custom-shortcuts/) for the full syntax guide, or install [Templates](/configuration/templates/) for pre-made configs.
+
+## Settings
+
+`~/.config/keyly/setting.conf` changes how Keyly opens. Keyly creates it the first time it starts, with every option written out and switched off by a `#` at the start of the line. Remove the `#` in front of a line to change it. Changes apply as soon as you save.
+
+```ini
+super_key = ctrl+k
+trigger_type = hold
+hold_duration = 400ms
+```
+
+| Setting | What it does | Values |
+|---------|--------------|--------|
+| `super_key` | The key that opens Keyly | `capslock` (default), a modifier on its own such as `cmd`, or a combination such as `ctrl+k`, `Command + Shift + K` or `⌃⌥Space`. Modifier names: `cmd`/`command`/`⌘`, `ctrl`/`control`/`⌃`, `alt`/`opt`/`option`/`⌥`, `shift`/`⇧`, `fn` |
+| `trigger_type` | How you use that key | `press` taps it `press_count` times in a row, `hold` keeps it down for `hold_duration`. Caps Lock can only be pressed; any other key holds unless you set `press` |
+| `press_count` | Taps in a row for `press` | `1` to `4` (default `2`), each tap within half a second of the last |
+| `hold_duration` | How long to hold for `hold` | `0.5`, `0.5s` or `500ms`, between `0.1s` and `3s` (default `0.5`) |
+| `screen_width_ratio` | Widest the shortcuts window gets, as a share of the screen | `0.1` to `1.0`, or a percentage such as `70%` (default `0.7`) |
+
+Settings are forgiving:
+
+- Names and values ignore upper and lower case, and quotes or a `# note` at the end of a line are fine.
+- A number outside its range uses the nearest allowed value, so `hold_duration = 10` holds for 3 seconds.
+- Anything Keyly can't read uses its default and is listed under **⚙︎ → ⚠︎ config problems** in the shortcuts window. A misspelled name gets a suggestion, for example "Did you mean hold_duration?".
+
+<Aside type="tip" title="Using a modifier on its own">
+With `super_key = cmd` and `trigger_type = press`, a tap counts when you let go of ⌘, and only if you didn't press another key with it. Using ⌘C or ⌘⇧ never opens Keyly, even with `press_count = 1`.
+</Aside>
+
+A few keys have fixed meanings: `enter` is the Return key (use `keypad enter` for the one on a numeric keypad) and `del` is the ⌫ key. `fn` can't be combined with the arrow keys, F1–F12, Home, End, Page Up or Page Down, because macOS adds fn to those keys by itself.
