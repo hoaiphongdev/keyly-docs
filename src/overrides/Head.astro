@@ -1,18 +1,14 @@
 ---
 import Default from '@astrojs/starlight/components/Head.astro';
-import keylyOgImage from '../assets/keyly.png';
 // Same files fonts.css pulls in, so these preloads hit the hashed URLs the CSS uses
 import interLatin from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
 import archivoLatin from '@fontsource-variable/archivo/files/archivo-latin-wght-normal.woff2?url';
 
-const isHomepage = Astro.locals.starlightRoute.id === 'index.mdx' || Astro.locals.starlightRoute.id === 'vi/index.mdx';
+// Route ids carry no extension: '' and 'vi' are the homepages, the rest match /og/<id>.png
+const routeId = Astro.locals.starlightRoute.id;
+const isHomepage = routeId === '' || routeId === 'vi';
 
-const ogImageUrl = isHomepage
-	? new URL(keylyOgImage.src, Astro.site)
-	: new URL(
-			`${import.meta.env.BASE_URL}/og/${Astro.locals.starlightRoute.id.replace(/\.\w+$/, '.png')}`,
-			Astro.site
-	  );
+const ogImageUrl = new URL(isHomepage ? '/og-home.png' : `/og/${routeId}.png`, Astro.site);
 
 const currentLocale = Astro.locals.starlightRoute.locale || 'en';
 const currentPath = Astro.url.pathname;
