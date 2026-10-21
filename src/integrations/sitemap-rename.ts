@@ -23,9 +23,15 @@ function lastModified(pathname: string): string | undefined {
 }
 
 /** A shallow clone only knows the latest commit, which would stamp every page with the same date */
+function isShallow(): boolean {
+  return execFileSync('git', ['rev-parse', '--is-shallow-repository'], { encoding: 'utf8' }).trim() !== 'false';
+}
+
 function hasFullHistory(): boolean {
   try {
-    return execFileSync('git', ['rev-parse', '--is-shallow-repository'], { encoding: 'utf8' }).trim() === 'false';
+    if (!isShallow()) return true;
+    execFileSync('git', ['fetch', '--unshallow', '--quiet'], { stdio: 'ignore', timeout: 120_000 });
+    return !isShallow();
   } catch {
     return false;
   }
