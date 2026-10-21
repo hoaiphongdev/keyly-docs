@@ -22,3 +22,7 @@ prod port="3005":
     @echo "\033[1;32m✓ Build complete!\033[0m"
     @echo "\033[1;34m👀 Starting preview server...\033[0m"
     @bun run preview --port {{port}}
+
+# Regenerate the per-app template pages from the keyly repo (just sync-templates ../keyly/templates)
+sync-templates dir="../keyly/templates":
+    @node scripts/sync-templates.mjs {{dir}}

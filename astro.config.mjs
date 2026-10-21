@@ -80,6 +80,12 @@ export default defineConfig({
           autogenerate: { directory: "configuration" },
         },
         {
+          label: "Templates",
+          translations: { vi: "Mẫu phím tắt" },
+          collapsed: true,
+          autogenerate: { directory: "templates" },
+        },
+        {
           label: "Resources",
           translations: { vi: "Tài liệu thêm" },
           autogenerate: { directory: "resources" },
