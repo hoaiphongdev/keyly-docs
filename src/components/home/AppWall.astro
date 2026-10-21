@@ -49,7 +49,7 @@ const rows = [0, 1, 2].map((r) => apps.filter((_, i) => i % 3 === r));
 										data-keys={app.keys}
 										data-action={app.action}
 										data-template={app.template ? '' : undefined}
-										href={app.template ? t.templatesLink : undefined}
+										href={app.template ? `/templates/${app.template}/` : undefined}
 										tabindex={hidden ? -1 : app.template ? undefined : 0}
 										aria-hidden={hidden ? 'true' : undefined}
 										aria-label={`${app.name}: ${app.action} ${app.keys}`}

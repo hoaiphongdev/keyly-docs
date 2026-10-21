@@ -25,7 +25,7 @@ const en = {
 			['community templates', '31'],
 			['menu-bar apps supported', '∞'],
 		],
-		templatesLink: '/configuration/templates/',
+		templatesLink: '/templates/',
 		browse: 'Browse templates',
 	},
 	install: {
@@ -66,7 +66,7 @@ const vi: typeof en = {
 			['mẫu cộng đồng', '31'],
 			['ứng dụng có thanh menu', '∞'],
 		],
-		templatesLink: '/vi/configuration/templates/',
+		templatesLink: '/templates/',
 		browse: 'Xem các mẫu',
 	},
 	install: {

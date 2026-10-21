@@ -1,7 +1,7 @@
 // Apps shown on the homepage "Works with" wall. Brand glyphs come from Simple Icons (CC0) and are
 // inlined at build time; brands Simple Icons doesn't ship get a monogram tile instead.
 // Lumin's mark is taken from luminpdf.com/common/images/logo-lumin.svg (the icon part only).
-// `template` marks apps with a bundled community template in the keyly repo (templates/*.keyly);
+// `template` names the app's bundled community template in the keyly repo (templates/<slug>.keyly);
 // their shortcut is taken from that template.
 import {
 	siAlacritty,
@@ -43,7 +43,8 @@ export type WallApp = {
 	monogram?: string;
 	keys: string;
 	action: string;
-	template?: boolean;
+	/** Slug of the bundled template (templates/<slug>.keyly), which has its own page at /templates/<slug>/ */
+	template?: string;
 };
 
 export const apps: WallApp[] = [
@@ -51,42 +52,42 @@ export const apps: WallApp[] = [
 	{ name: 'Safari', path: siSafari.path, keys: '⇧⌘\\', action: 'Show tab overview' },
 	{ name: 'Arc', path: siArc.path, keys: '⌘S', action: 'Toggle sidebar' },
 	{ name: 'Zed', path: siZedindustries.path, keys: '⇧⌘P', action: 'Command palette' },
-	{ name: 'VS Code', monogram: 'VS', keys: '⇧⌘P', action: 'Show command palette', template: true },
-	{ name: 'Cursor', path: siCursor.path, keys: '⌘K', action: 'Open inline edit', template: true },
+	{ name: 'VS Code', monogram: 'VS', keys: '⇧⌘P', action: 'Show command palette', template: 'vscode' },
+	{ name: 'Cursor', path: siCursor.path, keys: '⌘K', action: 'Open inline edit', template: 'cursor' },
 	{ name: 'Xcode', path: siXcode.path, keys: '⌘B', action: 'Build' },
-	{ name: 'Figma', path: siFigma.path, keys: '⌥⌘K', action: 'Create component', template: true },
-	{ name: 'Photoshop', monogram: 'Ps', keys: '⌘J', action: 'New layer via copy', template: true },
-	{ name: 'Illustrator', monogram: 'Ai', keys: '⌘G', action: 'Group', template: true },
-	{ name: 'Premiere Pro', monogram: 'Pr', keys: '⌘K', action: 'Add edit', template: true },
-	{ name: 'Notion', path: siNotion.path, keys: '⌘P', action: 'Quick find', template: true },
-	{ name: 'Obsidian', path: siObsidian.path, keys: '⌘O', action: 'Quick switcher', template: true },
+	{ name: 'Figma', path: siFigma.path, keys: '⌥⌘K', action: 'Create component', template: 'figma' },
+	{ name: 'Photoshop', monogram: 'Ps', keys: '⌘J', action: 'New layer via copy', template: 'photoshop' },
+	{ name: 'Illustrator', monogram: 'Ai', keys: '⌘G', action: 'Group', template: 'illustrator' },
+	{ name: 'Premiere Pro', monogram: 'Pr', keys: '⌘K', action: 'Add edit', template: 'premiere-pro' },
+	{ name: 'Notion', path: siNotion.path, keys: '⌘P', action: 'Quick find', template: 'notion' },
+	{ name: 'Obsidian', path: siObsidian.path, keys: '⌘O', action: 'Quick switcher', template: 'obsidian' },
 	{ name: 'Slack', monogram: 'Sl', keys: '⌘K', action: 'Jump to…' },
 	{ name: 'Linear', path: siLinear.path, keys: '⌘K', action: 'Command menu' },
-	{ name: 'Ghostty', path: siGhostty.path, keys: '⌘D', action: 'New split (right)', template: true },
-	{ name: 'Warp', path: siWarp.path, keys: '⌘P', action: 'Command palette', template: true },
-	{ name: 'IntelliJ IDEA', path: siIntellijidea.path, keys: '⇧ ⇧', action: 'Search everywhere', template: true },
-	{ name: 'Postman', path: siPostman.path, keys: '⌘⏎', action: 'Send request', template: true },
-	{ name: 'Sublime Text', path: siSublimetext.path, keys: '⇧⌘P', action: 'Command palette', template: true },
+	{ name: 'Ghostty', path: siGhostty.path, keys: '⌘D', action: 'New split (right)', template: 'ghostty' },
+	{ name: 'Warp', path: siWarp.path, keys: '⌘P', action: 'Command palette', template: 'warp' },
+	{ name: 'IntelliJ IDEA', path: siIntellijidea.path, keys: '⇧ ⇧', action: 'Search everywhere', template: 'intellij' },
+	{ name: 'Postman', path: siPostman.path, keys: '⌘⏎', action: 'Send request', template: 'postman' },
+	{ name: 'Sublime Text', path: siSublimetext.path, keys: '⇧⌘P', action: 'Command palette', template: 'sublime-text' },
 	{ name: 'Lumin', path: LUMIN_MARK, viewBox: '0 0 28 28', keys: '⌘O', action: 'Open file' },
 	{ name: 'Things 3', path: siThings.path, keys: '⌘N', action: 'New to-do' },
-	{ name: 'Windsurf', path: siWindsurf.path, keys: '⌘P', action: 'Quick open', template: true },
-	{ name: 'iTerm2', path: siIterm2.path, keys: '⌘D', action: 'Split vertically', template: true },
-	{ name: 'Alacritty', path: siAlacritty.path, keys: '⌘T', action: 'New tab', template: true },
-	{ name: 'Kitty', monogram: 'Kt', keys: '⌘⏎', action: 'New window', template: true },
-	{ name: 'Evernote', path: siEvernote.path, keys: '⇧⌘K', action: 'Search in Evernote', template: true },
-	{ name: 'Craft', monogram: 'Cr', keys: '⌘O', action: 'Quick open', template: true },
-	{ name: 'TablePlus', monogram: 'TP', keys: '⌘N', action: 'New connection', template: true },
-	{ name: 'DataGrip', path: siDatagrip.path, keys: '⌃ ⌃', action: 'Run anything', template: true },
-	{ name: 'WebStorm', path: siWebstorm.path, keys: '⇧ ⇧', action: 'Search everywhere', template: true },
-	{ name: 'PyCharm', path: siPycharm.path, keys: '⇧⌘A', action: 'Find action', template: true },
-	{ name: 'PhpStorm', path: siPhpstorm.path, keys: '⌘O', action: 'Go to class', template: true },
-	{ name: 'Rider', path: siRider.path, keys: '⇧⌘O', action: 'Go to file', template: true },
-	{ name: 'RubyMine', path: siRubymine.path, keys: '⌃ ⌃', action: 'Run anything', template: true },
-	{ name: 'RustRover', monogram: 'RR', keys: '⌘O', action: 'Go to type', template: true },
-	{ name: 'Acrobat', monogram: 'Ac', keys: '⇧⌘N', action: 'Go to page', template: true },
-	{ name: 'After Effects', monogram: 'Ae', keys: '⌥⌘N', action: 'New project', template: true },
-	{ name: 'Animate', monogram: 'An', keys: '⌥⇧⌘S', action: 'Export movie', template: true },
-	{ name: 'Lightroom Classic', monogram: 'Lr', keys: 'D', action: 'Open in Develop', template: true },
+	{ name: 'Windsurf', path: siWindsurf.path, keys: '⌘P', action: 'Quick open', template: 'windsurf' },
+	{ name: 'iTerm2', path: siIterm2.path, keys: '⌘D', action: 'Split vertically', template: 'iterm2' },
+	{ name: 'Alacritty', path: siAlacritty.path, keys: '⌘T', action: 'New tab', template: 'alacritty' },
+	{ name: 'Kitty', monogram: 'Kt', keys: '⌘⏎', action: 'New window', template: 'kitty' },
+	{ name: 'Evernote', path: siEvernote.path, keys: '⇧⌘K', action: 'Search in Evernote', template: 'evernote' },
+	{ name: 'Craft', monogram: 'Cr', keys: '⌘O', action: 'Quick open', template: 'craft' },
+	{ name: 'TablePlus', monogram: 'TP', keys: '⌘N', action: 'New connection', template: 'tableplus' },
+	{ name: 'DataGrip', path: siDatagrip.path, keys: '⌃ ⌃', action: 'Run anything', template: 'datagrip' },
+	{ name: 'WebStorm', path: siWebstorm.path, keys: '⇧ ⇧', action: 'Search everywhere', template: 'webstorm' },
+	{ name: 'PyCharm', path: siPycharm.path, keys: '⇧⌘A', action: 'Find action', template: 'pycharm' },
+	{ name: 'PhpStorm', path: siPhpstorm.path, keys: '⌘O', action: 'Go to class', template: 'phpstorm' },
+	{ name: 'Rider', path: siRider.path, keys: '⇧⌘O', action: 'Go to file', template: 'rider' },
+	{ name: 'RubyMine', path: siRubymine.path, keys: '⌃ ⌃', action: 'Run anything', template: 'rubymine' },
+	{ name: 'RustRover', monogram: 'RR', keys: '⌘O', action: 'Go to type', template: 'rustrover' },
+	{ name: 'Acrobat', monogram: 'Ac', keys: '⇧⌘N', action: 'Go to page', template: 'acrobat' },
+	{ name: 'After Effects', monogram: 'Ae', keys: '⌥⌘N', action: 'New project', template: 'after-effects' },
+	{ name: 'Animate', monogram: 'An', keys: '⌥⇧⌘S', action: 'Export movie', template: 'animate' },
+	{ name: 'Lightroom Classic', monogram: 'Lr', keys: 'D', action: 'Open in Develop', template: 'lightroom-classic' },
 ];
 
 /** Bundled community templates in the keyly repo (ls keyly/templates | wc -l) */
