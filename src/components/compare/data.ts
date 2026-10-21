@@ -275,7 +275,7 @@ export const pages: Record<'hub' | Rival, Page> = {
 
 export const ui = {
 	en: {
-		bar: ['00 / Compare', 'Checked'],
+		nav: { label: 'Compare pages', overview: 'Overview' },
 		spec: { price: 'Price', open: 'How to open', yourKey: '⇪ ⇪ or your own key' },
 		start: 'Get Keyly',
 		compare: 'See the comparison',
@@ -311,7 +311,7 @@ export const ui = {
 		},
 	},
 	vi: {
-		bar: ['00 / So sánh', 'Cập nhật'],
+		nav: { label: 'Các trang so sánh', overview: 'Tổng quan' },
 		spec: { price: 'Giá', open: 'Cách mở', yourKey: '⇪ ⇪ hoặc phím bạn chọn' },
 		start: 'Dùng Keyly',
 		compare: 'Xem so sánh',

@@ -1,7 +1,7 @@
 ---
 // Hero for /compare/ pages. Each app is drawn as the key you press to open it: Keyly's ⇪ gets
 // double-tapped, the others' ⌘ is held down. Quieter than the homepage hero: no canvas, CSS only.
-import { apps, CHECKED_ON, pageFor, pages, RIVALS, rows, ui, type AppId } from './data';
+import { apps, pageFor, pages, RIVALS, rows, ui, type AppId } from './data';
 
 const route = Astro.locals.starlightRoute;
 const lang = route.locale === 'vi' ? 'vi' : 'en';
@@ -16,17 +16,40 @@ const titleHtml = page.title[lang].replace('{vs}', vs);
 
 const spec = pageId === 'hub' ? undefined : (['price', 'open'] as const).map((id) => rows.find((row) => row.id === id)!);
 const start = lang === 'vi' ? '/vi/getting-started/' : '/getting-started/';
+const base = lang === 'vi' ? '/vi/compare/' : '/compare/';
+const tabs = [
+	{ id: 'hub', href: base, label: t.nav.overview, key: apps.keyly.key },
+	...RIVALS.map((id) => ({ id, href: `${base}${id}/`, label: `vs ${apps[id].name}`, key: apps[id].key })),
+];
 // The first section heading on every compare page
 const firstSection = lang === 'vi' ? '#tóm-tắt-nhanh' : '#at-a-glance';
 ---
 
+<nav class="kc-cmp-nav not-content" aria-label={t.nav.label}>
+	<ul>
+		{
+			tabs.map((tab) => (
+				<li>
+					<a href={tab.href} class="kc-label" aria-current={tab.id === pageId ? 'page' : undefined}>
+						<kbd aria-hidden="true">{tab.key}</kbd>
+						{tab.label}
+					</a>
+				</li>
+			))
+		}
+	</ul>
+</nav>
+
+<script>
+	// On narrow screens the tabs scroll sideways: bring the current page's tab into view
+	document.querySelectorAll<HTMLElement>('.kc-cmp-nav ul').forEach((list) => {
+		const current = list.querySelector<HTMLElement>('[aria-current="page"]');
+		if (current) list.scrollLeft = current.offsetLeft - (list.clientWidth - current.offsetWidth) / 2;
+	});
+</script>
+
 <section class="kc-cmp-hero not-content">
 	<div class="backdrop" aria-hidden="true"><div class="glow"></div></div>
-
-	<div class="bar kc-label">
-		<span>{t.bar[0]}</span>
-		<span class="bar-right">{t.bar[1]} · {CHECKED_ON[lang]}</span>
-	</div>
 
 	<div class="body">
 		<ul class:list={['caps', { four: shown.length > 2 }]} aria-hidden="true">
@@ -83,7 +106,6 @@ const firstSection = lang === 'vi' ? '#tóm-tắt-nhanh' : '#at-a-glance';
 	.kc-cmp-hero {
 		position: relative;
 		display: grid;
-		grid-template-rows: auto 1fr;
 		min-height: min(54rem, calc(88svh - var(--sl-nav-height)));
 		margin-inline: calc(-1 * clamp(1rem, 4vw, 2.5rem));
 		overflow: hidden;
@@ -114,14 +136,92 @@ const firstSection = lang === 'vi' ? '#tóm-tắt-nhanh' : '#at-a-glance';
 		filter: blur(24px);
 	}
 
-	.bar {
-		display: flex;
-		justify-content: space-between;
-		gap: 1rem;
-		padding: 0.75rem clamp(1rem, 4vw, 2.5rem);
+	/* Anchor jumps land below the header and the sticky tabs */
+	:global(html:has(.kc-cmp-nav)) {
+		scroll-padding-top: calc(var(--sl-nav-height) + 4.5rem);
+	}
+
+	/* ---------- Tabs between the compare pages; stick under the header while scrolling ---------- */
+	.kc-cmp-nav {
+		position: sticky;
+		top: var(--sl-nav-height);
+		z-index: 5;
+		margin-inline: calc(-1 * clamp(1rem, 4vw, 2.5rem));
 		border-bottom: 1px solid var(--kc-line);
+		background: color-mix(in srgb, var(--kc-bg) 82%, transparent);
+		-webkit-backdrop-filter: blur(10px);
+		backdrop-filter: blur(10px);
+	}
+	.kc-cmp-nav ul {
+		display: flex;
+		justify-content: safe center;
+		margin: 0;
+		padding: 0 clamp(1rem, 4vw, 2.5rem);
+		overflow-x: auto;
+		list-style: none;
+		scrollbar-width: none;
+	}
+	.kc-cmp-nav li {
+		flex: none;
+		margin: 0;
+	}
+	.kc-cmp-nav a {
+		position: relative;
+		display: flex;
+		align-items: center;
+		gap: 0.625rem;
+		padding: 0.875rem 1.125rem;
 		color: var(--kc-muted);
-		background: color-mix(in srgb, var(--kc-bg) 60%, transparent);
+		text-decoration: none;
+		white-space: nowrap;
+		transition: color 160ms ease;
+	}
+	.kc-cmp-nav a::after {
+		content: '';
+		position: absolute;
+		left: 1.125rem;
+		right: 1.125rem;
+		bottom: -1px;
+		height: 2px;
+		transform: scaleX(0);
+		background: var(--kc-line-strong);
+		transition: transform 300ms var(--kc-ease);
+	}
+	.kc-cmp-nav a:hover,
+	.kc-cmp-nav a:focus-visible {
+		color: var(--kc-ink);
+	}
+	.kc-cmp-nav a:hover::after {
+		transform: scaleX(1);
+	}
+	.kc-cmp-nav a[aria-current='page'] {
+		color: var(--kc-ink-strong);
+	}
+	.kc-cmp-nav a[aria-current='page']::after {
+		transform: scaleX(1);
+		background: var(--sl-color-accent);
+	}
+	.kc-cmp-nav a:focus-visible {
+		outline: 2px solid var(--sl-color-accent);
+		outline-offset: -2px;
+	}
+	.kc-cmp-nav kbd {
+		display: grid;
+		place-items: center;
+		width: 1.375rem;
+		height: 1.375rem;
+		border: 1px solid var(--kc-line-strong);
+		border-bottom-width: 2px;
+		border-radius: 4px;
+		background: var(--kc-raised);
+		font: 500 0.75rem var(--kc-font-display);
+		letter-spacing: 0;
+		text-transform: none;
+		color: var(--kc-muted);
+	}
+	.kc-cmp-nav a[aria-current='page'] kbd {
+		border-color: var(--sl-color-accent);
+		color: var(--sl-color-text-accent);
 	}
 
 	.body {
@@ -358,7 +458,14 @@ const firstSection = lang === 'vi' ? '#tóm-tắt-nhanh' : '#at-a-glance';
 	}
 
 	@media (max-width: 40rem) {
-		.bar-right {
+		.kc-cmp-nav a {
+			padding-inline: 0.75rem;
+		}
+		.kc-cmp-nav a::after {
+			left: 0.75rem;
+			right: 0.75rem;
+		}
+		.kc-cmp-nav kbd {
 			display: none;
 		}
 		.spec {
