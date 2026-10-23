@@ -22,11 +22,11 @@ export const GET: APIRoute = async ({ site }) => {
 	const body = [
 		'# Keyly',
 		'',
-		'> Keyly is a free, open-source (MIT) keyboard shortcut viewer for macOS 12+. It lives in the menu bar: double-tap ⇪ Caps Lock and an overlay shows every keyboard shortcut of the active app, read live from its menus through the macOS Accessibility API. Shortcuts that never appear in a menu can be added with plain-text `.keyly` files, and community templates cover apps such as Cursor, VS Code, Figma, Photoshop and the JetBrains IDEs.',
+		'> Keyly is a free, open-source (GPL-3.0) keyboard shortcut viewer for macOS 12+. It lives in the menu bar: double-tap ⇪ Caps Lock and an overlay shows every keyboard shortcut of the active app, read live from its menus through the macOS Accessibility API. Shortcuts that never appear in a menu can be added with plain-text `.keyly` files, and community templates cover apps such as Cursor, VS Code, Figma, Photoshop and the JetBrains IDEs.',
 		'',
 		`- Install: \`brew install --cask hoaiphongdev/keyly/keyly\` or \`${INSTALL}\`, then grant Accessibility permission`,
 		'- Trigger: double-tap ⇪ Caps Lock (configurable to any key combination, held or tapped)',
-		'- Price and license: free, MIT',
+		'- Price and license: free, GPL-3.0',
 		'- Source: https://github.com/hoaiphongdev/keyly',
 		'- Docs: https://keyly-docs.com (English and Vietnamese)',
 		'',
