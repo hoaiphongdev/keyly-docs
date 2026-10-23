@@ -82,6 +82,50 @@ Click the **⚙︎ button** at the bottom-right of the shortcuts window to acces
 - **Check for Updates...** — Look for a new version
 - **Quit Keyly** — Exit Keyly
 
+## Uninstall
+
+### Installed with Homebrew
+
+```bash
+brew uninstall --cask keyly          # remove the app, keep your settings
+brew uninstall --cask --zap keyly    # also remove your settings and custom shortcuts
+```
+
+### Installed with the curl command
+
+<Steps>
+1. Quit Keyly: click the **K** icon in the menu bar → **Quit**
+2. Move **Keyly** from **Applications** to the Trash, or run:
+
+   ```bash
+   rm -rf /Applications/Keyly.app
+   ```
+</Steps>
+
+### Remove Keyly from the Accessibility list
+
+However you installed it, macOS keeps Keyly in the Accessibility list until you remove it:
+
+```bash
+tccutil reset Accessibility com.keyly.app
+```
+
+Or open **System Settings → Privacy & Security → Accessibility**, select **Keyly** and click **−**.
+
+### Remove your settings and custom shortcuts (optional)
+
+Skip this if you used `brew uninstall --zap`, which already did it.
+
+```bash
+rm -rf ~/.config/keyly
+rm -rf ~/Library/Caches/com.keyly.app ~/Library/Caches/com.keyly.app.sparkle ~/Library/HTTPStorages/com.keyly.app*
+defaults delete com.keyly.app
+```
+
+<Aside type="caution">
+`~/.config/keyly` holds the shortcut sheets you wrote yourself. Copy it somewhere first if you want to keep them.
+</Aside>
+
 ## Next Steps
 
 - Learn about all [Features](/features/)
