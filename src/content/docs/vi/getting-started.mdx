@@ -82,6 +82,50 @@ Click **nút ⚙︎** ở góc dưới bên phải cửa sổ phím tắt để 
 - **Check for Updates...** — Kiểm tra bản mới
 - **Quit Keyly** — Thoát Keyly
 
+## Gỡ cài đặt
+
+### Đã cài bằng Homebrew
+
+```bash
+brew uninstall --cask keyly          # gỡ app, giữ lại cài đặt của bạn
+brew uninstall --cask --zap keyly    # gỡ luôn cài đặt và phím tắt tự viết
+```
+
+### Đã cài bằng lệnh curl
+
+<Steps>
+1. Thoát Keyly: bấm **biểu tượng K** trên thanh menu → **Quit**
+2. Kéo **Keyly** trong **Applications** vào Thùng rác, hoặc chạy:
+
+   ```bash
+   rm -rf /Applications/Keyly.app
+   ```
+</Steps>
+
+### Xoá Keyly khỏi danh sách Trợ năng
+
+Dù cài bằng cách nào, macOS vẫn giữ Keyly trong danh sách Trợ năng cho tới khi bạn xoá:
+
+```bash
+tccutil reset Accessibility com.keyly.app
+```
+
+Hoặc mở **System Settings → Privacy & Security → Accessibility**, chọn **Keyly** rồi bấm **−**.
+
+### Xoá cài đặt và phím tắt tự viết (không bắt buộc)
+
+Bỏ qua bước này nếu bạn đã dùng `brew uninstall --zap`, vì lệnh đó đã xoá rồi.
+
+```bash
+rm -rf ~/.config/keyly
+rm -rf ~/Library/Caches/com.keyly.app ~/Library/Caches/com.keyly.app.sparkle ~/Library/HTTPStorages/com.keyly.app*
+defaults delete com.keyly.app
+```
+
+<Aside type="caution">
+`~/.config/keyly` chứa các bảng phím tắt bạn tự viết. Hãy chép ra chỗ khác trước nếu muốn giữ lại.
+</Aside>
+
 ## Bước tiếp theo
 
 - Xem tất cả [Tính năng](/vi/features/)
