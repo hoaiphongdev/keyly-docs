@@ -1,5 +1,5 @@
 ---
-import { copy, INSTALL_COMMAND, type Lang } from './copy';
+import { copy, INSTALL_METHODS, type Lang } from './copy';
 
 interface Props {
 	lang: Lang;
@@ -16,19 +16,37 @@ const t = copy[Astro.props.lang].install;
 	<div class="term">
 		<div class="bar">
 			<span class="lights" aria-hidden="true"><i></i><i></i><i></i></span>
-			<span class="kc-label title">zsh — keyly</span>
+			<div class="tabs" role="group" aria-label={t.methods}>
+				{
+					INSTALL_METHODS.map((m, i) => (
+						<button type="button" class="tab kc-label" data-tab={m.id} aria-pressed={i === 0 ? 'true' : 'false'}>
+							{m.label}
+						</button>
+					))
+				}
+			</div>
 			<button type="button" class="copy kc-label" data-copied={t.copied}>{t.copy}</button>
 		</div>
 		<div class="screen">
-			<p class="line"><span class="prompt">~ %</span> <code class="cmd">{INSTALL_COMMAND}</code><span class="cursor" aria-hidden="true"></span></p>
-			{t.output.map((line, i) => <p class:list={['out', { ok: i === 1 }]} aria-hidden="true">{line}</p>)}
+			{
+				INSTALL_METHODS.map((m, i) => (
+					<div class="pane" data-for={m.id} hidden={i > 0}>
+						<p class="line"><span class="prompt">~ %</span> <code class="cmd">{m.command}</code><span class="cursor" aria-hidden="true" /></p>
+						{t.output[m.id].map((line, n) => (
+							<p class:list={['out', { ok: n === 1 }]} aria-hidden="true">
+								{line}
+							</p>
+						))}
+					</div>
+				))
+			}
 		</div>
 	</div>
 
 	<ol class="steps">
 		<li>
 			<span class="num kc-label">01</span>
-			<span>{t.intro} <code>curl … | bash</code></span>
+			<span>{t.intro} {INSTALL_METHODS.map((m, i) => <code data-for={m.id} hidden={i > 0}>{m.short}</code>)}</span>
 		</li>
 		<li>
 			<span class="num kc-label">02</span>
@@ -42,18 +60,46 @@ const t = copy[Astro.props.lang].install;
 </div>
 
 <script>
-	// Type the command once when the terminal scrolls into view; Copy puts the exact command on the clipboard.
+	// Tabs switch between Homebrew and curl. Each command types once, the first time its tab is shown
+	// with the terminal in view; Copy puts the exact command of the shown tab on the clipboard.
 	document.querySelectorAll<HTMLElement>('.kh-install').forEach((root) => {
-		const cmd = root.querySelector<HTMLElement>('.cmd')!;
-		const outs = [...root.querySelectorAll<HTMLElement>('.out')];
+		const tabs = [...root.querySelectorAll<HTMLButtonElement>('.tab')];
+		const panes = [...root.querySelectorAll<HTMLElement>('.pane')];
 		const button = root.querySelector<HTMLButtonElement>('.copy')!;
-		const full = cmd.textContent ?? '';
 		const label = button.textContent;
+		const commands = new Map(panes.map((pane) => [pane, pane.querySelector<HTMLElement>('.cmd')!.textContent ?? '']));
+		const typed = new Set<HTMLElement>();
 		const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+		let inView = false;
+
+		const shown = () => panes.find((pane) => !pane.hidden)!;
+
+		const type = (pane: HTMLElement) => {
+			if (reduceMotion || !inView || typed.has(pane)) return;
+			typed.add(pane);
+			const cmd = pane.querySelector<HTMLElement>('.cmd')!;
+			const outs = [...pane.querySelectorAll<HTMLElement>('.out')];
+			const full = commands.get(pane)!;
+			let i = 0;
+			const step = () => {
+				cmd.textContent = full.slice(0, ++i);
+				if (i < full.length) setTimeout(step, 14 + Math.random() * 22);
+				else outs.forEach((out, n) => setTimeout(() => out.classList.add('show'), 450 + n * 550));
+			};
+			setTimeout(step, 400);
+		};
+
+		tabs.forEach((tab) =>
+			tab.addEventListener('click', () => {
+				tabs.forEach((other) => other.setAttribute('aria-pressed', String(other === tab)));
+				root.querySelectorAll<HTMLElement>('[data-for]').forEach((el) => (el.hidden = el.dataset.for !== tab.dataset.tab));
+				type(shown());
+			})
+		);
 
 		button.addEventListener('click', async () => {
 			try {
-				await navigator.clipboard.writeText(full);
+				await navigator.clipboard.writeText(commands.get(shown())!);
 				button.textContent = button.dataset.copied ?? label;
 				button.classList.add('done');
 				setTimeout(() => {
@@ -69,21 +115,13 @@ const t = copy[Astro.props.lang].install;
 		}
 
 		root.classList.add('ready');
-		cmd.textContent = '';
+		panes.forEach((pane) => (pane.querySelector<HTMLElement>('.cmd')!.textContent = ''));
 		const observer = new IntersectionObserver(
 			([entry]) => {
 				if (!entry?.isIntersecting) return;
 				observer.disconnect();
-				let i = 0;
-				const type = () => {
-					cmd.textContent = full.slice(0, ++i);
-					if (i < full.length) setTimeout(type, 14 + Math.random() * 22);
-					else {
-						root.classList.add('typed');
-						outs.forEach((out, n) => setTimeout(() => out.classList.add('show'), 450 + n * 550));
-					}
-				};
-				setTimeout(type, 400);
+				inView = true;
+				type(shown());
 			},
 			{ threshold: 0.4 }
 		);
@@ -128,12 +166,15 @@ const t = copy[Astro.props.lang].install;
 	.lights i:nth-child(3) {
 		background: #28c840;
 	}
-	.title {
+	.tabs {
+		display: flex;
+		gap: 0.25rem;
 		margin: 0 auto;
-		color: rgb(242 241 238 / 0.5);
 	}
+	.tab,
 	.copy {
 		padding: 0.3rem 0.7rem;
+		white-space: nowrap;
 		border: 1px solid rgb(255 255 255 / 0.18);
 		background: none;
 		color: rgb(242 241 238 / 0.8);
@@ -141,6 +182,17 @@ const t = copy[Astro.props.lang].install;
 		transition:
 			border-color 150ms ease,
 			color 150ms ease;
+	}
+	.tab {
+		border-color: transparent;
+		color: rgb(242 241 238 / 0.5);
+	}
+	.tab:hover {
+		color: rgb(242 241 238 / 0.8);
+	}
+	.tab[aria-pressed='true'] {
+		border-color: rgb(255 255 255 / 0.18);
+		color: #fff;
 	}
 	.copy:hover,
 	.copy.done {

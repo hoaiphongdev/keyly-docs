@@ -35,7 +35,11 @@ const en = {
 		done: "That's it!",
 		copy: 'Copy',
 		copied: 'Copied',
-		output: ['Downloading Keyly…', '✓ Installed Keyly to /Applications', 'Double-tap ⇪ Caps Lock to show shortcuts'],
+		methods: 'Install method',
+		output: {
+			brew: ['==> Downloading Keyly.dmg', '🍺 keyly was successfully installed!', 'Double-tap ⇪ Caps Lock to show shortcuts'],
+			curl: ['Downloading Keyly…', '✓ Installed Keyly to /Applications', 'Double-tap ⇪ Caps Lock to show shortcuts'],
+		},
 	},
 	footer: {
 		start: 'Get Started',
@@ -76,7 +80,11 @@ const vi: typeof en = {
 		done: 'Xong!',
 		copy: 'Sao chép',
 		copied: 'Đã chép',
-		output: ['Đang tải Keyly…', '✓ Đã cài Keyly vào /Applications', 'Nhấn đúp ⇪ Caps Lock để xem phím tắt'],
+		methods: 'Cách cài',
+		output: {
+			brew: ['==> Đang tải Keyly.dmg', '🍺 Đã cài xong keyly!', 'Nhấn đúp ⇪ Caps Lock để xem phím tắt'],
+			curl: ['Đang tải Keyly…', '✓ Đã cài Keyly vào /Applications', 'Nhấn đúp ⇪ Caps Lock để xem phím tắt'],
+		},
 	},
 	footer: {
 		start: 'Bắt đầu',
@@ -86,4 +94,13 @@ const vi: typeof en = {
 };
 
 export const copy = { en, vi };
-export const INSTALL_COMMAND = 'curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install.sh | bash';
+// Homebrew first, same order as the keyly README; `short` is the step 01 hint
+export const INSTALL_METHODS = [
+	{ id: 'brew', label: 'Homebrew', command: 'brew install --cask hoaiphongdev/keyly/keyly', short: 'brew install …' },
+	{
+		id: 'curl',
+		label: 'curl',
+		command: 'curl -fsSL https://raw.githubusercontent.com/hoaiphongdev/keyly/main/scripts/install.sh | bash',
+		short: 'curl … | bash',
+	},
+] as const;
